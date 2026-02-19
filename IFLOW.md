@@ -15,13 +15,20 @@
 fengshui/
 ├── docs/
 │   └── prd/
-│       └── v1.0.md          # 游戏设计文档 (GDD)
+│       └── v1.0.md                         # 游戏设计文档 (GDD)
 ├── src/
-│   └── frontend/            # 前端代码 (待开发)
-├── tools/                   # 开发工具 (待开发)
-├── fengshui.pen             # 项目视觉稿
-├── CHANGELOG.md             # 项目变更记录
-└── IFLOW.md                 # 项目上下文文档
+│   └── frontend/
+│       └── feng-shui-8-bit/                # Devvit Web 应用
+│           ├── src/
+│           │   ├── client/                 # 前端代码 (React)
+│           │   ├── server/                 # 后端代码 (Hono + tRPC)
+│           │   └── shared/                 # 共享代码
+│           ├── public/                     # 静态资源
+│           └── tools/                      # TypeScript 配置
+├── tools/                                  # 开发工具 (待开发)
+├── fengshui.pen                            # 项目视觉稿
+├── CHANGELOG.md                            # 项目变更记录
+└── IFLOW.md                                # 项目上下文文档
 ```
 
 ### 目录说明
@@ -34,6 +41,8 @@ fengshui/
 
 - **CHANGELOG.md** - 项目变更记录文档，每次以插入文件头部的方式新增记录。此文档是项目记忆的延伸，可用于回放/回顾或回滚项目部分操作
 - **fengshui.pen** - 项目视觉稿
+
+---
 
 ## 核心玩法
 
@@ -72,12 +81,51 @@ fengshui/
 - 场景：到处是猫爬架，猫咪打架
 - 煞气点：门冲、味煞
 
+---
+
 ## 技术实现
 
-### 前端技术栈 (待定)
-- Web 前端
-- Canvas 粒子效果（雨滴、光尘）
-- 网格交互系统
+### 技术栈 (Devvit Web Application)
+
+运行在 Reddit.com 上的 Devvit Web 应用。
+
+| 层级 | 技术 |
+|-----|------|
+| **Frontend** | React 19, Tailwind CSS 4, Vite |
+| **Backend** | Node.js v22 serverless (Devvit), Hono, tRPC |
+| **Communication** | tRPC v11 (端到端类型安全) |
+| **Testing** | Vitest |
+
+### 前端架构 (`src/frontend/feng-shui-8-bit/`)
+
+#### 目录结构
+
+- `src/frontend/feng-shui-8-bit/src/server/` - **后端代码**，运行在安全的 serverless 环境中
+  - `trpc.ts` - 定义 API router 和 procedures
+  - `index.ts` - 服务端入口 (Hono app)
+  - 通过 `@devvit/web/server` 访问 `redis`, `reddit`, `context`
+- `src/frontend/feng-shui-8-bit/src/client/` - **前端代码**，在 reddit.com 的 iFrame 中执行
+  - 入口文件映射定义在 `devvit.json` 中
+  - `game.html` - 主 React 入口 (Expanded View)
+  - `splash.html` - 初始 React 入口 (Inline View)，在 reddit.com feed 中显示
+  - `trpc.ts` - tRPC 客户端实例
+- `src/frontend/feng-shui-8-bit/src/shared/` - **共享代码**，客户端和服务端共用
+
+#### 数据获取 (tRPC)
+
+1. **定义 Procedure**: 在 `src/frontend/feng-shui-8-bit/src/server/trpc.ts` 中添加 query 或 mutation
+2. **客户端调用**: 在 React 组件中使用 `trpc.procedureName.query()` 或 `.mutate()`
+
+### 前端规则与限制
+
+**规则**:
+- 使用 `navigateTo` from `@devvit/web/client` 代替 `window.location` 或 `window.assign`
+
+**限制**:
+- `window.alert`: 使用 `showToast` 或 `showForm` from `@devvit/web/client`
+- 文件下载: 使用 clipboard API 配合 `showToast` 确认
+- Geolocation, camera, microphone, notifications web APIs: 无替代方案
+- HTML 文件内的 inline script 标签: 使用独立的 js/ts 文件
 
 ### 美术工作流
 
@@ -94,13 +142,25 @@ fengshui/
 - Lofi 背景音乐循环
 - 8-bit 点击音效 (Bloop! Ding!)
 
-## MVP 开发计划
+---
 
-| 阶段 | 任务 | 状态 |
-|-----|------|-----|
-| Day 1 | AI 生成 3 张房间底图 + 10 个家具素材 | 待开始 |
-| Day 2 | Web 搭建，实现点击替换逻辑 | 待开始 |
-| Day 3 | VFX 粒子效果 + 音效 + 打磨 | 待开始 |
+## 开发命令
+
+在 `src/frontend/feng-shui-8-bit/` 目录下执行：
+
+```bash
+npm run type-check     # 检查 TypeScript 类型
+npm run lint           # 运行 linter
+npm run test -- my-file-name  # 运行单个文件的测试
+```
+
+## 代码风格
+
+- 使用 type alias 代替 interface
+- 使用 named exports 代替 default exports
+- 禁止 TypeScript 类型强制转换
+
+---
 
 ## 设计原则
 
@@ -115,3 +175,19 @@ fengshui/
 - 色板切换是核心视觉反馈机制
 - 道具拖放需要网格对齐系统
 - 煞气点需要透明点击区域
+- 添加新的菜单项 action 时，确保在 `devvit.json` 中添加对应映射
+- 不要使用 `@devvit/public-api` 中的 blocks 相关代码，本项目仅使用 Devvit web
+
+---
+
+## MVP 开发计划
+
+| 阶段 | 任务 | 状态 |
+|-----|------|-----|
+| Day 1 | AI 生成 3 张房间底图 + 10 个家具素材 | 待开始 |
+| Day 2 | Web 搭建，实现点击替换逻辑 | 待开始 |
+| Day 3 | VFX 粒子效果 + 音效 + 打磨 | 待开始 |
+
+## 参考文档
+
+- Devvit Docs: https://developers.reddit.com/docs/llms.txt
