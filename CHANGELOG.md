@@ -1,3 +1,41 @@
+## [2026-02-21] GameStart 页面游戏化视觉重设计
+
+### 变更内容
+
+**步骤图标化**（方案 A 实现）：
+- 新增 `StepIcons.tsx` 组件，包含罗盘/葫芦/太阳三个 SVG 图标
+- 罗盘图标：像素风格圆形罗盘 + 八方位线 + 指针，带 4s 缓慢旋转动画
+- 葫芦图标：传统葫芦形状 + 挂绳，带 2s 左右摆动动画
+- 太阳图标：中心圆 + 八条光芒，带 2s 呼吸脉冲动画
+
+**氛围元素增强**（方案 B 实现）：
+- 浮动煞气粒子：4 个小煤球在卡片周围缓慢漂浮（3.5-4.5s 随机周期）
+- 罗盘网格纹理：卡片背景极淡同心圆 + 十字网格（透明度 0.01-0.02）
+- 像素回字纹边框：双层边框装饰（外层 1px + 内层 2px）
+
+**视觉节奏调整**（方案 C 实现）：
+- 标题区域占比增大：字号 22px + 字间距 0.1em + 文字阴影增强
+- 分隔线改为祥云纹风格：三角形装饰 + 渐变线条
+- 步骤间距加大：gap-4 + SVG 箭头连接线
+- 新增引导语："准备好改变房间气场了吗？"
+- 按钮字号 13px，文案"选择关卡"
+
+**页面入场动画序列**：
+- 卡片从下方滑入（0.5s）
+- 三个步骤依次出现（stagger 0.6s/0.8s/1s）
+- 底部文案渐显（1.2s 延迟）
+
+**背景图统一**：
+- SplashPage 和 GameStartPage 统一使用 `home-v1.0.png`
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/SplashPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/components/game/StepIcons.tsx`（新增）
+- `src/frontend/feng-shui-8-bit/src/client/index.css`
+
+---
+
 ## [2026-02-21] GameStart 页面沉浸式重设计（Mobile端）
 
 ### 变更内容

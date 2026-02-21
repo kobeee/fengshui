@@ -10,7 +10,7 @@ export function SplashPage() {
     <div className="relative w-full h-full min-h-[320px] overflow-hidden">
       {/* 背景图 */}
       <img
-        src="/images/home-v1.1.png"
+        src="/images/home-v1.0.png"
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
       />
