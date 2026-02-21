@@ -50,9 +50,21 @@ export function EventModal({
     );
   };
 
+  // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
+  const handleStopPropagation = (e: React.PointerEvent | React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   if (isMobile) {
     return (
-      <div className="fixed inset-0 z-50 flex items-end justify-center">
+      <div 
+        className="fixed inset-0 z-50 flex items-end justify-center" 
+        onClick={handleStopPropagation}
+        onPointerDown={handleStopPropagation}
+        onPointerUp={handleStopPropagation}
+        onPointerMove={handleStopPropagation}
+        onPointerCancel={handleStopPropagation}
+      >
         <div
           className="absolute inset-0 bg-black/50"
           onClick={handleClose}
@@ -92,7 +104,14 @@ export function EventModal({
   }
 
   return (
-    <div className="animate-slide-in-right absolute right-0 top-0 z-50 h-full w-80 bg-feng-bg-panel/95 backdrop-blur-sm">
+    <div 
+      className="animate-slide-in-right absolute right-0 top-0 z-50 h-full w-80 bg-feng-bg-panel/95 backdrop-blur-sm" 
+      onClick={handleStopPropagation}
+      onPointerDown={handleStopPropagation}
+      onPointerUp={handleStopPropagation}
+      onPointerMove={handleStopPropagation}
+      onPointerCancel={handleStopPropagation}
+    >
       <div className="flex h-full flex-col p-5">
         <h3 className="mb-2 font-pixel-cn text-xl text-feng-text-primary">
           {shaPoint.title}处置

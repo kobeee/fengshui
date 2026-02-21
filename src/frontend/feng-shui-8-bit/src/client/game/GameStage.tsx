@@ -14,6 +14,10 @@ import {
 import type { Position, ShaPoint, CompassSpeed } from '../types/game';
 import { ParticleSystem, createVictoryParticles } from './ParticleSystem';
 
+// 罗盘图片路径
+const LUOPAN_PAN_IMAGE = '/images/shared/luopan/pan.png';
+const LUOPAN_ZHEN_IMAGE = '/images/shared/luopan/zhen.png';
+
 type GameStageProps = {
   width: number;
   height: number;
@@ -52,6 +56,7 @@ export function GameStage({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
   const compassRef = useRef<Container | null>(null);
+  const needleRef = useRef<Sprite | null>(null);
   const shaSpritesRef = useRef<Map<string, Container>>(new Map());
   const itemSpritesRef = useRef<Map<string, Sprite>>(new Map());
   const particleSystemRef = useRef<ParticleSystem | null>(null);
@@ -112,21 +117,8 @@ export function GameStage({
 
         // 创建房间容器
         const roomContainer = new Container();
-        roomContainer.name = 'roomContainer';
+        roomContainer.label = 'roomContainer';
         app.stage.addChild(roomContainer);
-
-        // 创建罗盘
-        const compass = createCompass();
-        compass.name = 'compass';
-        compass.eventMode = 'static';
-        compass.cursor = 'grab';
-        app.stage.addChild(compass);
-        compassRef.current = compass;
-        compass.x = width / 2;
-        compass.y = height / 2;
-
-        // 创建粒子系统
-        particleSystemRef.current = createVictoryParticles(app.stage);
 
         // 加载图片 - 带超时处理和备用方案
         console.log('[GameStage] Loading images:', coldImage, warmImage);
@@ -172,6 +164,20 @@ export function GameStage({
           }
         };
 
+        // 加载罗盘图片
+        let panTexture: Texture | null = null;
+        let zhenTexture: Texture | null = null;
+        try {
+          [panTexture, zhenTexture] = await Promise.all([
+            loadWithTimeout(LUOPAN_PAN_IMAGE, 5000),
+            loadWithTimeout(LUOPAN_ZHEN_IMAGE, 5000),
+          ]);
+          console.log('[GameStage] Luopan images loaded successfully');
+        } catch (loadErr) {
+          console.warn('[GameStage] Luopan images load failed, will use fallback:', loadErr);
+          // 继续执行，后续会使用备用绘制
+        }
+
         let coldTexture: Texture, warmTexture: Texture;
         try {
           [coldTexture, warmTexture] = await Promise.all([
@@ -188,13 +194,13 @@ export function GameStage({
 
         // 创建房间精灵
         const coldSprite = new Sprite(coldTexture);
-        coldSprite.name = 'coldRoom';
+        coldSprite.label = 'coldRoom';
         coldSprite.width = width;
         coldSprite.height = height;
         roomContainer.addChild(coldSprite);
 
         const warmSprite = new Sprite(warmTexture);
-        warmSprite.name = 'warmRoom';
+        warmSprite.label = 'warmRoom';
         warmSprite.width = width;
         warmSprite.height = height;
         warmSprite.alpha = 0;
@@ -202,19 +208,34 @@ export function GameStage({
 
         console.log('[GameStage] Images loaded and sprites created');
 
+        // 创建罗盘（使用图片或备用绘制）
+        const compassResult = createLuopanCompass(panTexture, zhenTexture);
+        const compass = compassResult.container;
+        compass.label = 'compass';
+        compass.eventMode = 'static';
+        app.stage.addChild(compass);
+        compassRef.current = compass;
+        needleRef.current = compassResult.needle;
+        compass.x = width / 2;
+        compass.y = height / 2;
+
+        // 创建粒子系统
+        particleSystemRef.current = createVictoryParticles(app.stage);
+
         // 设置拖拽交互（仅 Web 端）
         if (!isMobile && onCompassMove) {
           let isDragging = false;
           const dragOffset = { x: 0, y: 0 };
 
+          // 重要：必须在添加事件监听之前设置 eventMode
+          app.stage.eventMode = 'static';
+
           compass.on('pointerdown', (e: { globalX: number; globalY: number }) => {
             isDragging = true;
             dragOffset.x = e.globalX - compass.x;
             dragOffset.y = e.globalY - compass.y;
-            compass.cursor = 'grabbing';
           });
 
-          app.stage.eventMode = 'static';
           app.stage.on('pointermove', (e: { globalX: number; globalY: number }) => {
             if (!isDragging) return;
             
@@ -230,7 +251,6 @@ export function GameStage({
 
           const stopDrag = () => {
             isDragging = false;
-            if (compass) compass.cursor = 'grab';
           };
 
           app.stage.on('pointerup', stopDrag);
@@ -265,6 +285,7 @@ export function GameStage({
       }
       setIsReady(false);
       compassRef.current = null;
+      needleRef.current = null;
     };
   }, [width, height]); // 只在尺寸变化时重新初始化
 
@@ -273,7 +294,7 @@ export function GameStage({
     const app = appRef.current;
     if (!app || !isReady) return;
 
-    const roomContainer = app.stage.getChildByName('roomContainer') as Container;
+    const roomContainer = app.stage.getChildByLabel('roomContainer') as Container;
     if (!roomContainer) return;
 
     void (async () => {
@@ -318,13 +339,13 @@ export function GameStage({
         roomContainer.removeChildren();
 
         const coldSprite = new Sprite(coldTexture);
-        coldSprite.name = 'coldRoom';
+        coldSprite.label = 'coldRoom';
         coldSprite.width = width;
         coldSprite.height = height;
         roomContainer.addChild(coldSprite);
 
         const warmSprite = new Sprite(warmTexture);
-        warmSprite.name = 'warmRoom';
+        warmSprite.label = 'warmRoom';
         warmSprite.width = width;
         warmSprite.height = height;
         warmSprite.alpha = 0;
@@ -346,8 +367,9 @@ export function GameStage({
     const animate = () => {
       rotation += getRotationSpeed(compassSpeed);
 
-      if (compassRef.current) {
-        compassRef.current.rotation = rotation;
+      // 只旋转指针，不旋转整个罗盘
+      if (needleRef.current) {
+        needleRef.current.rotation = rotation;
       }
 
       shaSpritesRef.current.forEach((sprite) => {
@@ -379,11 +401,11 @@ export function GameStage({
     const app = appRef.current;
     if (!app || !isReady) return;
 
-    const roomContainer = app.stage.getChildByName('roomContainer') as Container;
+    const roomContainer = app.stage.getChildByLabel('roomContainer') as Container;
     if (!roomContainer) return;
 
-    const warmRoom = roomContainer.getChildByName('warmRoom') as Sprite;
-    const coldRoom = roomContainer.getChildByName('coldRoom') as Sprite;
+    const warmRoom = roomContainer.getChildByLabel('warmRoom') as Sprite;
+    const coldRoom = roomContainer.getChildByLabel('coldRoom') as Sprite;
 
     if (warmRoom && coldRoom) {
       warmRoom.alpha = showWarm ? 1 : 0;
@@ -479,15 +501,24 @@ export function GameStage({
     }
   }, [isCompleted, width, height]);
 
+  // 阻止 PixiJS 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
+  const handlePointerEvent = useCallback((e: React.PointerEvent) => {
+    e.stopPropagation();
+  }, []);
+
   return (
     <div className="relative h-full w-full">
       {/* 始终渲染 canvas */}
       <canvas
         ref={canvasRef}
-        className="block h-full w-full"
+        className="block h-full w-full cursor-grab active:cursor-grabbing"
         style={{
           backgroundColor: '#0e1116',
         }}
+        onPointerDown={handlePointerEvent}
+        onPointerUp={handlePointerEvent}
+        onPointerMove={handlePointerEvent}
+        onPointerCancel={handlePointerEvent}
       />
       
       {/* 加载状态覆盖层 */}
@@ -516,50 +547,84 @@ export function GameStage({
   );
 }
 
-function createCompass(): Container {
+/**
+ * 创建像素风罗盘
+ * - 底盘（pan.png）：保持静止
+ * - 指针（zhen.png）：独立旋转
+ */
+function createLuopanCompass(
+  panTexture: Texture | null,
+  zhenTexture: Texture | null
+): { container: Container; needle: Sprite } {
   const container = new Container();
-  const radius = 40;
+  const compassRadius = 35; // 罗盘显示大小（调整后与场景物件协调）
 
-  const outer = new Graphics();
-  outer.circle(0, 0, radius);
-  outer.fill(0x202736);
-  outer.stroke({ width: 3, color: 0xc4a06a });
-  container.addChild(outer);
+  let needle: Sprite;
 
-  const inner = new Graphics();
-  inner.circle(0, 0, radius * 0.78);
-  inner.stroke({ width: 1, color: 0xc4a06a });
-  container.addChild(inner);
+  if (panTexture && zhenTexture) {
+    // 使用实际图片创建罗盘
+    // 底盘
+    const panSprite = new Sprite(panTexture);
+    panSprite.anchor.set(0.5);
+    panSprite.width = compassRadius * 2;
+    panSprite.height = compassRadius * 2;
+    container.addChild(panSprite);
 
-  const needle = new Graphics();
-  needle.rect(-4, -radius * 0.65, 8, radius * 0.5);
-  needle.fill(0xc4a06a);
-  container.addChild(needle);
+    // 指针
+    needle = new Sprite(zhenTexture);
+    needle.anchor.set(0.5);
+    // 指针尺寸：宽度约为底盘的 40%，高度约为底盘的 75%
+    needle.width = compassRadius * 0.4;
+    needle.height = compassRadius * 1.5;
+    container.addChild(needle);
+  } else {
+    // 备用绘制方案（当图片加载失败时）
+    const outer = new Graphics();
+    outer.circle(0, 0, compassRadius);
+    outer.fill(0x202736);
+    outer.stroke({ width: 3, color: 0xc4a06a });
+    container.addChild(outer);
 
-  const centerDot = new Graphics();
-  centerDot.circle(0, 0, radius * 0.1);
-  centerDot.fill(0xc4a06a);
-  container.addChild(centerDot);
+    const inner = new Graphics();
+    inner.circle(0, 0, compassRadius * 0.78);
+    inner.stroke({ width: 1, color: 0xc4a06a });
+    container.addChild(inner);
 
-  const labelStyle = new TextStyle({
-    fontFamily: '"Press Start 2P", monospace',
-    fontSize: 9,
-    fill: 0xe6d4b4,
-    fontWeight: '700',
-  });
-  const label = new Text({ text: 'LUO PAN', style: labelStyle });
-  label.anchor.set(0.5, 0.5);
-  label.y = radius * 0.35;
-  container.addChild(label);
+    // 备用指针（使用 Graphics 绘制）
+    const needleGraphics = new Graphics();
+    needleGraphics.rect(-4, -compassRadius * 0.65, 8, compassRadius * 0.5);
+    needleGraphics.fill(0xc4a06a);
+    container.addChild(needleGraphics);
 
-  return container;
+    const centerDot = new Graphics();
+    centerDot.circle(0, 0, compassRadius * 0.1);
+    centerDot.fill(0xc4a06a);
+    container.addChild(centerDot);
+
+    const labelStyle = new TextStyle({
+      fontFamily: '"Press Start 2P", monospace',
+      fontSize: 9,
+      fill: 0xe6d4b4,
+      fontWeight: '700',
+    });
+    const label = new Text({ text: 'LUO PAN', style: labelStyle });
+    label.anchor.set(0.5, 0.5);
+    label.y = compassRadius * 0.35;
+    container.addChild(label);
+
+    // 备用方案下，needle 是一个空的 Sprite（用于兼容）
+    needle = new Sprite();
+    needle.label = 'needleFallback';
+  }
+
+  return { container, needle };
 }
 
 function createShaSprite(sha: ShaPoint, width: number, height: number): Container {
   const container = new Container();
   container.x = sha.position.x * width;
   container.y = sha.position.y * height;
-  container.name = sha.id;
+  container.label = sha.id;
 
   const size = 20;
 

@@ -119,8 +119,20 @@ export function GameplayPage() {
     );
   }
 
+  // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
+  const handleStopPropagation = (e: React.PointerEvent | React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="fixed inset-0 flex flex-col bg-feng-bg-deep">
+    <div 
+      className="fixed inset-0 flex flex-col bg-feng-bg-deep" 
+      onClick={handleStopPropagation}
+      onPointerDown={handleStopPropagation}
+      onPointerUp={handleStopPropagation}
+      onPointerMove={handleStopPropagation}
+      onPointerCancel={handleStopPropagation}
+    >
       {/* 顶部状态栏 */}
       <header className="flex h-14 flex-shrink-0 items-center justify-between bg-feng-bg-panel/90 px-4 backdrop-blur-sm">
         <button

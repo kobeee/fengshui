@@ -573,8 +573,20 @@ export function LevelSelectPage() {
     loadLevel(level);
   };
 
+  // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
+  const handleStopPropagation = (e: React.PointerEvent | React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0E1116]">
+    <div 
+      className="relative min-h-screen overflow-hidden bg-[#0E1116]" 
+      onClick={handleStopPropagation}
+      onPointerDown={handleStopPropagation}
+      onPointerUp={handleStopPropagation}
+      onPointerMove={handleStopPropagation}
+      onPointerCancel={handleStopPropagation}
+    >
       {/* Layer 0: 全屏背景图 */}
       <img
         src="/images/home-v1.0.png"

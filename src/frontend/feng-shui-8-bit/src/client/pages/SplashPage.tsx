@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, PointerEvent } from 'react';
 import { requestExpandedMode } from '@devvit/web/client';
 
 export function SplashPage() {
@@ -6,8 +6,20 @@ export function SplashPage() {
     requestExpandedMode(e.nativeEvent, 'game');
   };
 
+  // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
+  const handleStopPropagation = (e: PointerEvent | React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="relative w-full h-full min-h-[320px] overflow-hidden">
+    <div 
+      className="relative w-full h-full min-h-[320px] overflow-hidden" 
+      onClick={handleStopPropagation}
+      onPointerDown={handleStopPropagation}
+      onPointerUp={handleStopPropagation}
+      onPointerMove={handleStopPropagation}
+      onPointerCancel={handleStopPropagation}
+    >
       {/* 背景图 */}
       <img
         src="/images/home-v1.0.png"

@@ -1,3 +1,134 @@
+## [2026-02-21] 游戏罗盘图片集成
+
+### 变更内容
+
+**罗盘图片替换 Graphics 绘制**：
+- 加载实际像素风罗盘图片：底盘 `pan.png` + 指针 `zhen.png`
+- 底盘保持静止，指针独立旋转（符合真实罗盘物理效果）
+- 图片加载失败时自动降级到备用 Graphics 绘制方案
+
+**尺寸优化**：
+- 罗盘直径从 100px 调整为 70px（compassRadius: 50 → 35）
+- 指针尺寸相应调整，与房间场景物件形成协调比例
+- 罗盘作为风水工具，精致但不抢眼
+
+**图片资源路径**：
+- `public/images/shared/luopan/pan.png` - 罗盘底盘（八卦图）
+- `public/images/shared/luopan/zhen.png` - 罗盘指针
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/public/images/shared/luopan/`
+
+---
+
+## [2026-02-21] Devvit 隔离窗口错误最终修复（Pointer Events）
+
+### 变更内容
+
+**问题分析**：
+- 之前的修复只处理了 `onClick` 事件，但 Devvit 隔离窗口检测在 Pointer Events 上触发
+- 错误：`isolation 窗口不能发送消息给 parent`
+- 需要阻止所有 pointer 事件冒泡，而不仅仅是 click 事件
+
+**解决方案**：
+- 在所有页面的根容器上添加完整的 pointer 事件处理器：
+  - `onPointerDown`
+  - `onPointerUp`
+  - `onPointerMove`
+  - `onPointerCancel`
+- 统一使用 `handleStopPropagation` 函数处理所有事件类型
+- 参照 GameStage.tsx 的成功实践（canvas 上已使用 pointer 事件）
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/SplashPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/LevelSelectPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/components/game/EventModal.tsx`
+
+---
+
+## [2026-02-21] 所有页面 Devvit 隔离窗口错误全面修复
+
+### 变更内容
+
+**问题分析**：
+- 所有页面点击都报错：`isolation 窗口不能发送消息给 parent`
+- React 点击事件冒泡到 window 级别，触发 Devvit 隔离窗口检测机制
+- SplashPage 的 `requestExpandedMode` 和 GameStartPage/LevelSelectPage 的 `navigate` 都会触发
+
+**解决方案**：
+- 在所有页面的根容器元素上添加 `onClick={handleContainerClick}`
+- 调用 `e.stopPropagation()` 阻止点击事件冒泡到父窗口
+- 统一修复以下文件：
+  - `SplashPage.tsx`
+  - `GameStartPage.tsx`
+  - `LevelSelectPage.tsx`
+  - `GameplayPage.tsx`
+  - `EventModal.tsx`（弹窗组件）
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/SplashPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/LevelSelectPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/components/game/EventModal.tsx`
+
+---
+
+## [2026-02-21] GameStage Devvit 隔离窗口错误最终修复
+
+### 变更内容
+
+**问题分析**：
+- 每次点击页面都报错：`isolation 窗口不能发送消息给 parent`
+- PixiJS 的 Pointer Events 冒泡到父窗口，触发 Devvit 内部通信机制
+- 之前的修复只解决了 cursor 设置问题，但事件冒泡问题仍然存在
+
+**解决方案**：
+- 在 canvas 元素上添加 React Pointer Event 处理器
+- 调用 `e.stopPropagation()` 阻止事件冒泡到父窗口
+- 处理的事件类型：onPointerDown、onPointerUp、onPointerMove、onPointerCancel
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
+## [2026-02-21] GameStage PixiJS v8 事件系统修复
+
+### 变更内容
+
+**问题分析**：
+- 罗盘点击无反应
+- 控制台报 CSP 违规错误：`data:image/png;base64` 不被允许
+- PixiJS v8 弃用警告：`Container.name` 应改为 `Container.label`
+- 点击罗盘触发 Devvit 隔离窗口错误：`isolation 窗口不能发送消息给 parent`
+
+**解决方案**：
+1. **事件系统修复**：
+   - 将 `app.stage.eventMode = 'static'` 移到添加事件监听之前
+   - 确保在 PixiJS v8 中正确启用交互事件
+
+2. **API 更新**：
+   - 将所有 `Container.name` 改为 `Container.label`（PixiJS v8 弃用 name）
+   - 将所有 `getChildByName` 改为 `getChildByLabel`
+
+3. **Devvit 隔离窗口错误修复**：
+   - 移除 PixiJS 动态 `cursor` 属性设置（`grab`/`grabbing`）
+   - 改用 CSS `cursor-grab active:cursor-grabbing` 控制鼠标样式
+   - PixiJS 的 cursor 切换会触发 Devvit 内部通信，导致隔离错误
+
+4. **CSP 说明**：
+   - `data:image/png;base64` 错误是 PixiJS 内部检测 ImageBitmap 支持时触发
+   - 该错误不影响功能，已有备用加载方案绕过
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
 ## [2026-02-21] GameStage unsafe-eval 兼容性修复
 
 ### 变更内容
