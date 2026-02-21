@@ -1,3 +1,132 @@
+## [2026-02-21] GameStage unsafe-eval 兼容性修复
+
+### 变更内容
+
+**问题分析**：
+- 错误：`Current environment does not allow unsafe-eval`
+- 之前的修复使用了 `@pixi/unsafe-eval` v7，但项目使用 PixiJS v8
+- PixiJS v7 和 v8 的 unsafe-eval 模块不兼容
+
+**解决方案**：
+- PixiJS v8 内置了 unsafe-eval 支持，通过 `pixi.js/unsafe-eval` 子路径导入
+- 移除不兼容的 `@pixi/unsafe-eval` v7 依赖
+- 将 `import '@pixi/unsafe-eval'` 改为 `import 'pixi.js/unsafe-eval'`
+- 确保 unsafe-eval 导入在其他 pixi.js 导入之前
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/package.json`
+
+---
+
+## [2026-02-21] GameStage unsafe-eval 最终修复
+
+### 变更内容
+
+**问题分析**：
+- 错误：`Current environment does not allow unsafe-eval`
+- PixiJS v8 的 WebGL 和 Canvas 渲染器都依赖 unsafe-eval
+
+**解决方案**：
+- 安装 `@pixi/unsafe-eval` 包
+- 在 GameStage.tsx 导入 `@pixi/unsafe-eval` 启用支持
+- 移除 `preference: 'canvas'` 配置
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `package.json`（新增依赖）
+
+---
+
+## [2026-02-21] GameStage unsafe-eval 错误修复（失败尝试）
+
+### 变更内容
+
+**问题分析**：
+- 错误：`Current environment does not allow unsafe-eval`
+- 根本原因：Reddit Devvit iframe 环境禁止 unsafe-eval
+- PixiJS WebGL 渲染器依赖 unsafe-eval
+
+**尝试方案**：
+- 添加 `preference: 'canvas'` 强制使用 Canvas 渲染器
+- 但 Canvas 渲染器也有 unsafe-eval 检查，方案失败
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
+## [2026-02-21] GameStage 死锁问题修复
+
+### 变更内容
+
+**问题分析**：
+- 日志显示 `canvas= false`，初始化被跳过
+- 根本原因：渲染逻辑存在死锁
+  - 组件先渲染"加载中..."（没有 canvas）
+  - useEffect 检查 `!canvas` 就跳过初始化
+  - `isReady` 永远不会变成 true
+  - 永远渲染"加载中..."，永远不渲染 canvas
+
+**GameStage.tsx 修复**：
+- 始终渲染 canvas，无论 isReady 状态
+- 将加载状态和错误状态改为覆盖层形式
+- 使用 `pointer-events-none` 让加载层不阻挡交互
+- 添加重试按钮
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
+## [2026-02-21] GameStage 图片加载问题修复
+
+### 变更内容
+
+**问题分析**：
+- 游戏页面卡在"加载中..."状态
+- 根本原因：PixiJS v8 的 `Assets.load` 在某些环境下可能卡住或失败
+
+**GameStage.tsx 修复**：
+- 添加 `Assets.init()` 初始化步骤
+- 添加 10 秒超时处理，防止加载无限卡住
+- 添加备用加载方案：原生 `Image` + `Texture.from()`
+- 当 `Assets.load` 失败时自动回退到备用方案
+- 添加更详细的日志输出便于排查问题
+- 道具加载同样添加备用方案
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
+## [2026-02-21] Gameplay 页面空白问题修复
+
+### 变更内容
+
+**问题分析**：
+- 点击关卡进入游戏页面后显示空白
+- 根本原因：PixiJS 初始化依赖项不正确 + 容器尺寸获取不可靠
+
+**GameStage.tsx 修复**：
+- 修复 useEffect 依赖数组为空的问题，添加正确的依赖项
+- 添加 initKeyRef 防止重复初始化
+- 添加错误状态处理和错误显示
+- 添加加载状态显示
+- 增强 destroy 错误处理
+
+**GameplayPage.tsx 修复**：
+- 使用 ResizeObserver 替代 offsetWidth/offsetHeight 获取容器尺寸
+- 添加 `min-h-0` 解决 flex 布局高度问题
+- 添加显式高度 `height: calc(100vh - 60px)`
+- 添加初始化加载提示
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+
+---
+
 ## [2026-02-21] LevelSelect 页面移动端对比度修复
 
 ### 变更内容

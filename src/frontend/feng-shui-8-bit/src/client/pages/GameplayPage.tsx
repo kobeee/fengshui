@@ -29,20 +29,39 @@ export function GameplayPage() {
     isCompleted 
   } = state;
 
-  // 监听容器尺寸
+  // 使用 ResizeObserver 监听容器尺寸变化
   useEffect(() => {
-    const updateSize = () => {
-      if (containerRef.current) {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          setContainerSize({
+            width: Math.floor(width),
+            height: Math.floor(height),
+          });
+        }
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    // 初始更新 - 使用 requestAnimationFrame 确保 DOM 已渲染
+    requestAnimationFrame(() => {
+      const rect = container.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
         setContainerSize({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
+          width: Math.floor(rect.width),
+          height: Math.floor(rect.height),
         });
       }
-    };
+    });
 
-    updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -101,9 +120,9 @@ export function GameplayPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-feng-bg-deep">
+    <div className="fixed inset-0 flex flex-col bg-feng-bg-deep">
       {/* 顶部状态栏 */}
-      <header className="flex items-center justify-between bg-feng-bg-panel/90 px-4 py-3 backdrop-blur-sm">
+      <header className="flex h-14 flex-shrink-0 items-center justify-between bg-feng-bg-panel/90 px-4 backdrop-blur-sm">
         <button
           onClick={() => navigate('select')}
           className="rounded bg-feng-bg-card px-3 py-1.5 font-pixel-cn text-xs text-feng-text-light"
@@ -122,8 +141,11 @@ export function GameplayPage() {
       </header>
 
       {/* 游戏主区域 - PixiJS */}
-      <div ref={containerRef} className="relative flex-1 overflow-hidden">
-        {containerSize.width > 0 && containerSize.height > 0 && (
+      <div 
+        ref={containerRef} 
+        className="relative flex-1 overflow-hidden"
+      >
+        {containerSize.width > 0 && containerSize.height > 0 ? (
           <GameStage
             width={containerSize.width}
             height={containerSize.height}
@@ -139,6 +161,10 @@ export function GameplayPage() {
             isCompleted={isCompleted}
             onCompassMove={isMobile ? undefined : handleCompassMove}
           />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <p className="font-pixel text-xs text-feng-text-dim animate-pulse">初始化游戏...</p>
+          </div>
         )}
 
         {/* 提示文字 */}
