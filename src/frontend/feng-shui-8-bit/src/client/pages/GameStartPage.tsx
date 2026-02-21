@@ -113,7 +113,7 @@ export function GameStartPage() {
             className="relative px-8 py-10 rounded-lg"
             style={{
               background: 'linear-gradient(135deg, rgba(30, 35, 45, 0.25) 0%, rgba(21, 26, 34, 0.35) 100%)',
-              backdropFilter: 'blur(20px) saturate(1.4)',
+              backdropFilter: 'blur(30px) saturate(1.2)',
               WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
               border: '2px solid rgba(196, 160, 106, 0.4)',
               boxShadow: `

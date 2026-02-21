@@ -43,6 +43,8 @@ export type Level = {
   description: string;
   shaCount: number;
   locked: boolean;
+  difficulty: 'easy' | 'normal' | 'hard';
+  estimatedTime: string;
   images: {
     cold: string;
     warm: string;

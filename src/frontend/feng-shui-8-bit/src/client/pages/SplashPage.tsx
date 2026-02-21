@@ -40,7 +40,7 @@ export function SplashPage() {
             className="relative px-10 py-32 min-w-[280px] rounded-sm"
             style={{
               background: 'linear-gradient(135deg, rgba(30, 35, 45, 0.05) 0%, rgba(21, 26, 34, 0.08) 100%)',
-              backdropFilter: 'blur(16px) saturate(1.2)',
+              backdropFilter: 'blur(8px) saturate(1.2)',
               WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
               border: '3px solid rgba(196, 160, 106, 0.35)',
               boxShadow: `

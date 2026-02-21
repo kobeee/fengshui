@@ -77,6 +77,8 @@ export const levels: Level[] = [
     description: '雨夜单身公寓 · 4 煞气点',
     shaCount: 4,
     locked: false,
+    difficulty: 'easy',
+    estimatedTime: '5-8分钟',
     images: {
       cold: '/images/level1/room-cold-v1.0.png',
       warm: '/images/level1/room-warm-v1.0.png',
@@ -94,8 +96,10 @@ export const levels: Level[] = [
     name: '猫奴的客厅',
     nameEn: "Cat Lady's Living Room",
     description: '到处是猫爬架，猫咪打架',
-    shaCount: 2,
+    shaCount: 3,
     locked: true,
+    difficulty: 'normal',
+    estimatedTime: '8-12分钟',
     images: {
       cold: '',
       warm: '',
