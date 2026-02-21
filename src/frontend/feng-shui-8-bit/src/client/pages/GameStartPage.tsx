@@ -3,16 +3,16 @@ import { useGame } from '../stores/GameContext';
 import { CompassIcon, GourdIcon, SunIcon } from '../components/game/StepIcons';
 
 /** 浮动煞气粒子组件 */
-function ShaParticle({ 
-  delay, 
-  size, 
-  top, 
+function ShaParticle({
+  delay,
+  size,
+  top,
   left,
-  animationClass 
-}: { 
-  delay: string; 
-  size: number; 
-  top: string; 
+  animationClass
+}: {
+  delay: string;
+  size: number;
+  top: string;
   left: string;
   animationClass: string;
 }) {
@@ -33,16 +33,16 @@ function ShaParticle({
 }
 
 /** 步骤项组件 */
-function StepItem({ 
-  icon, 
-  label, 
+function StepItem({
+  icon,
+  label,
   animClass,
   labelColor,
   bgOpacity,
   borderOpacity,
-}: { 
-  icon: ReactNode; 
-  label: string; 
+}: {
+  icon: ReactNode;
+  label: string;
   animClass: string;
   labelColor: string;
   bgOpacity: number;

@@ -276,3 +276,94 @@ body {
   animation: stagger-fade-3 0.4s ease-out 1s forwards;
   opacity: 0;
 }
+
+/* ============================================
+ * LevelSelect 页面高级感动画
+ * ============================================ */
+
+/** 花瓣自然飘落动画 */
+@keyframes petal-fall {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  25% {
+    transform: translateY(25vh) translateX(10px);
+  }
+  50% {
+    transform: translateY(50vh) translateX(-10px);
+  }
+  75% {
+    transform: translateY(75vh) translateX(5px);
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(110vh) translateX(0);
+    opacity: 0;
+  }
+}
+
+/** 花瓣缓速自转动画 */
+@keyframes petal-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(calc(360deg * var(--rotate-direction, 1)));
+  }
+}
+
+.petal-fall {
+  animation: petal-fall linear infinite;
+}
+
+.petal-rotate {
+  animation: petal-fall linear infinite, petal-rotate linear infinite;
+}
+
+/** 缩略图呼吸动画 */
+@keyframes thumbnail-breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.thumbnail-breathe {
+  animation: thumbnail-breathe 4s ease-in-out infinite;
+}
+
+/** 卡片悬浮动效 */
+@keyframes card-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.card-float {
+  animation: card-float 3s ease-in-out infinite;
+}
+
+/** 边缘光脉冲 */
+@keyframes edge-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(196, 160, 106, 0.3), inset 0 0 10px rgba(196, 160, 106, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(196, 160, 106, 0.5), inset 0 0 20px rgba(196, 160, 106, 0.2);
+  }
+}
+
+.edge-glow {
+  animation: edge-glow 3s ease-in-out infinite;
+}
