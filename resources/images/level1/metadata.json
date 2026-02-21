@@ -1,0 +1,52 @@
+{
+  "levelId": "level-1",
+  "levelName": "开发者的地牢",
+  "levelNameEn": "Dev Dungeon",
+  "version": "1.0.0",
+  "createdAt": "2026-02-20",
+  "updatedAt": "2026-02-20",
+  "status": "in_progress",
+  "assets": {
+    "roomCold": "room-cold.png",
+    "roomWarm": "room-warm.png",
+    "hotspots": "hotspots.json",
+    "patches": [
+      "patches/sha-001-patch.png",
+      "patches/sha-002-patch.png",
+      "patches/sha-003-patch.png",
+      "patches/sha-004-patch.png"
+    ],
+    "items": [
+      "../shared/items/gourd.png",
+      "../shared/items/plant-broad.png",
+      "../shared/items/screen.png"
+    ]
+  },
+  "shaPoints": [
+    {
+      "id": "sha-001",
+      "type": "mirror_sha",
+      "title": "镜冲床"
+    },
+    {
+      "id": "sha-002",
+      "type": "sharp_corner_sha",
+      "title": "尖角煞"
+    },
+    {
+      "id": "sha-003",
+      "type": "beam_sha",
+      "title": "横梁压顶"
+    },
+    {
+      "id": "sha-004",
+      "type": "door_clash",
+      "title": "门冲煞"
+    }
+  ],
+  "designDocuments": {
+    "levelDesign": "../../docs/design/game/level1/level-design.md",
+    "generationPrompts": "../../docs/design/game/level1/prompts/",
+    "analysisPrompts": "../../docs/design/game/level1/analysis/"
+  }
+}

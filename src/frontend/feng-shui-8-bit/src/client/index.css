@@ -1,1 +1,159 @@
 @import 'tailwindcss';
+
+/* 
+ * 八比特风水师 - 主题配置
+ * 基于 Tailwind CSS 4 的 @theme 指令
+ */
+
+@theme {
+  /* 颜色变量 - 来自视觉稿 fengshui.pen */
+  --color-feng-bg-deep: #0E1116;
+  --color-feng-bg-panel: #151A22;
+  --color-feng-bg-card: #202736;
+  --color-feng-bg-muted: #3E4C43;
+  
+  --color-feng-text-primary: #E6D4B4;
+  --color-feng-text-light: #D0D6E1;
+  --color-feng-text-muted: #AAB3C2;
+  --color-feng-text-dim: #8D97A8;
+  
+  --color-feng-accent: #C4A06A;
+  --color-feng-accent-dark: #A8834E;
+  
+  --color-feng-border: #616C80;
+  
+  /* 字体家族 */
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-pixel-cn: 'DotGothic16', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  
+  /* 动画时间 */
+  --animate-spin-slow: 4s;
+  --animate-spin-fast: 1.5s;
+  --animate-spin-super: 0.5s;
+}
+
+/* 全局基础样式 */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-ui);
+  background-color: var(--color-feng-bg-deep);
+  color: var(--color-feng-text-light);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* 像素字体平滑 */
+.pixel-font {
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: pixelated;
+}
+
+/* 罗盘旋转动画 */
+@keyframes compass-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.compass-spin {
+  animation: compass-spin var(--animate-spin-slow) linear infinite;
+}
+
+.compass-spin--fast {
+  animation-duration: var(--animate-spin-fast);
+}
+
+.compass-spin--super {
+  animation-duration: var(--animate-spin-super);
+}
+
+/* 色板切换动画 */
+.warm-transition {
+  transition: filter 1.5s ease-out;
+}
+
+.warm-filter {
+  filter: sepia(20%) saturate(1.3) hue-rotate(-10deg);
+}
+
+/* 弹窗动画 */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* 道具出现动画 */
+@keyframes item-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-item-pop {
+  animation: item-pop 0.4s ease-out;
+}
+
+/* 通关闪光 */
+@keyframes victory-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(230, 212, 180, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(230, 212, 180, 0.6);
+  }
+}
+
+.animate-victory-glow {
+  animation: victory-glow 2s ease-in-out infinite;
+}

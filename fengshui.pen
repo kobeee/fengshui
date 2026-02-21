@@ -1,0 +1,2486 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "oWk3T",
+      "x": -800,
+      "y": 1080,
+      "name": "Responsive Showcase / Mobile + Web",
+      "clip": true,
+      "width": 4000,
+      "height": 4200,
+      "fill": "#0E1116",
+      "layout": "vertical",
+      "gap": 56,
+      "padding": 56,
+      "children": [
+        {
+          "type": "frame",
+          "id": "advoT",
+          "name": "boardHeader",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "text",
+              "id": "mslzw",
+              "name": "boardTitle",
+              "fill": "#E6D4B4",
+              "content": "FENG SHUI 8-BIT · RESPONSIVE STARTUP SCREENS",
+              "fontFamily": "Press Start 2P",
+              "fontSize": 34,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "PPUH5",
+              "name": "boardSub",
+              "fill": "#AAB3C2",
+              "content": "页面流程：Splash → Game Start → Level Select → Gameplay",
+              "fontFamily": "DotGothic16",
+              "fontSize": 18,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "eVsRD",
+          "name": "Row / Mobile",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "PDbRS",
+              "name": "mobileLabelRow",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "uYeEa",
+                  "name": "mobileLabel",
+                  "fill": "#B8CBBE",
+                  "content": "MOBILE",
+                  "fontFamily": "Press Start 2P",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "iURFq",
+                  "name": "mobileNote",
+                  "fill": "#8D97A8",
+                  "content": "目标：竖屏优先、拇指可达、信息更聚焦",
+                  "fontFamily": "DotGothic16",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xkyGY",
+              "name": "mobileCards",
+              "width": "fill_container",
+              "gap": 28,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "uQG8V",
+                  "name": "Mobile Splash",
+                  "clip": true,
+                  "width": 390,
+                  "height": 300,
+                  "fill": "#151A22",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 14,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FppQd",
+                      "name": "mSpTop",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "iXok5",
+                          "name": "mSpBadge",
+                          "fill": "#202736",
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YYJxs",
+                              "name": "mSpBadgeText",
+                              "fill": "#D0D6E1",
+                              "content": "FEED CARD",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tK8HU",
+                          "name": "mSpChip",
+                          "fill": "#3E4C43",
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "uuebS",
+                              "name": "mSpChipText",
+                              "fill": "#B8CBBE",
+                              "content": "PLAY",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "EKJXr",
+                      "name": "mSpMain",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "./resources/images/home/home-v1.0.png",
+                        "mode": "fill"
+                      },
+                      "layout": "vertical",
+                      "gap": 10,
+                      "padding": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mSpOverlay",
+                          "name": "mSpOverlay",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "rgba(14, 17, 22, 0.55)",
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": 10,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "R5OTs",
+                              "name": "mSpTitle",
+                              "fill": "#E6D4B4",
+                              "content": "八比特风水师",
+                              "lineHeight": 1.15,
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 26,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "jW0fB",
+                              "name": "mSpSub",
+                              "fill": "#D0D6E1",
+                              "content": "TAP TO CLEAN THE ROOM",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "yqnpE",
+                              "name": "mSpPixelRow",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "mRiHJ",
+                                  "name": "mSpPx1",
+                                  "fill": "#C4A06A",
+                                  "width": 12,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "gpfm0",
+                                  "name": "mSpPx2",
+                                  "fill": "#E6D4B4",
+                                  "width": 12,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "GERcS",
+                                  "name": "mSpPx3",
+                                  "fill": "#E6D4B4",
+                                  "width": 12,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "EgJnM",
+                                  "name": "mSpPx4",
+                                  "fill": "#A8834E",
+                                  "width": 12,
+                                  "height": 12
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JaSwq",
+                      "name": "mSpCta",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "#C4A06A",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SvVDU",
+                          "name": "mSpCtaText",
+                          "fill": "#1A1917",
+                          "content": "展开游玩",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 18,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "sstjg",
+                      "name": "mSpHint",
+                      "fill": "#8D97A8",
+                      "content": "点击进入 Expanded",
+                      "fontFamily": "DotGothic16",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "dIU0t",
+                  "name": "Mobile Game Start",
+                  "clip": true,
+                  "width": 390,
+                  "height": 844,
+                  "fill": "#151A22",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 14,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "r91c5",
+                      "name": "mgHeader",
+                      "width": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "AUBdC",
+                          "name": "mgTitle",
+                          "fill": "#E6D4B4",
+                          "content": "八比特风水师",
+                          "lineHeight": 1.15,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 28,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "reR2A",
+                      "name": "mgHero",
+                      "width": "fill_container",
+                      "height": 300,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "./resources/images/home/home-v1.0.png",
+                        "mode": "fill"
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "5PqRT",
+                      "name": "mgIntro",
+                      "width": "fill_container",
+                      "fill": "#202736",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 14,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nhyaV",
+                          "name": "mgIntroTitle",
+                          "fill": "#D0D6E1",
+                          "content": "游戏介绍",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "utxFy",
+                          "fill": "#AAB3C2",
+                          "content": "在像素房间里整理混乱、修复气场，从阴郁冷调到暖阳入屋。",
+                          "lineHeight": 1.5,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "NpF9g",
+                          "name": "mgHowToPlay",
+                          "fill": "#D0D6E1",
+                          "content": "玩法说明",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "oJ1kh",
+                          "name": "mgStep1",
+                          "width": "fill_container",
+                          "height": 36,
+                          "fill": "#202736",
+                          "padding": [
+                            0,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "step1Text",
+                              "fill": "#D0D6E1",
+                              "content": "① 拖动罗盘扫描房间，找出煞气点",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "aJwMU",
+                          "name": "mgStep2",
+                          "width": "fill_container",
+                          "height": 36,
+                          "fill": "#202736",
+                          "padding": [
+                            0,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "step2Text",
+                              "fill": "#D0D6E1",
+                              "content": "② 选择正确的风水道具化解煞气",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JrZBz",
+                          "name": "mgStep3",
+                          "width": "fill_container",
+                          "height": 36,
+                          "fill": "#3F3529",
+                          "padding": [
+                            0,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Np1ad",
+                              "fill": "#E4CEAB",
+                              "content": "③ 全部净化后触发暖色 Palette Swap",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bq8Js",
+                      "name": "mgBottom",
+                      "width": "fill_container",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "nekEz",
+                          "name": "mgLevelBtn",
+                          "width": "fill_container",
+                          "height": 58,
+                          "fill": "#C4A06A",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "GHJqN",
+                              "fill": "#1A1917",
+                              "content": "选择关卡",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "SLhk2",
+                          "name": "mgGuideBtn",
+                          "width": "fill_container",
+                          "height": 58,
+                          "fill": "#202736",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "l22CN",
+                              "fill": "#D0D6E1",
+                              "content": "玩法演示",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "tYlEs",
+                      "name": "mgFoot",
+                      "fill": "#8D97A8",
+                      "content": "Lo-Fi Chill · 8-Bit SFX · Cozy Puzzle",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mLvl1",
+                  "name": "Mobile Level Select",
+                  "clip": true,
+                  "width": 390,
+                  "height": 844,
+                  "fill": "#151A22",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 14,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mLvlHeader",
+                      "name": "mLvlHeader",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mLvlTitle",
+                          "fill": "#E6D4B4",
+                          "content": "选择关卡",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 24,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mLvlBack",
+                          "fill": "#202736",
+                          "padding": [
+                            6,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mLvlBackText",
+                              "fill": "#D0D6E1",
+                              "content": "← 返回",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mLvl1Row",
+                      "name": "Level 1",
+                      "width": "fill_container",
+                      "height": 120,
+                      "fill": "#202736",
+                      "gap": 12,
+                      "padding": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mLvl1Thumb",
+                          "width": 96,
+                          "height": 96,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./resources/images/level1/room-cold-v1.0.png",
+                            "mode": "fill"
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mLvl1Info",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mLvl1Name",
+                              "fill": "#E6D4B4",
+                              "content": "Level 1: 开发者的地牢",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mLvl1Desc",
+                              "fill": "#AAB3C2",
+                              "content": "雨夜单身公寓 · 4 煞气点",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "mLvl1Progress",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "mLvl1P1",
+                                  "fill": "#C4A06A",
+                                  "width": 16,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "mLvl1P2",
+                                  "fill": "#C4A06A",
+                                  "width": 16,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "mLvl1P3",
+                                  "fill": "#C4A06A",
+                                  "width": 16,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "mLvl1P4",
+                                  "fill": "#C4A06A",
+                                  "width": 16,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mLvl1Play",
+                          "width": 48,
+                          "height": 48,
+                          "fill": "#C4A06A",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mLvl1PlayIcon",
+                              "fill": "#1A1917",
+                              "content": "▶",
+                              "fontFamily": "Inter",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mLvl2Row",
+                      "name": "Level 2",
+                      "width": "fill_container",
+                      "height": 120,
+                      "fill": "#202736",
+                      "gap": 12,
+                      "padding": 12,
+                      "opacity": 0.6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mLvl2Thumb",
+                          "width": 96,
+                          "height": 96,
+                          "fill": "#616C80"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mLvl2Info",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mLvl2Name",
+                              "fill": "#AAB3C2",
+                              "content": "Level 2: 猫奴的客厅",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mLvl2Desc",
+                              "fill": "#616C80",
+                              "content": "到处是猫爬架，猫咪打架",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mLvl2Lock",
+                          "width": 48,
+                          "height": 48,
+                          "fill": "#3E4C43",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mLvl2LockIcon",
+                              "fill": "#8D97A8",
+                              "content": "🔒",
+                              "fontFamily": "Inter",
+                              "fontSize": 18
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mLvl3Row",
+                      "name": "Level 3",
+                      "width": "fill_container",
+                      "height": 120,
+                      "fill": "#202736",
+                      "gap": 12,
+                      "padding": 12,
+                      "opacity": 0.6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mLvl3Thumb",
+                          "width": 96,
+                          "height": 96,
+                          "fill": "#616C80"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mLvl3Info",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mLvl3Name",
+                              "fill": "#AAB3C2",
+                              "content": "Level 3: ???",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mLvl3Desc",
+                              "fill": "#616C80",
+                              "content": "敬请期待",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mLvl3Lock",
+                          "width": 48,
+                          "height": 48,
+                          "fill": "#3E4C43",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mLvl3LockIcon",
+                              "fill": "#8D97A8",
+                              "content": "🔒",
+                              "fontFamily": "Inter",
+                              "fontSize": 18
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mLvlSpacer",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mLvlFoot",
+                      "fill": "#8D97A8",
+                      "content": "通关解锁下一关卡",
+                      "fontFamily": "DotGothic16",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "7gOKt",
+          "name": "Row / Web",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "zS0Kx",
+              "name": "webLabelRow",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "nJhXG",
+                  "name": "webLabel",
+                  "fill": "#AAB3C2",
+                  "content": "WEB",
+                  "fontFamily": "Press Start 2P",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "rWfHD",
+                  "name": "webNote",
+                  "fill": "#8D97A8",
+                  "content": "目标：沉浸氛围、信息完整、视觉冲击",
+                  "fontFamily": "DotGothic16",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xCOIl",
+              "name": "webCards",
+              "width": "fill_container",
+              "gap": 28,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ricQ1",
+                  "name": "Web Splash",
+                  "clip": true,
+                  "width": 720,
+                  "height": 420,
+                  "fill": "#151A22",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dGIvc",
+                      "name": "wsTop",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "DmK0x",
+                          "name": "wsBadge",
+                          "fill": "#202736",
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "1seZg",
+                              "fill": "#D0D6E1",
+                              "content": "WEB INLINE",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "3SwiT",
+                          "name": "wsStatus",
+                          "fill": "#3E4C43",
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "bvqju",
+                              "fill": "#B8CBBE",
+                              "content": "READY",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "sdRe1",
+                      "name": "wsBody",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "4pWzb",
+                          "name": "wsLeft",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": 12,
+                          "justifyContent": "space_between",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "MR6FC",
+                              "name": "wsTitle",
+                              "fill": "#E6D4B4",
+                              "content": "八比特风水师",
+                              "lineHeight": 1.08,
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 40,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "tXcuR",
+                              "name": "wsSub",
+                              "fill": "#D0D6E1",
+                              "content": "在像素房间里整理混乱、修复气场",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 18,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "lc9u0",
+                              "name": "wsBullet1",
+                              "width": "fill_container",
+                              "height": 34,
+                              "fill": "#202736",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "HU6HV",
+                                  "fill": "#D0D6E1",
+                                  "content": "· 找出煞气点",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 15,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Mjh7X",
+                              "name": "wsBullet2",
+                              "width": "fill_container",
+                              "height": 34,
+                              "fill": "#202736",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "zEnCU",
+                                  "fill": "#D0D6E1",
+                                  "content": "· 拖拽道具净屋",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 15,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "mu3Oc",
+                              "name": "wsBtn",
+                              "width": "fill_container",
+                              "height": 58,
+                              "fill": "#C4A06A",
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "dnm7P",
+                                  "fill": "#1A1917",
+                                  "content": "展开游玩",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 18,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "i8aXE",
+                          "name": "wsRight",
+                          "width": 300,
+                          "height": "fill_container",
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./resources/images/home/home-v1.0.png",
+                            "mode": "fill"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MiNh1",
+                  "name": "Web Game Start",
+                  "clip": true,
+                  "width": 1340,
+                  "height": 760,
+                  "fill": "#151A22",
+                  "gap": 16,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "t9oVD",
+                      "name": "Web Left",
+                      "width": 450,
+                      "height": "fill_container",
+                      "fill": "#151A22",
+                      "layout": "vertical",
+                      "gap": 14,
+                      "padding": 18,
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "19CzI",
+                          "name": "wgTitle",
+                          "fill": "#E6D4B4",
+                          "content": "八比特风水师",
+                          "lineHeight": 1.08,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 52,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "BZ5zh",
+                          "name": "wgSub",
+                          "fill": "#D0D6E1",
+                          "content": "从阴郁冷调到暖阳入屋，\n在像素房间中完成秩序修复。",
+                          "lineHeight": 1.45,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "kS7qn",
+                          "name": "wgIntroPanel",
+                          "width": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "U7taE",
+                              "name": "wgIntroTitle",
+                              "fill": "#D0D6E1",
+                              "content": "游戏介绍",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "wgIntroDesc",
+                              "fill": "#AAB3C2",
+                              "content": "一款等轴视角像素风解谜游戏，通过移动家具、摆放风水摆件，将阴郁的像素房间变成温馨的像素房间。",
+                              "lineHeight": 1.5,
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wgHowPanel",
+                          "width": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wgHowTitle",
+                              "fill": "#D0D6E1",
+                              "content": "玩法说明",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "eWvh4",
+                              "name": "wgQ1",
+                              "width": "fill_container",
+                              "height": 38,
+                              "fill": "#202736",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "NHi48",
+                                  "fill": "#D0D6E1",
+                                  "content": "① 拖动罗盘扫描房间，找出煞气点",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "iuFgf",
+                              "name": "wgQ2",
+                              "width": "fill_container",
+                              "height": 38,
+                              "fill": "#202736",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "mEdCJ",
+                                  "fill": "#D0D6E1",
+                                  "content": "② 选择正确的风水道具化解煞气",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "8EBOd",
+                              "name": "wgQ3",
+                              "width": "fill_container",
+                              "height": 38,
+                              "fill": "#3F3529",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "mBNMz",
+                                  "fill": "#E4CEAB",
+                                  "content": "③ 全部净化后触发暖色 Palette Swap",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qKQSM",
+                          "name": "wgCtaRow",
+                          "width": "fill_container",
+                          "gap": 10,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "DMCs1",
+                              "name": "wgLevelBtn",
+                              "width": "fill_container",
+                              "height": 64,
+                              "fill": "#C4A06A",
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "ClcHG",
+                                  "fill": "#1A1917",
+                                  "content": "选择关卡",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 16,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "uD5Wn",
+                              "name": "wgGuideBtn",
+                              "width": "fill_container",
+                              "height": 64,
+                              "fill": "#202736",
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "SHRhu",
+                                  "fill": "#D0D6E1",
+                                  "content": "玩法演示",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 16,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "kHsLE",
+                          "name": "wgFoot",
+                          "fill": "#8D97A8",
+                          "content": "Lo-Fi · Bloop/Ding · Cozy Isometric Puzzle",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "0cXYM",
+                      "name": "Web Right",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#151A22",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "LkoMw",
+                          "name": "wgIllu",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./resources/images/home/home-v1.0.png",
+                            "mode": "fill"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wLvl1",
+                  "name": "Web Level Select",
+                  "clip": true,
+                  "width": 1340,
+                  "height": 760,
+                  "fill": "#151A22",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "wLvlHeader",
+                      "name": "wLvlHeader",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wLvlTitle",
+                          "fill": "#E6D4B4",
+                          "content": "选择关卡",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 32,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLvlBack",
+                          "fill": "#202736",
+                          "padding": [
+                            8,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wLvlBackText",
+                              "fill": "#D0D6E1",
+                              "content": "← 返回",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wLvl1Row",
+                      "name": "Level 1",
+                      "width": "fill_container",
+                      "height": 160,
+                      "fill": "#202736",
+                      "gap": 16,
+                      "padding": 14,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "wLvl1Thumb",
+                          "width": 200,
+                          "height": 132,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./resources/images/level1/room-cold-v1.0.png",
+                            "mode": "fill"
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLvl1Info",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wLvl1Name",
+                              "fill": "#E6D4B4",
+                              "content": "Level 1: 开发者的地牢",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "wLvl1Desc",
+                              "fill": "#AAB3C2",
+                              "content": "雨夜单身公寓 · 煞气点：镜冲床、横梁压顶、穿堂煞、尖角煞",
+                              "lineHeight": 1.4,
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "wLvl1Progress",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "wLvl1P1",
+                                  "fill": "#C4A06A",
+                                  "width": 24,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "wLvl1P2",
+                                  "fill": "#C4A06A",
+                                  "width": 24,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "wLvl1P3",
+                                  "fill": "#C4A06A",
+                                  "width": 24,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "wLvl1P4",
+                                  "fill": "#C4A06A",
+                                  "width": 24,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "wLvl1PText",
+                                  "fill": "#C4A06A",
+                                  "content": "已完成",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLvl1Play",
+                          "width": 72,
+                          "height": 72,
+                          "fill": "#C4A06A",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wLvl1PlayIcon",
+                              "fill": "#1A1917",
+                              "content": "▶",
+                              "fontFamily": "Inter",
+                              "fontSize": 28,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wLvl2Row",
+                      "name": "Level 2",
+                      "width": "fill_container",
+                      "height": 160,
+                      "fill": "#202736",
+                      "gap": 16,
+                      "padding": 14,
+                      "opacity": 0.6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "wLvl2Thumb",
+                          "width": 200,
+                          "height": 132,
+                          "fill": "#616C80"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLvl2Info",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wLvl2Name",
+                              "fill": "#AAB3C2",
+                              "content": "Level 2: 猫奴的客厅",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "wLvl2Desc",
+                              "fill": "#616C80",
+                              "content": "到处是猫爬架，猫咪打架。煞气点：门冲、味煞",
+                              "lineHeight": 1.4,
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLvl2Lock",
+                          "width": 72,
+                          "height": 72,
+                          "fill": "#3E4C43",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wLvl2LockIcon",
+                              "fill": "#8D97A8",
+                              "content": "🔒",
+                              "fontFamily": "Inter",
+                              "fontSize": 28
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wLvl3Row",
+                      "name": "Level 3",
+                      "width": "fill_container",
+                      "height": 160,
+                      "fill": "#202736",
+                      "gap": 16,
+                      "padding": 14,
+                      "opacity": 0.6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "wLvl3Thumb",
+                          "width": 200,
+                          "height": 132,
+                          "fill": "#616C80"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLvl3Info",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#202736",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wLvl3Name",
+                              "fill": "#AAB3C2",
+                              "content": "Level 3: ???",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "wLvl3Desc",
+                              "fill": "#616C80",
+                              "content": "敬请期待",
+                              "lineHeight": 1.4,
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLvl3Lock",
+                          "width": 72,
+                          "height": 72,
+                          "fill": "#3E4C43",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wLvl3LockIcon",
+                              "fill": "#8D97A8",
+                              "content": "🔒",
+                              "fontFamily": "Inter",
+                              "fontSize": 28
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wLvlSpacer",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wLvlFoot",
+                      "fill": "#8D97A8",
+                      "content": "通关解锁下一关卡",
+                      "fontFamily": "DotGothic16",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "SIABn",
+          "name": "Row / Gameplay Flow",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "XcS5G",
+              "name": "gameLabelRow",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Y1HzB",
+                  "name": "gameLabel",
+                  "fill": "#D0D6E1",
+                  "content": "GAMEPLAY · COMPASS HUNT LOOP",
+                  "fontFamily": "Press Start 2P",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "TaGXy",
+                  "name": "gameNote",
+                  "fill": "#AAB3C2",
+                  "content": "Mobile: 拖动房间图/双指缩放 | Web: 拖动罗盘 → 触发处置弹窗 → 全净化通关",
+                  "fontFamily": "DotGothic16",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "aqZyX",
+              "name": "gameBoards",
+              "width": "fill_container",
+              "gap": 28,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "HkGmS",
+                  "name": "Mobile Gameplay / Modal Trigger",
+                  "clip": true,
+                  "width": 390,
+                  "height": 844,
+                  "fill": "#151A22",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "RPAOP",
+                      "name": "mgTop",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EQZLA",
+                          "name": "mgStage",
+                          "fill": "#D0D6E1",
+                          "content": "STAGE 01",
+                          "fontFamily": "Press Start 2P",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bkbFW",
+                          "name": "mgCountWrap",
+                          "fill": "#202736",
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "I7r7h",
+                              "name": "mgCount",
+                              "fill": "#D0D6E1",
+                              "content": "SHA 1/4",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZPzWE",
+                      "name": "mgScene",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#151A22",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "padding": 12,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "X4E9f",
+                          "name": "mgSceneHint",
+                          "fill": "#D0D6E1",
+                          "content": "DRAG ROOM · PINCH TO ZOOM",
+                          "fontFamily": "Press Start 2P",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Z1UkN",
+                          "name": "mgRoom",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./resources/images/level1/room-cold-v1.0.png",
+                            "mode": "fill"
+                          },
+                          "layout": "vertical",
+                          "gap": 10,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "DOXr4",
+                              "name": "mgCompass",
+                              "width": 104,
+                              "height": 104,
+                              "fill": "#202736",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "ZQl1A",
+                                  "name": "mgNeedle",
+                                  "fill": "#C4A06A",
+                                  "width": 8,
+                                  "height": 38
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Yz6eO",
+                                  "name": "mgCompassLabel",
+                                  "fill": "#E6D4B4",
+                                  "content": "LUO PAN",
+                                  "fontFamily": "Press Start 2P",
+                                  "fontSize": 9,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "SgQ9O",
+                              "name": "mgSpin",
+                              "fill": "#1A1917",
+                              "content": "罗盘旋转中... 发现横梁压顶",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "qwYgI",
+                              "name": "mgModal",
+                              "width": "fill_container",
+                              "fill": "#151A22",
+                              "layout": "vertical",
+                              "gap": 8,
+                              "padding": 10,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "ebF96",
+                                  "name": "mgModalTitle",
+                                  "fill": "#E6D4B4",
+                                  "content": "横梁压顶 - 如何处置？",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "mgModalDesc",
+                                  "fill": "#AAB3C2",
+                                  "content": "粗大的木质横梁横跨在床铺正上方，会给人造成潜意识的压迫感。",
+                                  "lineHeight": 1.4,
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 11,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "DzU9g",
+                                  "name": "mgOpA",
+                                  "width": "fill_container",
+                                  "height": 34,
+                                  "fill": "#202736",
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "Xfaqd",
+                                      "fill": "#D0D6E1",
+                                      "content": "A. 把横梁漆成白色",
+                                      "fontFamily": "DotGothic16",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "V67y1",
+                                  "name": "mgOpB",
+                                  "width": "fill_container",
+                                  "height": 34,
+                                  "fill": "#3F3529",
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "KhcUN",
+                                      "fill": "#E6D4B4",
+                                      "content": "B. 挂葫芦化解（正确）",
+                                      "fontFamily": "DotGothic16",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "A5eZf",
+                                  "name": "mgOpC",
+                                  "width": "fill_container",
+                                  "height": 34,
+                                  "fill": "#202736",
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "XefOH",
+                                      "fill": "#D0D6E1",
+                                      "content": "C. 在床上放抱枕",
+                                      "fontFamily": "DotGothic16",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "6EgMo",
+                                  "name": "mgConfirm",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "fill": "#C4A06A",
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "kbdbQ",
+                                      "fill": "#1A1917",
+                                      "content": "确认处置",
+                                      "fontFamily": "DotGothic16",
+                                      "fontSize": 13,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "xdSal",
+                      "name": "mgTips",
+                      "fill": "#8D97A8",
+                      "content": "目标：净化全部 4 个煞点后切换暖色通关图",
+                      "fontFamily": "DotGothic16",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "z9kHA",
+                  "name": "Web Gameplay / Modal Trigger",
+                  "clip": true,
+                  "width": 1340,
+                  "height": 760,
+                  "fill": "#151A22",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "xWX0I",
+                      "name": "wgTop",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zzpXI",
+                          "name": "wgStage",
+                          "fill": "#D0D6E1",
+                          "content": "THE DEV'S DUNGEON · SHA 2/4",
+                          "fontFamily": "Press Start 2P",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "8HOiG",
+                          "name": "wgTimerWrap",
+                          "fill": "#202736",
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "iVXWV",
+                              "name": "wgTimer",
+                              "fill": "#D0D6E1",
+                              "content": "03:27",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zrqWi",
+                      "name": "wgBody",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "CIzrD",
+                          "name": "wgRoom",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#151A22",
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "tPKvG",
+                              "name": "wgRoomHint",
+                              "fill": "#D0D6E1",
+                              "content": "DRAG COMPASS TO FIND SHA",
+                              "fontFamily": "Press Start 2P",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "tiTcu",
+                              "name": "wgRoomMain",
+                              "width": "fill_container",
+                              "height": "fill_container",
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "./resources/images/level1/room-cold-v1.0.png",
+                                "mode": "fill"
+                              },
+                              "layout": "vertical",
+                              "gap": 12,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "Z84Va",
+                                  "name": "wgCompass",
+                                  "width": 132,
+                                  "height": 132,
+                                  "fill": "#202736",
+                                  "layout": "vertical",
+                                  "gap": 6,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "rectangle",
+                                      "id": "i8fVN",
+                                      "name": "wgNeedle",
+                                      "fill": "#C4A06A",
+                                      "width": 10,
+                                      "height": 50
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "YMPo6",
+                                      "name": "wgCompassText",
+                                      "fill": "#E6D4B4",
+                                      "content": "LUO PAN",
+                                      "fontFamily": "Press Start 2P",
+                                      "fontSize": 10,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "LO4EN",
+                                  "name": "wgSpin",
+                                  "fill": "#1A1917",
+                                  "content": "罗盘高速旋转：此处疑似尖角煞",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pfjKy",
+                          "name": "wgPanel",
+                          "width": 380,
+                          "height": "fill_container",
+                          "fill": "#151A22",
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nBMoZ",
+                              "name": "wgPanelTitle",
+                              "fill": "#E6D4B4",
+                              "content": "尖角煞处置",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 18,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Y0rXJ",
+                              "name": "wgPanelDesc",
+                              "fill": "#D0D6E1",
+                              "content": "三角形书架的锐利尖角直冲电脑椅座位，会造成精神紧张和注意力分散。",
+                              "lineHeight": 1.4,
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "uk3AX",
+                              "name": "wgChoiceA",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "#202736",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "6vGPs",
+                                  "fill": "#D0D6E1",
+                                  "content": "A. 将书架锯平",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "CgsCq",
+                              "name": "wgChoiceB",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "#3F3529",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Hh3RO",
+                                  "fill": "#E6D4B4",
+                                  "content": "B. 放置阔叶绿植（正确）",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Pkpqg",
+                              "name": "wgChoiceC",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "#202736",
+                              "padding": [
+                                0,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "lI033",
+                                  "fill": "#D0D6E1",
+                                  "content": "C. 贴上防撞贴纸",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "u1486",
+                              "name": "wgConfirm",
+                              "width": "fill_container",
+                              "height": 46,
+                              "fill": "#C4A06A",
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "cZzLo",
+                                  "fill": "#1A1917",
+                                  "content": "确认处置",
+                                  "fontFamily": "DotGothic16",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "JEikP",
+                              "name": "wgNextHint",
+                              "fill": "#8D97A8",
+                              "content": "全部净化后：切换暖色通关图 → 下一关",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uELMT",
+              "name": "flowStripWrap",
+              "width": "fill_container",
+              "fill": "#151A22",
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "W5nxw",
+                  "name": "flowTitle",
+                  "fill": "#D0D6E1",
+                  "content": "4-STEP FLOW",
+                  "fontFamily": "Press Start 2P",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "EAhF4",
+                  "name": "flowCards",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tTe76",
+                      "name": "flow1",
+                      "width": "fill_container",
+                      "height": 152,
+                      "fill": "#202736",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 10,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "gcOQ9",
+                          "name": "flow1Title",
+                          "fill": "#D0D6E1",
+                          "content": "① 扫描房间",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "S5pLi",
+                          "name": "flow1Body",
+                          "fill": "#AAB3C2",
+                          "content": "拖动罗盘巡检整张房间图\n靠近煞点时转速提升。",
+                          "lineHeight": 1.4,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "vLCyp",
+                          "name": "flow1Bar",
+                          "fill": "#616C80",
+                          "width": "fill_container",
+                          "height": 10
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r06NA",
+                      "name": "flow2",
+                      "width": "fill_container",
+                      "height": 152,
+                      "fill": "#202736",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 10,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uRJ3U",
+                          "name": "flow2Title",
+                          "fill": "#D0D6E1",
+                          "content": "② 触发事件",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dtqWb",
+                          "name": "flow2Body",
+                          "fill": "#AAB3C2",
+                          "content": "进入煞点范围后弹出事件\n展示问题场景与背景提示。",
+                          "lineHeight": 1.4,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "yQ5mn",
+                          "name": "flow2Bar",
+                          "fill": "#616C80",
+                          "width": "fill_container",
+                          "height": 10
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BAQor",
+                      "name": "flow3",
+                      "width": "fill_container",
+                      "height": 152,
+                      "fill": "#3F3529",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 10,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "LuYs7",
+                          "name": "flow3Title",
+                          "fill": "#E6D4B4",
+                          "content": "③ 选择处置",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "0ai7e",
+                          "name": "flow3Body",
+                          "fill": "#E4CEAB",
+                          "content": "三选一决策（含迷惑项）\n正确处置后净化该煞点。",
+                          "lineHeight": 1.4,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "8ymv0",
+                          "name": "flow3Bar",
+                          "fill": "#A8834E",
+                          "width": "fill_container",
+                          "height": 10
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ms3Bf",
+                      "name": "flow4",
+                      "width": "fill_container",
+                      "height": 152,
+                      "fill": "#202736",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 10,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "98w0V",
+                          "name": "flow4Title",
+                          "fill": "#D0D6E1",
+                          "content": "④ 通关切换",
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ED4ep",
+                          "name": "flow4Body",
+                          "fill": "#AAB3C2",
+                          "content": "全部净化后触发暖色通关图\n出现“下一关”按钮。",
+                          "lineHeight": 1.4,
+                          "fontFamily": "DotGothic16",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "onmxc",
+                          "name": "flow4Cta",
+                          "width": "fill_container",
+                          "height": 28,
+                          "fill": "#C4A06A",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZKjhH",
+                              "fill": "#1A1917",
+                              "content": "下一关",
+                              "fontFamily": "DotGothic16",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
