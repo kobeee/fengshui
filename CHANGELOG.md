@@ -1,3 +1,43 @@
+## [2026-02-22] 关卡图片标记去除
+
+### 变更内容
+
+**问题**：部分关卡图片上有 AI 生成时意外留下的标记（字母 A/B/C/D/E，以及 "CRITICAL: MIRROR SHA" 等英文单词）。
+
+**解决方案**：使用 Nano Banana Pro (gemini-3-pro-image-preview) 的 image-to-image 能力去除标记，保持房间结构和像素风格不变。
+
+**处理的图片**：
+
+| 关卡 | 图片 | 状态 |
+|-----|------|-----|
+| Level 4 | room-cold.png, room-warm.png | ✅ |
+| Level 6 | room-cold.png, room-warm.png | ✅ |
+| Level 12 | room-cold.png, room-warm.png | ✅ |
+| Level 15 | room-cold.png | ✅ |
+| Level 17 | room-cold.png | ✅ |
+| Level 18 | room-cold.png, room-warm.png | ✅ |
+| Level 19 | room-cold.png, room-warm.png | ✅ |
+| Level 20 | room-cold.png | ✅ |
+
+**工具**：`tools/img-gen/src/remove-labels.ts`
+
+### 影响范围
+- `resources/images/level4/room-cold.png`
+- `resources/images/level4/room-warm.png`
+- `resources/images/level6/room-cold.png`
+- `resources/images/level6/room-warm.png`
+- `resources/images/level12/room-cold.png`
+- `resources/images/level12/room-warm.png`
+- `resources/images/level15/room-cold.png`
+- `resources/images/level17/room-cold.png`
+- `resources/images/level18/room-cold.png`
+- `resources/images/level18/room-warm.png`
+- `resources/images/level19/room-cold.png`
+- `resources/images/level19/room-warm.png`
+- `resources/images/level20/room-cold.png`
+
+---
+
 ## [2026-02-22] 关卡风水问题全面修复（暖色图煞气解决）
 
 ### 变更内容
