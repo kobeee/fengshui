@@ -1,0 +1,39 @@
+{
+  "level": "level-17",
+  "status": "completed",
+  "startTime": "2026-02-22T11:45:41.121Z",
+  "steps": {
+    "room_cold": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:46:04.076Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level17/room-cold.png"
+    },
+    "analysis": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:46:33.764Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level17/analysis/hotspots.json"
+    },
+    "items": {
+      "status": "completed",
+      "completed": [
+        "gourd",
+        "crystal-ball"
+      ],
+      "pending": [
+        "salt-lamp",
+        "plant-broad"
+      ]
+    },
+    "room_warm": {
+      "status": "completed",
+      "timestamp": "2026-02-22T15:20:06.119Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level17/room-warm.png"
+    },
+    "docs_update": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:47:33.198Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/docs/design/game/level17/level-design.md"
+    }
+  },
+  "endTime": "2026-02-22T15:20:06.119Z"
+}

@@ -1,167 +1,92 @@
-# AI 分析提示词 - 煞气点识别 (v1.0)
+# Level 1 - AI 分析提示词 (v2.0)
 
 ## 基本信息
 
 | 属性 | 值 |
 |-----|-----|
-| **用途** | 从像素房间图中提取煞气点数据 |
-| **输入** | 冷色底图 (PNG) |
+| **用途** | 分析冷色底图，生成煞点 JSON 数据 |
+| **模型建议** | Gemini 2.0 Flash (分析) |
+| **输入** | room-cold.png |
 | **输出** | hotspots.json |
-| **模型建议** | GPT-4 Vision / Gemini Pro Vision / Claude 3.5 Sonnet |
 
 ---
 
-## 完整提示词
+## 系统提示词
 
 ```text
-你是一个风水解谜游戏关卡分析师，负责从等轴像素房间图中识别和提取风水煞气问题数据。
+你是一个专业的风水分析师，专门分析房间图片中的煞气点。你的任务仔细观察图片，识别所有可能的煞气，并生成结构化的 JSON 数据。
 
-# Task
-分析提供的等轴像素房间图，识别所有风水煞气问题，并输出结构化的 JSON 数据。
+## 风水知识库
 
-# 煞气类型定义
+### 常见煞气类型
 
-| 类型 ID | 中文名称 | 识别特征 | 正确解决方式 |
-|--------|---------|---------|------------|
-| `mirror_sha` | 镜冲床 | 镜子正对床铺 | 旋转镜子方向（无需道具） |
-| `sharp_corner_sha` | 尖角煞 | 尖锐家具角对着座位/床 | 放置阔叶绿植 |
-| `door_clash` | 门冲 | 大门正对阳台门/后门 | 放置屏风 |
-| `beam_sha` | 横梁压顶 | 床/书桌上方有横梁 | 挂葫芦 |
-| `wealth_corner_sha` | 财位问题 | 脏物/垃圾桶在财位 | 移开+放金蟾 |
+| 煞气类型 | 识别特征 | 解决方案 |
+|---------|---------|---------|
+| 横梁压顶 | 横梁在床/沙发/办公桌上方 | 挂葫芦 |
+| 尖角煞 | 尖锐物体对着人 | 放阔叶绿植 |
+| 门冲 | 门对着门/窗户/床 | 放屏风 |
+| 镜冲床 | 镜子对着床 | 旋转镜子 |
 
-# 关卡背景
-- 关卡名称: 开发者的地牢 (Dev Dungeon)
-- 场景: 杂乱的单身公寓，深夜，雨夜
-- 预期煞气数量: 4 个
+### 解决方案选项模板
 
-# 坐标系统说明
-- `position.x` 和 `position.y`: 使用 0-1 范围的百分比坐标
-- 原点 (0, 0) 在图片左上角
-- x 轴向右递增，y 轴向下递增
-- `radius`: 触发范围半径，同样使用百分比（建议 0.06-0.12）
+每个煞气点需要提供 3 个选项：
+- 1 个正确解法（使用正确道具或操作）
+- 2 个错误解法（不符合风水原理）
 
-# 道具 ID 对照
-- `gourd` - 葫芦（化解横梁压顶）
-- `plant-broad` - 阔叶绿植（化解尖角煞）
-- `screen` - 屏风（化解门冲）
-- `money-toad` - 金蟾（财位问题）
-- `bagua-mirror` - 八卦镜
-- `lucky-cat` - 招财猫
+## 输出格式
 
-# 约束条件
-1. 每个煞气点必须有且仅有 3 个选项，其中 1 个 correct 为 true
-2. `correctItem` 字段：
-   - 如果不需要道具（如旋转镜子），填 `null`
-   - 如果需要道具，填写道具 ID（如 `"gourd"`, `"plant-broad"`, `"screen"`）
-3. 位置坐标必须基于图片实际视觉特征估算
-4. 描述文字应该简洁易懂，适合游戏玩家阅读
-5. 确保识别到预期的 4 个煞气点
+请生成以下 JSON 结构：
 
-# Output Format (JSON)
-
-请严格按照以下格式输出 JSON，不要添加任何其他文字说明：
-
+```json
 {
   "levelId": "level-1",
   "levelName": "开发者的地牢",
   "shaPoints": [
     {
       "id": "sha-001",
-      "type": "mirror_sha",
-      "position": {
-        "x": 0.35,
-        "y": 0.42
-      },
-      "radius": 0.08,
-      "title": "镜冲床",
-      "description": "镜子正对床铺，影响睡眠质量。",
-      "correctItem": null,
+      "type": "beam_sha",
+      "position": { "x": 0.50, "y": 0.18 },
+      "radius": 0.10,
+      "title": "横梁压顶",
+      "description": "描述这个煞气的具体问题",
+      "correctItem": "gourd",
       "options": [
-        {
-          "id": "opt-001-a",
-          "label": "放置屏风遮挡",
-          "correct": false
-        },
-        {
-          "id": "opt-001-b",
-          "label": "旋转镜子方向",
-          "correct": true
-        },
-        {
-          "id": "opt-001-c",
-          "label": "移动床的位置",
-          "correct": false
-        }
+        { "id": "opt-001-a", "label": "正确解法描述", "correct": true },
+        { "id": "opt-001-b", "label": "错误解法描述", "correct": false },
+        { "id": "opt-001-c", "label": "错误解法描述", "correct": false }
       ]
     }
   ]
 }
+```
 
-请分析图片并输出 JSON 数据：
+## 分析要求
+
+1. 仔细观察图片中的所有元素
+2. 识别所有可能的煞气点
+3. 为每个煞气点指定合理的位置（使用归一化坐标 0-1）
+4. 提供符合风水原理的解决方案
+5. 输出完整的 JSON 数据
+
+注意：
+- position.x 和 position.y 使用归一化坐标（0-1）
+- radius 是煞气点半径（建议 0.07-0.10）
+- 如果解决方案不需要道具，correctItem 为 null
 ```
 
 ---
 
-## 结果校验规则
+## 用户提示词
 
-```typescript
-type ShaPoint = {
-  id: string;
-  type: ShaType;
-  position: { x: number; y: number };
-  radius: number;
-  title: string;
-  description: string;
-  correctItem: string | null;
-  options: Array<{
-    id: string;
-    label: string;
-    correct: boolean;
-  }>;
-};
-
-type AnalysisResult = {
-  levelId: string;
-  levelName: string;
-  shaPoints: ShaPoint[];
-};
-
-function validateAnalysis(data: unknown): data is AnalysisResult {
-  // 1. 检查必要字段
-  if (!data.levelId || !data.levelName || !Array.isArray(data.shaPoints)) {
-    return false;
-  }
-
-  // 2. 检查每个 shaPoint
-  for (const point of data.shaPoints) {
-    // 每个 shaPoint 必须有且仅有 1 个 correct option
-    const correctCount = point.options.filter(o => o.correct).length;
-    if (correctCount !== 1) return false;
-
-    // 每个选项必须有 3 个
-    if (point.options.length !== 3) return false;
-
-    // position 必须在 0-1 范围
-    if (point.position.x < 0 || point.position.x > 1) return false;
-    if (point.position.y < 0 || point.position.y > 1) return false;
-
-    // radius 必须合理
-    if (point.radius < 0.01 || point.radius > 0.3) return false;
-  }
-
-  return true;
-}
 ```
+请分析这张图片，识别所有风水煞气点，并生成 hotspots.json 数据。
 
----
+关卡：Level 1 - 开发者的地牢
+背景：杂乱的单身公寓，深夜，雨夜
 
-## 使用流程
-
-1. 生成冷色底图 (`room-cold.png`)
-2. 调用 VLM API，传入图片和上面的完整提示词
-3. 解析返回的 JSON
-4. 运行校验规则
-5. 保存到 `resources/images/level1/hotspots.json`
+已知煞气点：
+1. 横梁压顶 - 粗大的木质横梁横跨在床铺正上方
+```
 
 ---
 
@@ -169,4 +94,4 @@ function validateAnalysis(data: unknown): data is AnalysisResult {
 
 | 版本 | 日期 | 变更说明 |
 |-----|------|---------|
-| v1.0 | 2026-02-20 | 初版分析提示词 |
+| v2.0 | 2026-02-22 | 重构为单煞气点教程关 |

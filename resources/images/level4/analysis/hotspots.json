@@ -1,0 +1,64 @@
+{
+  "levelId": "level-cat-room-01",
+  "levelName": "猫奴的客厅",
+  "shaPoints": [
+    {
+      "id": "sha-cat-01",
+      "type": "door_clash",
+      "position": {
+        "x": 0.2,
+        "y": 0.35
+      },
+      "radius": 0.12,
+      "title": "穿堂煞",
+      "description": "入户大门(A)与阳台门(B)处于一直线上，气流直进直出，不仅难以聚财，也不利于藏风聚气。",
+      "correctItem": "screen",
+      "options": [
+        {
+          "id": "opt-01-a",
+          "label": "在大门处设置屏风",
+          "correct": true
+        },
+        {
+          "id": "opt-01-b",
+          "label": "在门口放置猫抓板",
+          "correct": false
+        },
+        {
+          "id": "opt-01-c",
+          "label": "阳台门常年关闭",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-cat-02",
+      "type": "smell_sha",
+      "position": {
+        "x": 0.68,
+        "y": 0.52
+      },
+      "radius": 0.1,
+      "title": "味煞",
+      "description": "猫砂盆（视同秽气源）直接放置在客厅活动区，且无遮挡，异味扩散影响客厅气场。",
+      "correctItem": "curtain",
+      "options": [
+        {
+          "id": "opt-02-a",
+          "label": "加装帘子或隔断遮挡",
+          "correct": true
+        },
+        {
+          "id": "opt-02-b",
+          "label": "多放几个除臭剂",
+          "correct": false
+        },
+        {
+          "id": "opt-02-c",
+          "label": "打开窗户通风",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

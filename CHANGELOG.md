@@ -1,3 +1,695 @@
+## [2026-02-22] 关卡风水问题全面修复（暖色图煞气解决）
+
+### 变更内容
+
+**修复范围**：根据 `docs/design/fix/level-fengshui-issues-v1.0.md` 方案，修复所有问题关卡的暖色图，确保每个煞气都有对应的解决方案。
+
+**修复关卡清单**：
+
+| 关卡 | 问题 | 修复方案 | 状态 |
+|-----|------|---------|------|
+| Level 3 | 尖角煞描述不够精确 | 更新提示词，明确绿植位置 | ✅ |
+| Level 4 | 味煞（猫砂盆）未遮挡 | 添加门帘遮挡猫砂盆区域 | ✅ |
+| Level 7 | 镜子未遮挡、hotspots.json 不准确 | 镜子用布帘完全遮挡 + 重新分析 | ✅ |
+| Level 11 | 灶台外露未解决 | 屏风完全遮挡灶台视线 | ✅ |
+| Level 13 | 葫芦位置不对、门冲未解决、财位有杂物 | 精确位置描述 + 财位清理 | ✅ |
+| Level 15 | 5 个煞气需要明确解决方案 | 葫芦+绿植+盐灯+门帘+窗帘 | ✅ |
+| Level 16 | 5 个煞气需要明确解决方案 | 金蟾+盐灯+绿植+窗帘+门帘 | ✅ |
+| Level 17 | 镜子仍然对着床 | 布帘完全遮挡镜子 | ✅ |
+| Level 18 | 5 个煞气需要验证解决 | 石敢当+山海镇+貔貅+屏风+绿植 | ✅ |
+| Level 19 | 4 个煞气只解决 1 个 | 龙龟+葫芦+财位清理+门帘 | ✅ |
+
+**提示词优化要点**：
+
+1. **镜子遮挡专用模板**：
+   ```
+   - The LARGE WALL MIRROR facing the bed MUST be COMPLETELY COVERED
+   - A thick DECORATIVE FABRIC CURTAIN is hung over the mirror surface
+   - The mirror surface should NOT be visible at all
+   ```
+
+2. **灶台遮挡专用模板**：
+   ```
+   - A wooden folding SCREEN is placed BETWEEN the kitchen stove and living area
+   - The screen completely blocks the direct line of sight to the stove
+   ```
+
+3. **门帘遮挡专用模板**：
+   ```
+   - A FABRIC CURTAIN is HUNG on the door frame
+   - The curtain covers the door opening completely
+   ```
+
+**工具修复**：
+- 安装 `undici` 支持 Node.js fetch 代理
+- 配置全局代理 `http://127.0.0.1:7890`
+- **重要**：始终使用 `gemini-3-pro-image-preview` (Nano Banana Pro) 模型生成图片，切勿更改
+
+### 文件变更
+- `docs/design/game/level3/prompts/room-warm-v1.0.md` - 优化
+- `docs/design/game/level4/prompts/room-warm-v1.0.md` - 优化（添加门帘）
+- `docs/design/game/level7/prompts/room-warm-v1.0.md` - 优化（镜子遮挡）
+- `docs/design/game/level11/prompts/room-warm-v1.0.md` - 优化（灶台遮挡）
+- `docs/design/game/level13/prompts/room-warm-v1.0.md` - 优化（精确位置）
+- `docs/design/game/level15/prompts/room-warm-v1.0.md` - 优化（5 个煞气）
+- `docs/design/game/level16/prompts/room-warm-v1.0.md` - 优化（5 个煞气）
+- `docs/design/game/level17/prompts/room-warm-v1.0.md` - 优化（镜子遮挡）
+- `docs/design/game/level18/prompts/room-warm-v1.0.md` - 优化（5 个煞气）
+- `docs/design/game/level19/prompts/room-warm-v1.0.md` - 优化（4 个煞气）
+- `resources/images/level3/room-warm.png` - 重新生成
+- `resources/images/level4/room-warm.png` - 重新生成
+- `resources/images/level7/room-warm.png` - 重新生成
+- `resources/images/level7/analysis/hotspots.json` - 重新分析
+- `resources/images/level11/room-warm.png` - 重新生成
+- `resources/images/level13/room-warm.png` - 重新生成
+- `resources/images/level15/room-warm.png` - 重新生成
+- `resources/images/level16/room-warm.png` - 重新生成
+- `resources/images/level17/room-warm.png` - 重新生成
+- `resources/images/level18/room-warm.png` - 重新生成
+- `resources/images/level19/room-warm.png` - 重新生成
+- `tools/img-gen/src/gemini-client.ts` - 添加代理支持 + 更新模型名称
+
+---
+
+## [2026-02-22] 关卡图片重新生成（房间尺寸递进体系 + Level 3 煞气类型修正）
+
+### 变更内容
+
+**重新生成范围**：
+- Level 3：煞气类型从 `beam_sha` 改为 `sharp_corner_sha`（尖角煞）
+- Level 7-20：宽高比从 16:9 更新为递进体系
+
+**房间尺寸递进体系验证**：
+
+| 关卡范围 | 目标宽高比 | 实际尺寸 | 实际宽高比 | 状态 |
+|---------|----------|---------|----------|-----|
+| Level 1-6 | 16:9 | 1376×768 | 1.79:1 | ✅ |
+| Level 7-10 | 2:1 | 1456×720 | 2.02:1 | ✅ |
+| Level 11-15 | 2:1 | 1456×720 | 2.02:1 | ✅ |
+| Level 16-20 | 2.5:1 | 1632×656 | 2.48:1 | ✅ |
+
+**视觉递进效果**：
+- 图片宽度从 1376px → 1456px → 1632px 递增
+- 玩家可明显感受房间从小到大的视觉变化
+- 煞气点越多，房间越大，观察难度越高
+
+**新增道具提示词**（11 个）：
+- `salt-lamp` - 盐灯（化解阴煞）
+- `copper-gourd` - 铜葫芦（化解电线煞）
+- `money-toad` - 金蟾（财位摆件）
+- `lucky-cat` - 招财猫（财位摆件）
+- `bagua-mirror` - 八卦镜（化解壁刀煞）
+- `shan-hai-zhen` - 山海镇（化解天斩煞）
+- `stone-tablet` - 石敢当（化解路冲煞）
+- `pi-xiu` - 貔貅（招财瑞兽）
+- `crystal-ball` - 水晶球（化解楼梯煞）
+
+**修复**：
+- Level 3 分析提示词更新为 `sharp_corner_sha`（尖角煞）
+- Level 10 重新生成，宽高比从 16:9 修正为 2:1
+
+### 文件变更
+- `resources/images/level3/` - 重新生成（尖角煞场景）
+- `resources/images/level7-20/` - 重新生成（新宽高比）
+- `resources/images/shared/items/` - 新增 9 个道具 PNG
+- `docs/design/game/level1/prompts/items/` - 新增 9 个道具提示词
+- `docs/design/game/level3/analysis/sha-analysis-v1.0.md` - 更新为尖角煞
+
+---
+
+## [2026-02-22] 修复 Mobile/Desktop 切换一次后卡死（Pixi 重建与 Canvas 清理问题）
+
+### 变更内容
+- 修复 `GameStage` 在尺寸变化时频繁销毁重建 Pixi 实例的问题：初始化改为仅在 `isMobile/coldImage/warmImage` 变化时触发，`width/height` 变化仅执行 `renderer.resize`。
+- 修复 `app.destroy(true)` 误删 React 管理的 `<canvas>`：改为 `app.destroy(undefined, true)`，仅销毁 Pixi 资源，不移除 DOM 视图。
+- 补齐切换模式时的事件清理：显式移除 `pointerdown/pointermove/pointerup/pointerupoutside` 与 `wheel` 监听，避免切换后残留监听叠加导致卡死。
+- 减少 `GameplayPage` 的容器尺寸无效状态更新：仅当 `width/height` 实际变化时才更新 `containerSize`，降低切换过程重渲染压力。
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+- `CHANGELOG.md`
+
+---
+
+## [2026-02-22] GameStage Mobile/Desktop 切换崩溃问题修复
+
+### 变更内容
+
+**问题描述**：
+- 在浏览器运行游戏时，从 mobile 切换到 desktop 或反向切换时程序崩溃
+- 报错位置：`GameStage.tsx:452 Uncaught` + `GameStage.tsx:331 [GameStage] Cleanup`
+- 整个页面卡死，必须刷新网页
+
+**根本原因**：
+- 当 `isMobile` 状态改变时，GameStage 的多个 useEffect 都要执行 cleanup
+- React 不保证 cleanup 的执行顺序，导致不同 effect 之间状态不一致
+- 动画 ticker 可能在 PixiJS app 被 destroy 后还在尝试运行
+- 多个 useEffect 之间对 `appRef.current` 的访问产生竞态条件
+
+**修复方案**：
+
+1. **使用 key 属性强制重新挂载**（GameplayPage.tsx）：
+   ```jsx
+   <GameStage key={`${currentLevel.id}-${isMobile}`} ... />
+   ```
+   - 当 `isMobile` 变化时，React 将 GameStage 视为全新组件
+   - 旧组件的所有 useEffect cleanup 按确定顺序执行（先子后父）
+   - 新组件从头开始初始化，完全避免状态复用问题
+
+2. **加强 cleanup 逻辑**（GameStage.tsx）：
+   - 在 destroy 之前先调用 `app.ticker.stop()` 停止所有动画
+   - 改为 `app.destroy(true)` 完全清理资源（移除所有事件监听器和子节点）
+   - 添加更详细的日志便于排查
+
+**为什么其他页面没问题**：
+- SplashPage、GameStartPage、LevelSelectPage 都是纯 React UI，没有复杂的 Canvas 状态
+- 只需要 CSS 重新渲染，不需要销毁/重建 WebGL 上下文
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx` - 添加 key 属性
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx` - 加强 cleanup 逻辑
+
+---
+
+
+### 变更内容
+
+**问题发现**：所有关卡图片尺寸相同（1376×768），无论煞气点数量。Level 1（1个煞气点）和 Level 20（7个煞气点）房间大小一样，缺少难度递进的视觉反馈。
+
+**解决方案**：设计房间尺寸递进体系，通过图片宽高比和空间描述递进，让玩家感受到从小房间到大空间的视觉变化。
+
+### 房间尺寸分级
+
+| 尺寸等级 | 宽高比 | 图片尺寸 | 可视面积 | 适用关卡 |
+|---------|-------|---------|---------|---------|
+| **COMPACT** | 16:9 | 1376×768 | 15-30m² | Level 1-6 |
+| **MEDIUM** | 2:1 | 1536×768 | 35-50m² | Level 7-10 |
+| **LARGE** | 2:1 | 1600×800 | 55-80m² | Level 11-15 |
+| **EXPANSIVE** | 2.5:1 | 1920×768 | 90-150m² | Level 16-20 |
+
+### 提示词更新（v3.0 → v4.0）
+
+**所有 40 个提示词文件已更新**：
+
+| 文件类型 | 数量 | 变更内容 |
+|---------|------|---------|
+| room-cold-v1.0.md | 20 个 | 新增 ROOM SCALE + SPATIAL COMPLEXITY 维度 |
+| room-warm-v1.0.md | 20 个 | 宽高比同步更新 |
+
+**宽高比变更**：
+
+| 关卡范围 | room-cold | room-warm | 空间描述 |
+|---------|----------|----------|---------|
+| Level 1-6 | 16:9（保持） | 16:9（保持） | 紧凑单间，所有家具近距离可见 |
+| Level 7-10 | 16:9 → **2:1** | 16:9 → **2:1** | 明显分区，需要扫视更多区域 |
+| Level 11-15 | 16:9 → **2:1** | 16:9 → **2:1** | 多功能区域，煞气点分布在不同区域 |
+| Level 16-20 | 16:9 → **2.5:1** | 16:9 → **2.5:1** | 超大空间，多楼层/多区域/外部煞气 |
+
+### 视觉递进效果
+
+- 图片宽度从 1376px 增加到 1920px（增加 40%）
+- 玩家将明显感受到房间从小到大的变化
+- 煞气点越多，房间越大，观察难度越高
+
+### 文件变更
+
+- `docs/design/game/level1-20/prompts/room-cold-v1.0.md` - 20 个文件全部升级为 v4.0
+- `docs/design/game/level1-20/prompts/room-warm-v1.0.md` - 20 个文件宽高比同步更新
+- `docs/design/game/levels-master-plan.md` - 新增"二、房间尺寸递进体系"章节
+- `tools/img-gen/src/prompts.ts` - 新增 `extractAspectRatio()` 函数
+- `tools/img-gen/src/pipeline.ts` - 从提示词文件解析宽高比
+- `tools/img-gen/src/types.ts` - 添加 2:1 和 2.5:1 宽高比类型
+
+---
+
+## [2026-02-22] Level 1-20 关卡图片全部生成完成
+
+### 变更内容
+
+**使用 img-gen 工具完成所有 20 个关卡的图片资产生成**：
+
+| 资源类型 | 数量 | 状态 |
+|---------|------|------|
+| 冷色底图 (room-cold.png) | 20/20 | ✅ 全部完成 |
+| 暖色终图 (room-warm.png) | 20/20 | ✅ 全部完成 |
+| AI 分析 (hotspots.json) | 20/20 | ✅ 全部完成 |
+| 共享道具 | 5 个 | ✅ 全部完成 |
+| **总文件数** | **66** | ✅ |
+
+**生成关卡列表**：
+- Level 1-3: 入门级教程关（横梁压顶、镜冲床、尖角煞）
+- Level 4-6: 初级关卡（门冲、味煞、背门煞）
+- Level 7-10: 中级关卡（新婚房、厨房、阁楼、老人房）
+- Level 11-15: 进阶关卡（Loft、工位、办公室、儿童房、工作室）
+- Level 16-20: 大师关卡（瑜伽室、复式、别墅、高管办公室、终极挑战）
+
+**生成的道具资源**（resources/images/shared/items/）：
+- `gourd.png` - 葫芦（化解横梁压顶）
+- `screen.png` - 屏风（化解门冲）
+- `plant-broad.png` - 阔叶绿植（化解尖角煞）
+- `curtain.png` - 门帘（化解味煞/门冲）- 新增
+- `dragon-turtle.png` - 龙龟（化解背门煞）- 新增
+
+**img-gen 工具修复**：
+1. **prompts.ts** - 修复分析提示词加载逻辑，支持多种格式（系统/用户分区格式和单一完整提示词格式）
+2. **prompts.ts** - 修复正则表达式，支持连字符道具ID（如 `plant-broad`、`dragon-turtle`）
+3. **pipeline.ts** - 修复文档更新步骤，适配 AI 返回的不同字段名（`sha_qi_points` vs `shaPoints`）
+4. **新增道具提示词** - `curtain-v1.0.md` 和 `dragon-turtle-v1.0.md`
+
+### 文件变更
+- `resources/images/level1-20/` - 新增所有关卡图片和分析数据
+- `resources/images/shared/items/` - 新增道具 PNG
+- `docs/design/game/level1/prompts/items/curtain-v1.0.md` - 新增
+- `docs/design/game/level1/prompts/items/dragon-turtle-v1.0.md` - 新增
+- `tools/img-gen/src/prompts.ts` - 修复提示词解析逻辑
+- `tools/img-gen/src/pipeline.ts` - 修复文档更新逻辑
+
+---
+
+## [2026-02-22] 所有 Level 1-20 提示词全面优化（Nano Banana Pro 最佳实践 v3.0）
+
+### 变更内容
+
+**核心优化目标**：
+1. 应用 Nano Banana Pro 最佳实践提升生成质量
+2. 冷图控制杂乱度（阴郁但不过度肮脏）
+3. 暖图强调整洁度变化（风水调整后房间整洁有序）
+
+**基于 Nano Banana Pro 官方最佳实践的优化**：
+
+| 优化维度 | 优化前 | 优化后 | 说明 |
+|---------|-------|-------|------|
+| **描述方式** | 关键词堆砌 | 自然语言完整句子 | 符合模型理解方式 |
+| **上下文提供** | 仅描述物体 | 添加场景情境和氛围 | 帮助模型理解意图 |
+| **材质描述** | 简单命名 | 详细纹理和质感描述 | 提升视觉真实感 |
+| **光线描述** | "dim lighting" | 具体的照明情境 | 更精确的氛围控制 |
+| **杂乱度控制** | "messy", "cluttered" | "lived-in but energetically imbalanced" | 避免过度肮脏 |
+| **整洁度要求** | 未提及 | "风水调整后整洁有序" | 新增核心要求 |
+
+**冷图（room-cold）核心改进**：
+
+1. **氛围优先于垃圾**：
+   - 旧：`messy room with pizza boxes everywhere`
+   - 新：`lived-in but energetically imbalanced - not disastrously messy, but with subtle visual cues that something feels "off"`
+
+2. **具体化杂乱程度**：
+   - 明确限制：`One or two pizza boxes (not excessive)`
+   - 避免极端：强调"focused work session mess, not hoarder mess"
+
+3. **材质和纹理细节**：
+   - 添加：`deliberate, artistic dithering patterns`
+   - 添加：`clean, crisp pixels and defined edges`
+
+**暖图（room-warm）核心改进**：
+
+1. **新增整洁度转换（关键改进）**：
+   ```
+   TIDINESS TRANSFORMATION (CRITICAL - NEW):
+   - Floor clutter is REDUCED and ORGANIZED (not completely sterile)
+   - Items that were scattered are now neatly arranged or removed
+   - The room looks "recently tidied up after feng shui consultation"
+   - Books stacked neatly, trash removed, surfaces wiped
+   - Maintain "lived-in" feeling but with order and intention
+   ```
+
+2. **更精确的结构保持要求**：
+   - 明确说明`STRUCTURAL PRESERVATION (CRITICAL)`
+   - 强调`Only change: color temperature, lighting, prop additions, and surface tidiness`
+
+3. **氛围描述对比化**：
+   - 冷：`Oppressive, cold, slightly melancholic`
+   - 暖：`Peaceful, warm, harmonious, welcoming`
+
+**所有关卡优化详情**：
+
+| 关卡 | 冷图优化重点 | 暖图新增整洁要求 |
+|-----|------------|----------------|
+| L1 | 开发者房间杂乱控制 | 披萨盒清理，书籍整齐摆放 |
+| L2 | 猫奴卧室适度玩具 | 猫玩具收入篮子 |
+| L3 | 学生宿舍考试压力氛围 | 桌面整理，地面清理 |
+| L4 | 客厅猫家具布置 | 猫玩具整理，地面吸尘 |
+| L5 | 游戏宅RGB氛围 | 零食包装清理，外设整理 |
+| L6 | 创业公司忙碌感 | 文件归档，桌面清理 |
+| L7 | 新婚夫妻磨合期氛围 | 个人物品整理 |
+| L8 | 开放式厨房现代感 | 厨房台面清洁，餐具收纳 |
+| L9 | 阁楼独特空间感 | 房间整理，物品归位 |
+| L10 | 老人卧室简朴感 | 房间整洁舒适 |
+| L11 | Loft空间能量流动 | 空间整理 |
+| L12 | 工位技术感 | 线缆整理，桌面清洁 |
+| L13 | 办公室团队氛围 | 办公区域整理 |
+| L14 | 儿童房安全性 | 玩具整理，房间清洁 |
+| L15 | 工作室创意氛围 | 画材整理 |
+| L16 | 瑜伽工作室静谧感 | 空间整理清洁 |
+| L17 | 复式卧室私密感 | 房间整理 |
+| L18 | 别墅豪华感 | 优雅整理 |
+| L19 | 高管办公室权威感 | 专业整理 |
+| L20 | 终极挑战复杂度 | 完全整理和谐 |
+
+### 文件变更
+- `docs/design/game/level1-20/prompts/room-cold-v1.0.md` - 全部更新为 v3.0
+- `docs/design/game/level1-20/prompts/room-warm-v1.0.md` - 全部更新为 v3.0
+
+### 优化参考
+- [Nano Banana Pro Prompting Guide](https://dev.to/googleai/nano-banana-pro-prompting-guide-strategies-1h9n)
+- Google AI Studio 最佳实践文档
+
+---
+
+## [2026-02-22] Level 3 修改为尖角煞（与 Level 1 区分）
+
+### 变更内容
+
+**问题发现**：Level 1 和 Level 3 都是"横梁压顶 + 葫芦"，关卡重复
+
+**解决方案**：将 Level 3 改为"尖角煞 + 阔叶绿植"
+
+**修改内容**：
+- 煞气类型：`beam_sha` → `sharp_corner_sha`
+- 问题场景：床上方横梁 → 书桌尖角对着床
+- 解法：挂葫芦 → 放阔叶绿植
+- 道具：`gourd` → `plant-broad`
+
+**教学曲线优化**：
+- Level 1：横梁压顶 → 葫芦（道具使用教学）
+- Level 2：镜冲床 → 旋转镜子（非道具解法）
+- Level 3：尖角煞 → 阔叶绿植（新道具 + 新煞气）
+
+### 文件变更
+- `docs/design/game/level3/level-design.md` - 修改
+- `docs/design/game/level3/prompts/room-cold-v1.0.md` - 修改
+- `docs/design/game/level3/prompts/room-warm-v1.0.md` - 修改
+
+---
+
+## [2026-02-22] 所有关卡暖图提示词优化（Nano Banana Pro 最佳实践）
+
+### 变更内容
+
+**优化目标**：确保暖图生成时道具位置精确，体现风水专业性
+
+**核心优化点**：
+
+| 道具类型 | 优化前 | 优化后 | 涉及关卡 |
+|---------|-------|-------|---------|
+| 葫芦（横梁） | "hung on the ceiling beam" | "TIED to the ceiling beam with a red cord, hanging down FROM the beam structure itself (NOT from the wall below)" | L1, L3→, L5, L8, L10, L11, L13, L14, L15, L17, L19, L20 |
+| 镜子旋转 | "rotated/angled" | "ROTATED to face AWAY from the bed, NO reflection visible" | L2, L7, L9, L14, L17, L20 |
+| 屏风放置 | "placed between" | "placed perpendicular between... to completely block the direct line" | L4, L7, L8, L11, L13, L16, L18, L20 |
+| 绿植放置 | "placed near" | "placed between the sharp corner and the bed, positioned to visually BLOCK" | L5, L6, L7, L8, L11, L12, L13, L14, L15, L16, L17, L18, L20 |
+| 窗帘安装 | "hung on" | "HUNG on the door/window frame, fabric covers the opening" | L9, L10, L15, L16, L19, L20 |
+| 盐灯放置 | "placed in corner" | "PLACED on a surface in the dark corner, emitting warm orange light" | L9, L10, L15, L16, L17, L20 |
+| 龙龟放置 | "placed behind chair" | "placed on the desk surface BEHIND the chair, providing backing support" | L6, L12, L19 |
+| 金蟾/貔貅放置 | "placed in wealth corner" | "placed in the wealth corner with clean space around it" | L12, L16, L18, L20 |
+
+**Nano Banana Pro 技巧应用**：
+1. 动词精确化：TIED to, WRAPPED AROUND, PLACED on, SUSPENDED from
+2. 空间关系明确：FROM the beam itself, BETWEEN corner and bed
+3. 视觉结果描述：hanging DOWN, emitting warm light, blocking the edge
+4. 物理逻辑清晰：fabric covers, cord wrapped around
+
+### 文件变更
+- `docs/design/game/level1-20/prompts/room-warm-v1.0.md` - 全部优化
+
+---
+
+## [2026-02-22] Level 1 图片资产生成完成
+
+### 变更内容
+
+**使用 img-gen 工具生成 Level 1 全部图片资产**：
+- 冷色底图 `room-cold.png`：阴郁雨夜单身公寓，横梁压床
+- 暖色终图 `room-warm.png`：温馨通关态，葫芦已悬挂化解煞气
+- 葫芦道具 `gourd.png`：像素风格，透明背景
+
+**AI 分析结果**：
+- 煞气点数量：1 个（横梁压顶）
+- 位置：`{ x: 0.5, y: 0.2 }`
+- 正确解法：在横梁两端挂葫芦化解
+
+**设计文档更新**：
+- `level-design.md` 已根据实际图片和 AI 分析结果自动更新
+- 煞气点配置、道具清单、素材状态均已同步
+
+**图片验证**：
+- 冷色底图：阴郁冷色调，横梁清晰可见
+- 暖色终图：温馨暖色调，结构一致，葫芦已放置
+- 葫芦道具：像素风格，透明背景，适合游戏使用
+
+### 文件变更
+- `resources/images/level1/room-cold.png` - 新增
+- `resources/images/level1/room-warm.png` - 新增
+- `resources/images/level1/analysis/hotspots.json` - 新增
+- `resources/images/shared/items/gourd.png` - 新增
+- `docs/design/game/level1/level-design.md` - 更新
+
+---
+
+## [2026-02-22] 关卡图片生成工具 (img-gen) 创建
+
+### 变更内容
+
+**创建自动化图片生成工具**：
+- 使用 Google Gemini API 自动生成关卡图片
+- 支持断点续传，可中断后继续执行
+- 串行执行，遵守 API 速率限制
+
+**工具架构**：
+```
+tools/img-gen/
+├── src/
+│   ├── index.ts           # CLI 入口
+│   ├── gemini-client.ts   # Gemini API 客户端
+│   ├── pipeline.ts        # 生成流水线
+│   ├── progress.ts        # 进度管理
+│   ├── prompts.ts         # 提示词解析
+│   └── types.ts           # 类型定义
+├── progress/              # 进度记录
+├── PLAN.md               # 任务规划文档
+└── package.json
+```
+
+**生成流程**：
+1. 生成冷色底图 (text-to-image)
+2. AI 分析生成 hotspots.json (多模态理解)
+3. 生成道具 PNG (text-to-image)
+4. 生成暖色终图 (image-to-image)
+5. **更新设计文档** - 根据 hotspots.json 自动更新 level-design.md
+
+**图文一致性**：
+- 遵循"以实际图片为准"的原则
+- AI 分析后自动更新关卡文案
+- 煞气点位置、选项文案与图片一致
+
+**使用方式**：
+```bash
+npm run gen -- --level 1        # 生成 Level 1
+npm run gen -- --level 1 --resume  # 断点续传
+npm run gen -- --level 1 --step room-cold  # 只生成冷色图
+```
+
+**模型配置**：
+- 图片生成：`gemini-3-pro-image-preview` (Nano Banana Pro)
+- 图片理解：`gemini-3-pro-preview`
+
+### 文件变更
+- `tools/img-gen/` - 新增目录和所有文件
+- `CHANGELOG.md` - 更新记录
+
+---
+
+## [2026-02-22] Level 1 重构为单煞气点教程关
+
+### 变更内容
+
+**重构 Level 1 设计**：
+- 煞气点从 4 个简化为 1 个（横梁压顶）
+- 更新 level-design.md、prompts 文件、analysis 文件
+- 更新 levels-master-plan.md 难度说明
+
+**设计原则**：
+1. 单一焦点：只有 1 个煞气点，玩家专注学习基本操作
+2. 视觉明显：横梁压顶是最容易被发现的煞气类型
+3. 操作简单：只需选择正确道具，不需要复杂交互
+4. 即时反馈：解决后立即看到房间变暖
+
+### 文件变更
+- `docs/design/game/level1/level-design.md` - 重构
+- `docs/design/game/level1/prompts/room-cold-v1.0.md` - 简化
+- `docs/design/game/level1/prompts/room-warm-v1.0.md` - 简化
+- `docs/design/game/level1/analysis/sha-analysis-v1.0.md` - 简化
+- `docs/design/game/levels-master-plan.md` - 更新 Level 1 说明
+
+---
+
+## [2026-02-22] Level 7-20 提示词文件创建完成
+
+### 变更内容
+
+**完成所有关卡提示词文件创建**：
+ 创建 Level 9-10 提示词文件（6 个文件）
+ 创建 Level 12-15 提示词文件（12 个文件）
+ 创建 Level 17-20 提示词文件（12 个文件）
+ 创建 Level 7 analysis 文件（1 个文件）
+
+**总计完成**：
+ Prompts 文件：40 个（Level 1-20 全部完整）
+ Analysis 文件：21 个（Level 1-20 全部完整）
+
+**文件结构**：
+每关包含 3 个提示词文件：
+ `prompts/room-cold-v1.0.md` - 冷色底图提示词
+ `prompts/room-warm-v1.0.md` - 暖色终图提示词
+ `analysis/sha-analysis-v1.0.md` - AI 分析提示词
+
+**新增道具**（Level 17-20 大师关卡）：
+ `crystal-ball` - 水晶球（Level 17 楼梯下煞气）
+ `shan-hai-zhen` - 山海镇（Level 18 天斩煞）
+ `stone-tablet` - 石敢当（Level 18 路冲煞）
+ `pi-xiu` - 貔貅（Level 18 财位）
+ `bagua-mirror` - 八卦镜（Level 19 壁刀煞）
+ `lucky-cat` - 招财猫（Level 13/19 财位）
+ `copper-gourd` - 铜葫芦（Level 12 电线煞）
+
+### 影响范围
+ `docs/design/game/level7-20/prompts/*`
+ `docs/design/game/level7-20/analysis/*`
+
+---
+
+## [2026-02-22] 罗盘快转区域缩小优化
+
+### 变更内容
+
+**问题**: 快转不弹窗的边缘区域太大（1.5 倍半径），稍微一动指针就开始快转，体验不好
+
+**解决方案**:
+- 边缘区域从 `1.5 倍半径` 缩小到 `0.8 倍半径`
+- 核心区域保持 `0.4 倍半径` 不变
+
+**分层触发机制**（更新）:
+- **边缘区域**（距离 < 0.8 倍半径）：指针快速旋转，**不弹窗**
+- **核心区域**（距离 < 0.4 倍半径）：指针超快旋转，**触发弹窗**
+- **远离区域**：指针左右缓慢摆动（±45°）
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/utils/distance.ts`
+
+---
+
+## [2026-02-22] 罗盘指针动画优化：分层触发 + 转速调整
+
+### 变更内容
+
+**问题**: 罗盘指针在远离煞气点后没有恢复左右摇摆，且需要更好的探测反馈
+
+**根本原因**:
+1. `swingTime` 和 `rotation` 变量在 `useEffect` 内部定义，当 `compassSpeed` 变化时被重置为 0
+2. Mobile 端缺少持续更新 `compassSpeed` 的逻辑
+
+**解决方案**:
+1. 新增 `swingTimeRef` 和 `rotationRef` 持久保存动画状态
+2. Mobile 端新增 `onCompassSpeedChange` 回调，持续更新速度
+
+**分层触发机制**（新增）:
+- **边缘区域**（距离 < 1.5 倍阈值）：指针快速旋转，**不弹窗**
+- **核心区域**（距离 < 0.4 倍阈值）：指针超快旋转，**触发弹窗**
+- **远离区域**：指针左右缓慢摆动（±45°）
+
+**转速优化**:
+- `super-fast`: 0.15 → 0.25
+- `fast`: 0.05 → 0.12
+
+**动画行为**:
+- `normal` 状态：指针左右缓慢摆动
+- `fast` 状态：快速旋转（接近提示）
+- `super-fast` 状态：超快旋转 + 弹窗（找到煞气点）
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/utils/distance.ts`
+
+---
+
+## [2026-02-22] Mobile 端煞气精灵位置修复
+
+### 变更内容
+
+**问题**: 煞气点碰撞检测位置正确了，但煞气小黑球（精灵）渲染位置仍然错误
+
+**根本原因**:
+- `createShaSprite` 函数使用 canvas 尺寸 (`width`, `height`) 计算精灵位置
+- Mobile 端煞气精灵被添加到 `roomContainer` 内部，而 `roomContainer` 中的图片保持原始尺寸
+- 导致精灵位置计算基准不一致
+
+**解决方案**:
+- Mobile 端：使用图片原始尺寸 (`imageDimensionsRef`) 计算精灵位置
+- Web 端：继续使用 canvas 尺寸计算精灵位置
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
+## [2026-02-22] Mobile 端煞气点位置修复 + 罗盘指针动画优化
+
+### 变更内容
+
+**问题 1: Mobile 端煞气点位置不对**
+- 根本原因：碰撞检测时使用 canvas 尺寸计算煞气点位置，但 Mobile 端图片保持原始尺寸
+- 解决方案：
+  - 新增 `imageDimensionsRef` 保存图片原始尺寸
+  - 碰撞检测时使用图片尺寸而非 canvas 尺寸计算煞气点位置
+  - 煞气点半径也基于图片尺寸计算
+
+**问题 2: 罗盘指针动画**
+- 原有行为：指针持续旋转，速度固定
+- 新行为：
+  - `normal` 状态（远离煞气点）：指针左右缓慢摆动（±45° 范围）
+  - `fast/super-fast` 状态（靠近煞气点）：指针快速旋转
+  - 使用 `Math.sin()` 函数实现自然的摆动效果
+
+**代码清理**：
+- 移除未使用的变量 `lastPinchDistance`
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
+## [2026-02-22] Mobile/Web 游戏交互分离修复
+
+### 变更内容
+
+**问题分析**：
+ Mobile 端图片被压缩适配屏幕，无法查看全景
+ Web 端错误地使用拖拽移动罗盘，应为点击移动
+
+**Mobile 端修复**：
+ 房间图片保持原始尺寸（不压缩）
+ 初始位置居中显示
+ 自由拖拽（无范围限制）
+ 滚轮缩放支持（0.5x - 2x）
+ 罗盘固定在屏幕中央
+
+**Web 端修复**：
+ 房间图片适配屏幕尺寸（固定）
+ 点击屏幕位置移动罗盘（非拖拽）
+ 移除图片拖拽功能
+
+**碰撞检测优化**：
+ Mobile 端碰撞检测考虑房间缩放因子（`roomScaleRef`）
+ 煞气点坐标基于房间容器计算
+
+**代码修复**：
+ 添加 `React` 导入解决 `React.PointerEvent` 类型错误
+ 修复 ref 警告：在 cleanup 前复制 `triggeredShaRef.current` 值
+
+### 影响范围
+ `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
 ## [2026-02-21] 游戏罗盘图片集成
 
 ### 变更内容

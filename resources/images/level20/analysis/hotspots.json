@@ -1,0 +1,124 @@
+{
+  "analysis": [
+    {
+      "id": "A",
+      "type": "横梁压顶",
+      "location": "床头上方",
+      "description": "卧室床头正上方有一根巨大的横梁，给人造成心理压力和压迫感，影响睡眠质量和运势。",
+      "options": [
+        {
+          "content": "在横梁两端悬挂葫芦化解煞气",
+          "is_correct": true
+        },
+        {
+          "content": "在横梁下方放置一个鱼缸",
+          "is_correct": false
+        },
+        {
+          "content": "将横梁漆成红色",
+          "is_correct": false
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "type": "镜冲床",
+      "location": "卧室全身镜",
+      "description": "巨大的全身镜直接正对床铺，镜子反射的光线和影像会干扰人的睡眠气场，导致多梦或精神不振。",
+      "options": [
+        {
+          "content": "旋转镜子角度或平时用布遮盖",
+          "is_correct": true
+        },
+        {
+          "content": "每天擦拭镜子保持光亮",
+          "is_correct": false
+        },
+        {
+          "content": "在镜子前摆放一盆仙人掌",
+          "is_correct": false
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "type": "天斩煞",
+      "location": "左侧窗外",
+      "description": "窗外两栋高楼之间形成狭窄的垂直缝隙，如同刀劈一般正对窗户，容易导致血光之灾或运势受损。",
+      "options": [
+        {
+          "content": "在窗户正对处悬挂山海镇",
+          "is_correct": true
+        },
+        {
+          "content": "常开窗户保持空气流通",
+          "is_correct": false
+        },
+        {
+          "content": "在窗台上放置空花瓶",
+          "is_correct": false
+        }
+      ]
+    },
+    {
+      "id": "Right_Window",
+      "type": "反弓煞",
+      "location": "右侧窗外",
+      "description": "窗外的道路呈弧形弓背状对着楼宇（看起来像一张拉满的弓射向屋内），会导致金钱流失和家庭不和。",
+      "options": [
+        {
+          "content": "在窗边放置阔叶绿植进行缓冲",
+          "is_correct": true
+        },
+        {
+          "content": "悬挂风铃吸引注意力",
+          "is_correct": false
+        },
+        {
+          "content": "安装强力射灯照射马路",
+          "is_correct": false
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "type": "财位问题",
+      "location": "房间角落/杂物堆",
+      "description": "房间角落通常是藏风聚气的财位，但此处堆满了报纸、杂物和电子垃圾，阻碍了财气的聚集。",
+      "options": [
+        {
+          "content": "清理杂物并放置招财摆件（如聚宝盆）",
+          "is_correct": true
+        },
+        {
+          "content": "用黑布将杂物遮盖起来",
+          "is_correct": false
+        },
+        {
+          "content": "在此处放置垃圾桶方便丢弃",
+          "is_correct": false
+        }
+      ]
+    },
+    {
+      "id": "G",
+      "type": "阴煞",
+      "location": "房间左侧深处",
+      "description": "该区域光线极度昏暗，且显得阴冷，容易积聚阴气，影响居住者的情绪和健康。",
+      "options": [
+        {
+          "content": "在此处放置盐灯以提升阳气和干燥度",
+          "is_correct": true
+        },
+        {
+          "content": "泼洒清水进行净化",
+          "is_correct": false
+        },
+        {
+          "content": "放置深色地毯吸收光线",
+          "is_correct": false
+        }
+      ]
+    }
+  ]
+}

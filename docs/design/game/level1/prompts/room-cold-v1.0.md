@@ -1,13 +1,14 @@
-# Level 1 - 冷色底图提示词 (v1.0)
+# Level 1 - 冷色底图提示词 (v4.0 - Room Scale Progression)
 
 ## 基本信息
 
 | 属性 | 值 |
 |-----|-----|
 | **用途** | 正式关卡图（可玩状态，冷色开局） |
-| **模型建议** | Gemini Nano Banana Pro / Midjourney |
+| **模型** | Gemini Nano Banana Pro (gemini-3-pro-image-preview) |
 | **宽高比** | 16:9 |
-| **输出尺寸** | 建议先生成 1920x1080，后期可缩放 |
+| **房间尺寸** | COMPACT（紧凑型） |
+| **可视面积** | ~20m² 单间公寓 |
 | **关联关卡** | Level 1 - 开发者的地牢 |
 
 ---
@@ -15,71 +16,65 @@
 ## 完整提示词
 
 ```text
-Generate a single isometric hi-bit pixel art level background for a playable puzzle stage.
+Create an isometric pixel art COMPACT studio apartment in hi-bit style, inspired by games like Eastward or Coffee Talk. This is a feng shui puzzle game scene showing a room with problematic energy flow before corrections.
 
-Level context:
-- Stage name: Dev Dungeon (Developer's Apartment)
-- Theme: messy solo developer apartment at night, rainy and cold
-- Mood: gloomy but cozy, subtle tension before room cleansing
+ROOM SCALE: COMPACT (~20 square meters, single room with minimal zoning)
 
-Gameplay aware composition:
-1) Build a clean 45 degree isometric cutaway room with clear walkable floor areas.
-2) Include key props: 
-   - Desk with monitors (glowing blue), keyboard, chair
-   - Bed with disheveled sheets
-   - Standing mirror (facing the bed direction)
-   - Bookshelf with sharp visible corner (pointing toward desk area)
-   - Main entrance door
-   - Balcony/sliding glass door (visible on opposite side)
-   - Ceiling beam running above the bed head
-3) Ensure there are 4 plausible Feng Shui problem zones embedded in layout logic:
-   - Mirror positioned to face the bed directly
-   - Bookshelf sharp corner pointing at desk/chair
-   - Ceiling beam directly above bed head
-   - Straight sight line from entrance door to balcony door
-4) Keep center and key interaction regions uncluttered for draggable compass gameplay.
-5) Use prop placement and subtle lighting to imply suspicious areas, but do NOT reveal exact answers visually.
+The room is viewed from a 45-degree isometric angle, showing depth and dimension. This is a SMALL, INTIMATE space where all furniture fits tightly together - the bed, desk, and window are all within close proximity, creating a cramped but functional layout.
 
-Art direction:
-- Hi-bit pixel art, clean hard pixels, consistent pixel size
-- Palette around 48 to 64 colors, cool desaturated set
-- Soft rain ambience visible through windows
-- Monitor blue glow mixed with cold moonlight
-- Medium contrast, avoid neon and overprocessed effects
-- Slight film grain or noise acceptable for atmosphere
+SCENE CONTEXT:
+This is a "开发者的地牢" scenario. The room has a late-night work stress atmosphere with Dim desk lamp and cold rainy window light lighting. The space feels energetically imbalanced - not disastrously messy, but with subtle visual cues that something feels "off" about the layout.
 
-Hard constraints:
-- NO explicit puzzle markers (no black spirit flames, no glowing target icons)
-- NO text, NO UI panels, NO watermark, NO characters
-- Maintain calm frame edges for HUD and modal overlays
-- All furniture and props must have clean silhouettes for later overlay work
+CRITICAL SPATIAL LAYOUT - FOLLOW EXACTLY:
 
-Output:
-- One 16:9 stage background, production ready for interactive layer
-- Export as PNG with transparency support for potential layer separation
+ZONE A - BED (center-right):
+- Single wooden bed with slightly rumpled bedding (not destroyed)
+- CRITICAL: A prominent dark wooden CEILING BEAM runs directly above the bed
+- The beam creates BEAM SHA (横梁压顶) - visible pressure on sleeper
+- Beam should look structurally solid and clearly positioned
+
+ZONE B - WORK DESK (left corner):
+- Small wooden desk with laptop showing code screen
+- Stack of 3-4 technical books
+- Single coffee mug
+- Small desk lamp with cool white light
+
+ZONE C - WINDOW (right wall):
+- Window showing rainy night with droplets on glass
+- Cold blue-grey light filtering through
+- City lights barely visible through rain
+
+FLOOR AND SURFACE DETAILS (Controlled Clutter):
+- One or two pizza boxes (not excessive)
+- Some programming books in a small stack
+- A coffee mug on the desk
+- Single pair of headphones on the floor
+- General "focused work session" mess, not "hoarder" mess
+
+VISUAL STYLE SPECIFICATIONS:
+- Art Style: Hi-bit pixel art with clean, crisp pixels and defined edges
+- Color Palette: Cool, desaturated tones - muted blues, grey-greens, cold whites, desaturated browns
+- Lighting: Dim desk lamp and cold rainy window light - creating subtle shadows and a slightly oppressive mood
+- Atmosphere: late-night work stress - the room feels emotionally heavy but not filthy
+- Texture: Visible pixel texture with deliberate, artistic dithering patterns
+
+TECHNICAL REQUIREMENTS:
+- NO human characters or animals (furniture and objects only)
+- NO text, labels, or UI elements
+- NO glowing markers or indicators
+- NO watermarks or signatures
+- Room should look "lived-in but energetically imbalanced" rather than "disgustingly messy"
+
+OUTPUT: Single 16:9 isometric pixel art image.
 ```
-
----
-
-## 生成后处理
-
-1. **色彩索引化**: 将图片转为索引颜色模式，限制 32-64 色
-2. **像素标准化**: 使用邻近采样 (Nearest Neighbor) 确保像素边缘锐利
-3. **尺寸校准**: 如需要，缩小到 320x180 再用邻近算法放大到目标尺寸
-4. **导出格式**: PNG-24，保持高质量
 
 ---
 
 ## 煞气场景检查清单
 
-生成后检查以下 4 个煞气是否在画面中合理呈现：
-
 | 煞气 | 视觉元素 | 检查项 |
 |-----|---------|--------|
-| 镜冲床 | 落地镜位置 | 镜子是否正对床铺方向？ |
-| 尖角煞 | 书架尖角 | 书架角是否指向书桌/椅子区域？ |
-| 横梁压顶 | 天花板横梁 | 横梁是否在床头上方？ |
-| 门冲 | 入口门-阳台门 | 两门是否形成直线贯通？ |
+| 横梁压顶 | 床头横梁 | 横梁是否清晰可见在床头正上方？ |
 
 ---
 
@@ -87,4 +82,5 @@ Output:
 
 | 版本 | 日期 | 变更说明 |
 |-----|------|---------|
-| v1.0 | 2026-02-20 | 基于 `docs/design/prompts/level1-dev-dungeon-cold-v1.0.md` 重构 |
+| v3.0 | 2026-02-22 | Nano Banana Pro 优化：使用自然语言描述、明确材质纹理、控制杂乱度、强调氛围而非垃圾 |
+| v2.0 | 2026-02-22 | 初始版本 |

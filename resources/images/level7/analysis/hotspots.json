@@ -1,0 +1,58 @@
+{
+  "analysis_report": {
+    "image_type": "Isometric Room Layout",
+    "total_issues_found": 2,
+    "sha_qi_points": [
+      {
+        "id": 1,
+        "type": "镜冲床 (Mirror Rush Bed)",
+        "location": "卧室区域隔断墙上的大镜子",
+        "visual_evidence": "画面左侧隔断墙上镶嵌着一面巨大的矩形镜子，镜面清晰地反射出双人床和被褥。",
+        "risk_level": "High",
+        "description": "镜子正对床铺是风水大忌。镜子具有反射能量的作用，人在睡眠时气场最弱，镜子直冲会干扰人体磁场，导致睡眠不安、多梦、神经衰弱或夫妻口角。",
+        "solutions": [
+          {
+            "option_text": "安装滑轨布帘或使用移动屏风，在睡觉时将镜子遮挡住。",
+            "is_correct": true,
+            "reasoning": "物理遮挡是最直接有效的化解方法，阻断了“光煞”对睡眠者的影响。"
+          },
+          {
+            "option_text": "在镜子表面贴上八卦图贴纸。",
+            "is_correct": false,
+            "reasoning": "卧室内部不宜使用八卦镜等法器，容易产生过强的气场冲突，且不美观。"
+          },
+          {
+            "option_text": "在床头柜上放一杯盐水。",
+            "is_correct": false,
+            "reasoning": "盐水虽然有净化作用，但无法物理阻挡镜面的反射煞气，属于无效操作。"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "尖角煞 (Sharp Angle Rush)",
+        "location": "右侧立柜的边角",
+        "visual_evidence": "画面右侧的书柜/储物柜的左侧边角呈90度直角，直接指向房间中央的活动区域（地毯处）。",
+        "risk_level": "Medium",
+        "description": "家具的尖锐边角直冲人经常活动的区域，形成尖角煞。长期面对尖角会让人产生心理压迫感，容易引发意外受伤或由于气流急促导致情绪烦躁。",
+        "solutions": [
+          {
+            "option_text": "在柜角前方摆放一盆高大的阔叶绿植（如龟背竹）。",
+            "is_correct": true,
+            "reasoning": "植物具有生机，且阔叶可以有效缓冲尖角带来的直冲气流，起到化煞作用。"
+          },
+          {
+            "option_text": "在柜角处悬挂一把剪刀。",
+            "is_correct": false,
+            "reasoning": "剪刀本身带有锐气和杀气，以煞制煞在室内风水中属于下策，容易加重危险。"
+          },
+          {
+            "option_text": "将柜子整体涂成红色。",
+            "is_correct": false,
+            "reasoning": "颜色的改变无法消除物理形态上的尖角威胁，且大面积红色可能导致情绪亢奋。"
+          }
+        ]
+      }
+    ]
+  }
+}

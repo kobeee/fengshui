@@ -1,0 +1,37 @@
+{
+  "level": "level-8",
+  "status": "completed",
+  "startTime": "2026-02-22T11:23:41.817Z",
+  "steps": {
+    "room_cold": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:24:04.739Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level8/room-cold.png"
+    },
+    "analysis": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:25:01.835Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level8/analysis/hotspots.json"
+    },
+    "items": {
+      "status": "completed",
+      "completed": [
+        "screen",
+        "plant-broad",
+        "gourd"
+      ],
+      "pending": []
+    },
+    "room_warm": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:25:37.237Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level8/room-warm.png"
+    },
+    "docs_update": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:25:37.241Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/docs/design/game/level8/level-design.md"
+    }
+  },
+  "endTime": "2026-02-22T11:25:37.242Z"
+}

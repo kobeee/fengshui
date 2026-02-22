@@ -1,0 +1,35 @@
+{
+  "levelId": "level-3",
+  "levelName": "学生宿舍",
+  "shaPoints": [
+    {
+      "id": "sha-001",
+      "type": "sharp_corner_sha",
+      "position": {
+        "x": 0.52,
+        "y": 0.58
+      },
+      "radius": 0.1,
+      "title": "尖角煞",
+      "description": "书桌的左侧尖角正对着下铺床位，形成'尖角煞'。在狭小的宿舍中，这种布局容易导致睡眠不安和精神紧张。",
+      "correctItem": "plant-broad",
+      "options": [
+        {
+          "id": "opt-001-a",
+          "label": "摆放阔叶绿植化解",
+          "correct": true
+        },
+        {
+          "id": "opt-001-b",
+          "label": "将书桌移到走廊",
+          "correct": false
+        },
+        {
+          "id": "opt-001-c",
+          "label": "挂一面镜子反射",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

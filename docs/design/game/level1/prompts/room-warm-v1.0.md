@@ -1,86 +1,71 @@
-# Level 1 - 暖色终图提示词 (v1.0)
+# Level 1 - 暖色终图提示词 (v3.0 - Nano Banana Pro Optimized)
 
 ## 基本信息
 
 | 属性 | 值 |
 |-----|-----|
-| **用途** | 正式关卡通关图（完成态） |
-| **模型建议** | Gemini 3 Pro Image Preview (Nano Banana Pro) |
+| **用途** | 关卡完成状态（暖色终局） |
+| **模型** | Gemini Nano Banana Pro (gemini-3-pro-image-preview) |
+| **输入** | room-cold.png + 道具参考图 |
 | **宽高比** | 16:9 |
-| **前置条件** | 冷色底图 + 道具 PNG 已生成 |
 | **关联关卡** | Level 1 - 开发者的地牢 |
 
 ---
 
-## 输入素材
+## 参考文件
 
 | 文件 | 用途 |
 |-----|------|
-| `room-cold.png` | 冷色底图（结构参考） |
-| `gourd.png` | 葫芦道具（参考素材） |
-| `plant-broad.png` | 阔叶绿植道具（参考素材） |
-| `screen.png` | 屏风道具（参考素材） |
+| `room-cold.png` | 冷色底图（严格保持结构） |
+| `gourd.png` | 葫芦道具 |
 
 ---
 
 ## 完整提示词
 
 ```text
-Using the provided isometric pixel art room image as STRICT composition reference, create a cleansed and completed warm variant with Feng Shui items placed.
+Using the provided cold room image as STRICT structural reference, transform it into a warm, harmonious feng shui-corrected version through image-to-image generation.
 
-Keep UNCHANGED:
-- Identical camera angle, room geometry
-- Same object scale and silhouette layout
-- Same pixel density and art style
-- Same furniture positions (bed, desk, bookshelf, mirror, doors)
+FENG SHUI CORRECTIONS TO APPLY:
+1. A TRADITIONAL GOURD is TIED to the ceiling beam with a red cord, hanging down FROM the beam structure itself (NOT from the wall below) -化解横梁压顶
+2. Floor is tidied - pizza boxes removed, books neatly stacked on desk
+3. Bed is made with warm-toned bedding
+4. Overall warmer, more comfortable atmosphere
 
-Transformations to apply:
-1) Shift overall palette from cool gloomy tones to warm cozy sunrise tones
-2) Replace rainy cold ambience with gentle warm light entering from window
-3) Add subtle morning sunshine glow effect
-4) Remove all ominous mood cues (dark shadows, cold blue tints)
-5) Make the room feel tidier and emotionally relieved
+TRANSFORMATION REQUIREMENTS:
 
-Place the following Feng Shui items at these locations:
-1) GOURD: Hang from the ceiling beam above the bed head (use the gourd reference image)
-2) BROAD-LEAF PLANT: Place on the floor between the bookshelf sharp corner and the desk (use the plant reference image)
-3) SCREEN DIVIDER: Place between the entrance door and the balcony door to block the straight path (use the screen reference image)
+1. STRUCTURAL PRESERVATION (CRITICAL):
+   - Maintain identical camera angle and room geometry
+   - Keep all furniture positions exactly the same
+   - Preserve pixel art style and resolution
+   - Room layout must remain unchanged
 
-Mirror adjustment:
-- The standing mirror should appear slightly rotated/angled, no longer facing the bed directly
+2. ATMOSPHERE TRANSFORMATION:
+   - Shift from "late-night work stress" to "cozy productive workspace"
+   - Color palette: Cool blues/greys → Warm yellows, soft oranges, gentle browns, cream whites
+   - Lighting: Dim desk lamp and cold rainy window light → Warm desk lamp glow and cozy indoor lighting
+   - Overall mood: Oppressive → Peaceful and inviting
 
-Color direction:
-- Warm amber, soft gold, muted terracotta, warm gray
-- Morning light yellow-orange tones
-- Still limited palette (32-64 colors after post process)
-- Avoid high saturation cartoon look
-- Keep the same level of detail as cold version
+3. TIDINESS TRANSFORMATION (CRITICAL - NEW):
+   - Floor clutter is REDUCED and ORGANIZED (not completely sterile)
+   - Items that were scattered are now neatly arranged or removed
+   - Surfaces are cleaner but still show signs of life
+   - The room looks "recently tidied up after feng shui consultation"
+   - Books stacked neatly, trash removed, surfaces wiped
+   - Maintain "lived-in" feeling but with order and intention
 
-Output constraints:
-- NO text, NO UI, NO logos, NO watermark
-- NO characters
-- Deliver one 16:9 warm completed state image
+4. PROP PLACEMENT DETAILS:
+   - A TRADITIONAL GOURD is TIED to the ceiling beam with a red cord, hanging down FROM the beam structure itself (NOT from the wall below) -化解横梁压顶
+
+HARD CONSTRAINTS:
+- Room structure and furniture layout must be IDENTICAL to input
+- Only change: color temperature, lighting, prop additions, and surface tidiness
+- NO new furniture added beyond feng shui items
+- NO walls removed or added
+- Maintain isometric pixel art style throughout
+
+OUTPUT: Single 16:9 warm isometric pixel art image showing the harmonized room.
 ```
-
----
-
-## 生成后处理
-
-1. **色彩索引化**: 使用与冷色图相同的色彩数量限制 (32-64 色)
-2. **像素标准化**: 使用邻近采样确保与冷色图风格一致
-3. **对齐校验**: 将冷色图与暖色图叠加，检查房间结构是否对齐
-
----
-
-## 冷暖图对比检查
-
-| 检查项 | 要求 |
-|-------|------|
-| 房间结构 | 墙壁、门窗位置一致 |
-| 家具位置 | 床、书桌、书架、镜子位置一致 |
-| 道具放置 | 葫芦挂横梁、绿植放书架角旁、屏风放门之间 |
-| 镜子角度 | 暖色图镜子已旋转，不再正对床 |
-| 色调 | 冷色 → 暖色，情绪从阴郁变温馨 |
 
 ---
 
@@ -88,4 +73,5 @@ Output constraints:
 
 | 版本 | 日期 | 变更说明 |
 |-----|------|---------|
-| v1.0 | 2026-02-20 | 初版：完成态暖色终图，包含道具放置 |
+| v3.0 | 2026-02-22 | Nano Banana Pro 优化：强调整洁度变化、更精确的氛围描述、清晰的结构保持要求 |
+| v2.0 | 2026-02-22 | 初始版本 |

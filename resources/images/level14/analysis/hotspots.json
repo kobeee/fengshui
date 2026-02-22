@@ -1,0 +1,77 @@
+{
+  "analysis_result": {
+    "image_id": "isometric_bedroom_01",
+    "room_type": "卧室",
+    "sha_qi_points": [
+      {
+        "id": 1,
+        "name": "横梁压顶",
+        "description": "一根巨大的深色木质横梁直接横跨在床铺的上方，将床从中间切分。",
+        "severity": "高",
+        "options": [
+          {
+            "content": "在横梁两端悬挂开口葫芦或五帝钱，或者移动床位避开横梁。",
+            "is_correct": true,
+            "rationale": "葫芦有收纳煞气的作用，移开床位是物理避让的根本方法。"
+          },
+          {
+            "content": "在横梁上悬挂一串风铃。",
+            "is_correct": false,
+            "rationale": "风铃在卧室容易招惹不稳定的气场，且不能化解压力。"
+          },
+          {
+            "content": "将横梁涂成红色。",
+            "is_correct": false,
+            "rationale": "单纯改变颜色无法消除横梁造成的物理和心理压迫感，红色可能加重火气。"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "镜冲床",
+        "description": "床右侧的衣柜推拉门上镶嵌着巨大的镜子，镜面直接正对床铺侧面。",
+        "severity": "中",
+        "options": [
+          {
+            "content": "使用厚布帘在睡觉时将镜子遮挡，或者调整衣柜推拉门位置。",
+            "is_correct": true,
+            "rationale": "遮挡镜面可以防止睡眠时人的气场被反射干扰，缓解心理不安。"
+          },
+          {
+            "content": "在镜子前摆放一盆仙人掌。",
+            "is_correct": false,
+            "rationale": "仙人掌带刺，属于尖角煞，放在床边会加重煞气。"
+          },
+          {
+            "content": "每天将镜子擦拭得非常光亮。",
+            "is_correct": false,
+            "rationale": "镜子越亮，反射光煞越强，不仅不能化解，反而加重影响。"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "门冲",
+        "description": "房间入口的门开启后，气流（图片中有风的线条示意）直冲室内床铺区域。",
+        "severity": "中",
+        "options": [
+          {
+            "content": "在房门上悬挂长门帘，或者在进门处设置屏风阻隔。",
+            "is_correct": true,
+            "rationale": "门帘或屏风可以缓冲直冲的气流，使气场回旋，起到藏风聚气的作用。"
+          },
+          {
+            "content": "保持房门24小时敞开。",
+            "is_correct": false,
+            "rationale": "常开房门会导致外部杂气直冲无阻，无法聚气。"
+          },
+          {
+            "content": "在门口放置一双鞋子挡煞。",
+            "is_correct": false,
+            "rationale": "鞋子带有秽气，放在风口会将秽气吹入房内，不仅无效反而有害。"
+          }
+        ]
+      }
+    ]
+  }
+}

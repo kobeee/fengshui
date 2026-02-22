@@ -1,0 +1,122 @@
+{
+  "levelId": "level-11",
+  "levelName": "开放式Loft",
+  "shaPoints": [
+    {
+      "id": "sha-001",
+      "type": "stair_clash",
+      "position": {
+        "x": 0.15,
+        "y": 0.55
+      },
+      "radius": 0.1,
+      "title": "楼梯冲门",
+      "description": "螺旋楼梯直冲入户门方向，气流顺楼梯直冲而下直接泄出，导致家中财气难聚，易生口角。",
+      "correctItem": "screen",
+      "options": [
+        {
+          "id": "opt-001-a",
+          "label": "放置屏风阻隔气流",
+          "correct": true
+        },
+        {
+          "id": "opt-001-b",
+          "label": "楼梯铺红地毯",
+          "correct": false
+        },
+        {
+          "id": "opt-001-c",
+          "label": "在楼梯下堆放杂物",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-002",
+      "type": "beam_sha",
+      "position": {
+        "x": 0.52,
+        "y": 0.38
+      },
+      "radius": 0.1,
+      "title": "横梁压顶",
+      "description": "巨大的钢结构横梁直接横跨在沙发上方，人坐在此处会感到压抑，长期影响心理健康和运势。",
+      "correctItem": "gourd",
+      "options": [
+        {
+          "id": "opt-002-a",
+          "label": "悬挂葫芦化解",
+          "correct": true
+        },
+        {
+          "id": "opt-002-b",
+          "label": "将横梁涂成白色",
+          "correct": false
+        },
+        {
+          "id": "opt-002-c",
+          "label": "在横梁下装吊灯",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-003",
+      "type": "door_clash",
+      "position": {
+        "x": 0.88,
+        "y": 0.3
+      },
+      "radius": 0.12,
+      "title": "穿堂煞",
+      "description": "入户门方向正对巨大的落地窗，气流刚进门就直接穿窗而出，形成典型的'穿堂煞'，无法藏风聚气。",
+      "correctItem": "plant-broad",
+      "options": [
+        {
+          "id": "opt-003-a",
+          "label": "窗边放阔叶绿植",
+          "correct": true
+        },
+        {
+          "id": "opt-003-b",
+          "label": "在此处放一面镜子",
+          "correct": false
+        },
+        {
+          "id": "opt-003-c",
+          "label": "封死这扇窗户",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-004",
+      "type": "kitchen_sha",
+      "position": {
+        "x": 0.82,
+        "y": 0.58
+      },
+      "radius": 0.08,
+      "title": "灶台外露",
+      "description": "开放式厨房的灶台毫无遮挡，正对客厅活动区，'开门见灶，钱财多耗'，火气不聚。",
+      "correctItem": "screen",
+      "options": [
+        {
+          "id": "opt-004-a",
+          "label": "设置屏风遮挡视线",
+          "correct": true
+        },
+        {
+          "id": "opt-004-b",
+          "label": "在灶台旁放鱼缸",
+          "correct": false
+        },
+        {
+          "id": "opt-004-c",
+          "label": "灶台上方挂风铃",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,15 +1,12 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback, useEffect, type PointerEvent, type MouseEvent } from 'react';
 import { useGame } from '../stores/GameContext';
 import { useResponsive } from '../hooks/useResponsive';
 import { useProgress } from '../hooks/useProgress';
 import { detectShaPoint, getCompassSpeed } from '../utils/distance';
-import type { Position } from '../types/game';
+import type { Position, ShaPoint } from '../types/game';
 import { GameStage } from '../game/GameStage';
 import { EventModal } from '../components/game/EventModal';
 
-/**
- * Gameplay Page - 游戏玩法主页面（PixiJS 版本）
- */
 export function GameplayPage() {
   const { state, updateCompass, activateSha, closeModal, resolveSha, navigate } = useGame();
   const { isMobile } = useResponsive();
@@ -29,7 +26,6 @@ export function GameplayPage() {
     isCompleted 
   } = state;
 
-  // 使用 ResizeObserver 监听容器尺寸变化
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -38,24 +34,29 @@ export function GameplayPage() {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (width > 0 && height > 0) {
-          setContainerSize({
-            width: Math.floor(width),
-            height: Math.floor(height),
-          });
+          const nextWidth = Math.floor(width);
+          const nextHeight = Math.floor(height);
+          setContainerSize((prev) =>
+            prev.width === nextWidth && prev.height === nextHeight
+              ? prev
+              : { width: nextWidth, height: nextHeight }
+          );
         }
       }
     });
 
     resizeObserver.observe(container);
 
-    // 初始更新 - 使用 requestAnimationFrame 确保 DOM 已渲染
     requestAnimationFrame(() => {
       const rect = container.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
-        setContainerSize({
-          width: Math.floor(rect.width),
-          height: Math.floor(rect.height),
-        });
+        const nextWidth = Math.floor(rect.width);
+        const nextHeight = Math.floor(rect.height);
+        setContainerSize((prev) =>
+          prev.width === nextWidth && prev.height === nextHeight
+            ? prev
+            : { width: nextWidth, height: nextHeight }
+        );
       }
     });
 
@@ -70,7 +71,7 @@ export function GameplayPage() {
     }
   }, [isCompleted, currentLevel, saveProgress]);
 
-  // 罗盘移动处理（Web 端）
+  // Web 端：罗盘移动处理
   const handleCompassMove = useCallback(
     (position: Position) => {
       if (!currentLevel || showEventModal) return;
@@ -78,13 +79,31 @@ export function GameplayPage() {
       const speed = getCompassSpeed(position, currentLevel.shaPoints);
       updateCompass(position, speed);
 
-      // 检测煞点
       const detectedSha = detectShaPoint(position, currentLevel.shaPoints);
       if (detectedSha && speed === 'super-fast') {
         activateSha(detectedSha);
       }
     },
     [currentLevel, showEventModal, updateCompass, activateSha]
+  );
+
+  // Mobile 端：碰撞处理
+  const handleMobileCollision = useCallback(
+    (shaPoint: ShaPoint) => {
+      if (!currentLevel || showEventModal) return;
+      activateSha(shaPoint);
+    },
+    [currentLevel, showEventModal, activateSha]
+  );
+
+  // Mobile 端：持续更新罗盘速度（根据与煞气点距离）
+  const handleCompassSpeedChange = useCallback(
+    (speed: string) => {
+      if (speed !== compassSpeed) {
+        updateCompass(compassPosition, speed as 'normal' | 'fast' | 'super-fast');
+      }
+    },
+    [compassPosition, compassSpeed, updateCompass]
   );
 
   // 选项选择处理
@@ -104,7 +123,6 @@ export function GameplayPage() {
     [activeShaPoint, resolveSha, closeModal]
   );
 
-  // 无关卡数据
   if (!currentLevel) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-feng-bg-panel">
@@ -119,8 +137,7 @@ export function GameplayPage() {
     );
   }
 
-  // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
-  const handleStopPropagation = (e: React.PointerEvent | React.MouseEvent) => {
+  const handleStopPropagation = (e: PointerEvent | MouseEvent) => {
     e.stopPropagation();
   };
 
@@ -159,6 +176,7 @@ export function GameplayPage() {
       >
         {containerSize.width > 0 && containerSize.height > 0 ? (
           <GameStage
+            key={`${currentLevel.id}-${isMobile}`}
             width={containerSize.width}
             height={containerSize.height}
             coldImage={currentLevel.images.cold}
@@ -172,6 +190,8 @@ export function GameplayPage() {
             isMobile={isMobile}
             isCompleted={isCompleted}
             onCompassMove={isMobile ? undefined : handleCompassMove}
+            onMobileCollision={isMobile ? handleMobileCollision : undefined}
+            onCompassSpeedChange={isMobile ? handleCompassSpeedChange : undefined}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
@@ -183,7 +203,7 @@ export function GameplayPage() {
         {!showEventModal && !isCompleted && (
           <div className="pointer-events-none absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
             <p className="rounded-full bg-feng-bg-deep/80 px-4 py-2 font-pixel text-xs text-feng-text-light backdrop-blur-sm">
-              {isMobile ? 'DRAG ROOM · PINCH TO ZOOM' : 'DRAG COMPASS TO FIND SHA'}
+              {isMobile ? 'DRAG ROOM TO FIND SHA' : 'DRAG COMPASS TO FIND SHA'}
             </p>
           </div>
         )}

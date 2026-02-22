@@ -414,6 +414,7 @@ inset 0 1px 1px rgba(255, 255, 255, 0.08-0.1)
 - 煞气点需要透明点击区域
 - 添加新的菜单项 action 时，确保在 `devvit.json` 中添加对应映射
 - 不要使用 `@devvit/public-api` 中的 blocks 相关代码，本项目仅使用 Devvit web
+- **[重要] 图片生成模型**：始终使用 `gemini-3-pro-image-preview` (Nano Banana Pro)，禁止更改模型名称，这会严重影响游戏视觉体验
 
 ---
 

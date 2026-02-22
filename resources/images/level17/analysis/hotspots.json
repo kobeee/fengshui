@@ -1,0 +1,129 @@
+{
+  "room_analysis": {
+    "image_type": "Loft/复式公寓剖面图",
+    "total_sha_points": 5,
+    "analysis_summary": "该房间存在多个严重的风水煞气，主要集中在二楼卧室区域及楼梯下方。横梁压顶和镜冲床严重影响睡眠质量，楼梯下的杂物堆积和阴暗角落容易滋生阴气。"
+  },
+  "sha_points": [
+    {
+      "id": 1,
+      "name": "横梁压顶 (Beam Sha)",
+      "location": "二楼卧室床铺正上方",
+      "description": "巨大的木质横梁横跨在床铺上方，这是风水中的大忌，会给人造成心理压力，导致睡眠质量下降、头痛或运势受阻。",
+      "severity": "High",
+      "options": [
+        {
+          "content": "在横梁两端悬挂开口葫芦或五帝钱，或者移动床位避开横梁。",
+          "is_correct": true,
+          "reasoning": "葫芦有收纳病气煞气的作用，五帝钱可化解土煞；移开床位是物理避让的最直接方法。"
+        },
+        {
+          "content": "在横梁上安装镜子，将煞气反射回去。",
+          "is_correct": false,
+          "reasoning": "镜子在头顶会形成'天花板煞'，反而加重心理压力和光煞。"
+        },
+        {
+          "content": "在横梁下悬挂风铃，利用声音化解。",
+          "is_correct": false,
+          "reasoning": "卧室床头不宜挂风铃，容易招惹阴气，且声音会干扰睡眠。"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "镜冲床 (Mirror Sha)",
+      "location": "二楼卧室衣柜",
+      "description": "衣柜上的大镜子正对着床铺。人在睡眠时气场最弱，镜子反射会扰乱人体磁场，导致噩梦、失眠或精神恍惚。",
+      "severity": "High",
+      "options": [
+        {
+          "content": "睡觉时用厚布遮挡镜面，或者调整衣柜角度使其不照床。",
+          "is_correct": true,
+          "reasoning": "物理遮挡是最简单有效的化解方法，防止光煞反射。"
+        },
+        {
+          "content": "在床头放一面镜子，与衣柜镜子对冲。",
+          "is_correct": false,
+          "reasoning": "两镜相对会形成无限反射的混乱磁场，极度破坏风水。"
+        },
+        {
+          "content": "每天用盐水擦拭镜面。",
+          "is_correct": false,
+          "reasoning": "虽然盐水有清洁作用，但无法改变镜子反射气场的物理特性。"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "尖角煞 (Sharp Corner Sha)",
+      "location": "二楼衣柜边缘/隔断处",
+      "description": "家具的尖锐边角直冲生活动线或休息区，形成锋利的气场，容易引发口角是非或意外受伤。",
+      "severity": "Medium",
+      "options": [
+        {
+          "content": "在尖角前方放置高大的阔叶绿植进行遮挡化解。",
+          "is_correct": true,
+          "reasoning": "植物的生命力和叶片的圆润形态可以缓冲尖角带来的锐气。"
+        },
+        {
+          "content": "在尖角处悬挂一把剪刀以毒攻毒。",
+          "is_correct": false,
+          "reasoning": "悬挂利器会加重肃杀之气，增加血光之灾的风险。"
+        },
+        {
+          "content": "将尖角涂成红色以示警示。",
+          "is_correct": false,
+          "reasoning": "红色属火，会催旺尖角的火形煞气，导致情绪焦躁。"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "阴煞 (Yin Sha)",
+      "location": "二楼屋顶倾斜的阴暗角落",
+      "description": "屋顶角落光线不足，气流停滞，容易积聚阴气，导致居住者情绪低落或思维迟钝。",
+      "severity": "Medium",
+      "options": [
+        {
+          "content": "在此处放置长亮的喜马拉雅盐灯或增加照明。",
+          "is_correct": true,
+          "reasoning": "盐灯释放负离子且光线柔和，能驱除湿气阴气，提升阳气。"
+        },
+        {
+          "content": "放置一个鱼缸养鱼。",
+          "is_correct": false,
+          "reasoning": "鱼缸属水，在阴暗角落放置水体会加重湿气和阴气。"
+        },
+        {
+          "content": "堆放旧书和杂物填满空间。",
+          "is_correct": false,
+          "reasoning": "杂物会阻碍气流流通，使阴气更加凝滞。"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "楼梯下煞 (Under-Stairs Sha)",
+      "location": "一楼楼梯下方",
+      "description": "楼梯下方空间压抑且堆满杂物，气场杂乱。此处若不处理，容易影响家运和财运。",
+      "severity": "Medium",
+      "options": [
+        {
+          "content": "清理杂物，保持整洁，并放置白水晶柱或泰山石。",
+          "is_correct": true,
+          "reasoning": "清理是基础，水晶或泰山石具有强大的净化和镇宅作用，可稳住气场。"
+        },
+        {
+          "content": "将此处改造成家庭办公桌。",
+          "is_correct": false,
+          "reasoning": "楼梯下气场压抑，在此办公会导致事业受阻，难以施展才华。"
+        },
+        {
+          "content": "放置垃圾桶以便利用空间。",
+          "is_correct": false,
+          "reasoning": "楼梯下本就气场不畅，放置污秽之物会加重煞气，影响健康。"
+        }
+      ]
+    }
+  ]
+}

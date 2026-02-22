@@ -1,0 +1,82 @@
+[
+  {
+    "id": "A",
+    "location": "办公桌区域",
+    "sha_qi_type": "背门煞",
+    "description": "办公椅背对着房间的开放区域和通道，背后无靠山，容易导致工作者心神不宁，缺乏安全感。",
+    "solutions": [
+      {
+        "option": "在办公桌上放置龙龟摆件",
+        "is_correct": true
+      },
+      {
+        "option": "在桌上摆放一盆仙人掌",
+        "is_correct": false
+      },
+      {
+        "option": "悬挂一串风铃",
+        "is_correct": false
+      }
+    ]
+  },
+  {
+    "id": "B",
+    "location": "沙发接待区",
+    "sha_qi_type": "横梁压顶",
+    "description": "巨大的横梁直接位于沙发正上方，会对坐在下面的人产生心理压力和压迫感，影响运势。",
+    "solutions": [
+      {
+        "option": "在横梁两端或下方挂葫芦",
+        "is_correct": true
+      },
+      {
+        "option": "放置一面镜子反射横梁",
+        "is_correct": false
+      },
+      {
+        "option": "在茶几上放招财猫",
+        "is_correct": false
+      }
+    ]
+  },
+  {
+    "id": "C",
+    "location": "角落杂物堆",
+    "sha_qi_type": "财位问题",
+    "description": "房间进门的对角线位置通常是明财位，此处堆满了杂物和纸箱，导致财气无法聚集。",
+    "solutions": [
+      {
+        "option": "清理杂物并摆放招财摆件",
+        "is_correct": true
+      },
+      {
+        "option": "挂上厚重的深色窗帘",
+        "is_correct": false
+      },
+      {
+        "option": "悬挂八卦镜对着杂物",
+        "is_correct": false
+      }
+    ]
+  },
+  {
+    "id": "E",
+    "location": "卫生间门口",
+    "sha_qi_type": "味煞",
+    "description": "卫生间门敞开，且有明显的异味线条飘出，污秽之气直冲外部空间，影响健康和气场。",
+    "solutions": [
+      {
+        "option": "在卫生间门上悬挂门帘",
+        "is_correct": true
+      },
+      {
+        "option": "在门口放置一把剪刀",
+        "is_correct": false
+      },
+      {
+        "option": "在门口摆放鱼缸",
+        "is_correct": false
+      }
+    ]
+  }
+]

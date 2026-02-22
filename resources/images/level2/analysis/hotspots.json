@@ -1,0 +1,35 @@
+{
+  "levelId": "level-2",
+  "levelName": "猫奴的卧室",
+  "shaPoints": [
+    {
+      "id": "sha-001",
+      "type": "mirror_sha",
+      "position": {
+        "x": 0.28,
+        "y": 0.48
+      },
+      "radius": 0.1,
+      "title": "镜冲床",
+      "description": "衣柜上的全身镜正对床铺侧面，夜间容易反射倒影造成心理不安，影响睡眠质量。",
+      "correctItem": null,
+      "options": [
+        {
+          "id": "opt-001-a",
+          "label": "用厚布遮挡镜面",
+          "correct": false
+        },
+        {
+          "id": "opt-001-b",
+          "label": "旋转镜子方向",
+          "correct": true
+        },
+        {
+          "id": "opt-001-c",
+          "label": "在镜前摆放猫爬架",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

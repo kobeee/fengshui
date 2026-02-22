@@ -1,0 +1,92 @@
+{
+  "analysis_report": {
+    "location": "办公室",
+    "overall_status": "凶 (煞气较重，环境杂乱)",
+    "sha_qi_points": [
+      {
+        "id": "A",
+        "name": "横梁压顶",
+        "location": "办公桌正上方",
+        "description": "巨大的混凝土横梁直接横跨在办公座位上方，给人造成视觉和心理上的沉重压迫感。",
+        "severity": "高",
+        "solutions": [
+          {
+            "text": "在横梁下方悬挂开口葫芦或五帝钱化解煞气",
+            "is_correct": true
+          },
+          {
+            "text": "在桌面上放置一面镜子向上反射",
+            "is_correct": false
+          },
+          {
+            "text": "将横梁漆成红色以增加喜庆感",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "name": "柱角煞",
+        "location": "承重柱边缘",
+        "description": "方形承重柱的尖锐棱角直冲办公区域，形成锐气切割磁场，易导致人际冲突或意外伤害。",
+        "severity": "中",
+        "solutions": [
+          {
+            "text": "在柱角前方摆放高大的阔叶绿植进行遮挡",
+            "is_correct": true
+          },
+          {
+            "text": "悬挂猛兽图片以暴制暴",
+            "is_correct": false
+          },
+          {
+            "text": "在柱子上钉钉子",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "name": "电线煞 (火蛇煞)",
+        "location": "地面通道",
+        "description": "大量电源线和数据线杂乱缠绕在地面，如同蛇群盘踞，扰乱气场，且存在安全隐患。",
+        "severity": "中",
+        "solutions": [
+          {
+            "text": "理顺收纳线路，并放置铜葫芦吸收紊乱气场",
+            "is_correct": true
+          },
+          {
+            "text": "在电线堆中放置一盆水",
+            "is_correct": false
+          },
+          {
+            "text": "用剪刀将不用的电线剪断留在原地",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "name": "财位受污",
+        "location": "房间角落 (明财位)",
+        "description": "对角线的角落位置堆满了废旧纸箱、杂物以及枯死的植物，导致财位污秽，财运流失。",
+        "severity": "高",
+        "solutions": [
+          {
+            "text": "彻底清理杂物，移除枯死植物，摆放招财摆件",
+            "is_correct": true
+          },
+          {
+            "text": "在此处放置开口的垃圾桶",
+            "is_correct": false
+          },
+          {
+            "text": "保持现状，增加更多杂物压住财气",
+            "is_correct": false
+          }
+        ]
+      }
+    ]
+  }
+}

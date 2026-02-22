@@ -1,0 +1,24 @@
+{
+  "name": "fengshui-img-gen",
+  "version": "1.0.0",
+  "description": "关卡图片生成工具 - 使用 Gemini API",
+  "type": "module",
+  "scripts": {
+    "gen": "tsx src/index.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^0.14.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0",
+    "ora": "^8.0.0",
+    "undici": "^7.22.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "levelId": "level-16",
+  "levelName": "瑜伽工作室",
+  "shaPoints": [
+    {
+      "id": "sha-016-01",
+      "type": "wealth_sha",
+      "position": {
+        "x": 0.05,
+        "y": 0.42
+      },
+      "radius": 0.08,
+      "title": "财位受损",
+      "description": "入口接待处作为明财位，摆放了破损的喷泉和杂物，导致财气流失。",
+      "correctItem": "money-toad",
+      "options": [
+        {
+          "id": "opt-016-01-a",
+          "label": "直接扔掉喷泉",
+          "correct": false
+        },
+        {
+          "id": "opt-016-01-b",
+          "label": "清理并放置金蟾招财",
+          "correct": true
+        },
+        {
+          "id": "opt-016-01-c",
+          "label": "放置鱼缸",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-016-02",
+      "type": "yin_sha",
+      "position": {
+        "x": 0.38,
+        "y": 0.22
+      },
+      "radius": 0.08,
+      "title": "阴煞",
+      "description": "储物架所在的角落光线昏暗，容易积聚阴气，让人感到压抑。",
+      "correctItem": "salt-lamp",
+      "options": [
+        {
+          "id": "opt-016-02-a",
+          "label": "放置盐灯增加阳气",
+          "correct": true
+        },
+        {
+          "id": "opt-016-02-b",
+          "label": "堆放更多杂物",
+          "correct": false
+        },
+        {
+          "id": "opt-016-02-c",
+          "label": "安装强力排风扇",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-016-03",
+      "type": "sharp_corner_sha",
+      "position": {
+        "x": 0.39,
+        "y": 0.68
+      },
+      "radius": 0.07,
+      "title": "尖角煞",
+      "description": "木箱的尖锐棱角直冲瑜伽垫位置，会产生煞气刺伤练习者的气场。",
+      "correctItem": "plant-broad",
+      "options": [
+        {
+          "id": "opt-016-03-a",
+          "label": "用锯子锯掉如角",
+          "correct": false
+        },
+        {
+          "id": "opt-016-03-b",
+          "label": "移动瑜伽垫",
+          "correct": false
+        },
+        {
+          "id": "opt-016-03-c",
+          "label": "放置阔叶绿植化解",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "sha-016-04",
+      "type": "window_sha",
+      "position": {
+        "x": 0.72,
+        "y": 0.25
+      },
+      "radius": 0.1,
+      "title": "窗户煞",
+      "description": "巨大的落地窗导致气流过快消散，且外界强光直射，无法聚气。",
+      "correctItem": "curtain",
+      "options": [
+        {
+          "id": "opt-016-04-a",
+          "label": "安装窗帘遮挡",
+          "correct": true
+        },
+        {
+          "id": "opt-016-04-b",
+          "label": "封死窗户",
+          "correct": false
+        },
+        {
+          "id": "opt-016-04-c",
+          "label": "放置八卦镜",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-016-05",
+      "type": "smell_sha",
+      "position": {
+        "x": 0.93,
+        "y": 0.65
+      },
+      "radius": 0.08,
+      "title": "味煞",
+      "description": "更衣室门口散发着污浊之气，直冲瑜伽练习区，破坏空气场。",
+      "correctItem": "curtain",
+      "options": [
+        {
+          "id": "opt-016-05-a",
+          "label": "喷洒大量香水",
+          "correct": false
+        },
+        {
+          "id": "opt-016-05-b",
+          "label": "挂门帘阻挡污气",
+          "correct": true
+        },
+        {
+          "id": "opt-016-05-c",
+          "label": "拆除更衣室门",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

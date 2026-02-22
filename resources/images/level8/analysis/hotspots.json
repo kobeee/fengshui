@@ -1,0 +1,93 @@
+{
+  "levelId": "level-8",
+  "levelName": "开放式厨房公寓",
+  "shaPoints": [
+    {
+      "id": "sha-001",
+      "type": "kitchen_sha",
+      "position": {
+        "x": 0.18,
+        "y": 0.42
+      },
+      "radius": 0.1,
+      "title": "灶台冲煞",
+      "description": "开放式厨房的灶台毫无遮挡，火气直冲客厅区域，会导致财气无法聚集。",
+      "correctItem": "screen",
+      "options": [
+        {
+          "id": "opt-001-a",
+          "label": "放置屏风进行阻隔",
+          "correct": true
+        },
+        {
+          "id": "opt-001-b",
+          "label": "将灶台移到阳台",
+          "correct": false
+        },
+        {
+          "id": "opt-001-c",
+          "label": "在灶台旁放灭火器",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-002",
+      "type": "door_clash",
+      "position": {
+        "x": 0.58,
+        "y": 0.3
+      },
+      "radius": 0.12,
+      "title": "穿堂煞",
+      "description": "巨大的落地阳台门直通室内，气流直进直出，无法藏风聚气。",
+      "correctItem": "plant-broad",
+      "options": [
+        {
+          "id": "opt-002-a",
+          "label": "放置阔叶绿植聚气",
+          "correct": true
+        },
+        {
+          "id": "opt-002-b",
+          "label": "把门封死",
+          "correct": false
+        },
+        {
+          "id": "opt-002-c",
+          "label": "挂一面镜子反射",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-003",
+      "type": "beam_sha",
+      "position": {
+        "x": 0.62,
+        "y": 0.72
+      },
+      "radius": 0.1,
+      "title": "横梁压顶",
+      "description": "客厅沙发位于房屋结构梁下方（或受天花板压迫），长期坐卧会造成心理压力。",
+      "correctItem": "gourd",
+      "options": [
+        {
+          "id": "opt-003-a",
+          "label": "悬挂葫芦化解煞气",
+          "correct": true
+        },
+        {
+          "id": "opt-003-b",
+          "label": "把沙发腿锯短",
+          "correct": false
+        },
+        {
+          "id": "opt-003-c",
+          "label": "在沙发上放抱枕",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

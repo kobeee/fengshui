@@ -8,7 +8,7 @@ export function distance(a: Position, b: Position): number {
 }
 
 /**
- * 检测罗盘是否在煞点范围内
+ * 检测罗盘是否在煞点核心范围内（触发弹窗）
  * @returns 返回最近的核心范围内煞点，或 null
  */
 export function detectShaPoint(
@@ -26,7 +26,8 @@ export function detectShaPoint(
     .sort((a, b) => a.dist - b.dist);
 
   const closest = sorted[0];
-  if (closest && closest.dist < closest.sha.radius) {
+  // 核心区域阈值与 super-fast 一致（0.4 倍半径）
+  if (closest && closest.dist < closest.sha.radius * 0.4) {
     return closest.sha;
   }
 
@@ -36,6 +37,11 @@ export function detectShaPoint(
 /**
  * 计算罗盘旋转速度
  * 根据罗盘与煞点的距离返回速度等级
+ * 
+ * 分层触发：
+ * - super-fast: 核心区域，触发弹窗
+ * - fast: 边缘区域，只快转不弹窗
+ * - normal: 远离区域，左右摇摆
  */
 export function getCompassSpeed(
   compassPos: Position,
@@ -46,12 +52,12 @@ export function getCompassSpeed(
   for (const sha of unresolvedPoints) {
     const dist = distance(compassPos, sha.position);
 
-    // 核心区域 - 超快旋转
-    if (dist < sha.radius * 0.6) {
+    // 核心区域 - 超快旋转 + 弹窗（更近才触发）
+    if (dist < sha.radius * 0.4) {
       return 'super-fast';
     }
-    // 边缘区域 - 快速旋转
-    if (dist < sha.radius * 1.2) {
+    // 边缘区域 - 快速旋转（不弹窗，缩小范围避免误触发）
+    if (dist < sha.radius * 0.8) {
       return 'fast';
     }
   }

@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-// 启用 unsafe-eval 支持（Reddit iframe 环境需要）- 必须在 pixi.js 其他导入之前
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import 'pixi.js/unsafe-eval';
 import {
   Application,
@@ -14,7 +13,6 @@ import {
 import type { Position, ShaPoint, CompassSpeed } from '../types/game';
 import { ParticleSystem, createVictoryParticles } from './ParticleSystem';
 
-// 罗盘图片路径
 const LUOPAN_PAN_IMAGE = '/images/shared/luopan/pan.png';
 const LUOPAN_ZHEN_IMAGE = '/images/shared/luopan/zhen.png';
 
@@ -36,6 +34,8 @@ type GameStageProps = {
   isMobile: boolean;
   isCompleted: boolean;
   onCompassMove?: ((position: Position) => void) | undefined;
+  onMobileCollision?: ((shaPoint: ShaPoint) => void) | undefined;
+  onCompassSpeedChange?: ((speed: CompassSpeed) => void) | undefined;
 };
 
 export function GameStage({
@@ -52,30 +52,68 @@ export function GameStage({
   isMobile,
   isCompleted,
   onCompassMove,
+  onMobileCollision,
+  onCompassSpeedChange,
 }: GameStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
   const compassRef = useRef<Container | null>(null);
   const needleRef = useRef<Sprite | null>(null);
+  const roomContainerRef = useRef<Container | null>(null);
   const shaSpritesRef = useRef<Map<string, Container>>(new Map());
   const itemSpritesRef = useRef<Map<string, Sprite>>(new Map());
   const particleSystemRef = useRef<ParticleSystem | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Mobile 端：房间偏移量和缩放
+  const roomOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const roomScaleRef = useRef<number>(1);
+  // 图片原始尺寸（用于 Mobile 端煞气点位置计算）
+  const imageDimensionsRef = useRef<{ width: number; height: number }>({ width: 0, height: 0 });
+  // 防止重复触发碰撞
+  const triggeredShaRef = useRef<Set<string>>(new Set());
+  // 动画状态 ref（持久保存，避免 compassSpeed 变化时重置）
+  const swingTimeRef = useRef<number>(0);
+  const rotationRef = useRef<number>(0);
+  const sizeRef = useRef<{ width: number; height: number }>({ width, height });
+  const compassSpeedRef = useRef<CompassSpeed>(compassSpeed);
+  const onCompassMoveRef = useRef<typeof onCompassMove>(onCompassMove);
+  const onMobileCollisionRef = useRef<typeof onMobileCollision>(onMobileCollision);
+  const onCompassSpeedChangeRef = useRef<typeof onCompassSpeedChange>(onCompassSpeedChange);
 
-  // 罗盘旋转速度
+  useEffect(() => {
+    sizeRef.current = { width, height };
+  }, [width, height]);
+
+  useEffect(() => {
+    compassSpeedRef.current = compassSpeed;
+  }, [compassSpeed]);
+
+  useEffect(() => {
+    onCompassMoveRef.current = onCompassMove;
+  }, [onCompassMove]);
+
+  useEffect(() => {
+    onMobileCollisionRef.current = onMobileCollision;
+  }, [onMobileCollision]);
+
+  useEffect(() => {
+    onCompassSpeedChangeRef.current = onCompassSpeedChange;
+  }, [onCompassSpeedChange]);
+
   const getRotationSpeed = useCallback((speed: CompassSpeed) => {
     switch (speed) {
       case 'super-fast':
-        return 0.15;
+        return 0.25; // 更快的转速
       case 'fast':
-        return 0.05;
+        return 0.12; // 加快的转速
       default:
         return 0.02;
     }
   }, []);
 
-  // PixiJS 应用初始化 - 只在 canvas 和尺寸有效时运行
+  // 主初始化 useEffect - 只在关键依赖变化时重新初始化
+  // 注意：compassPosition 和 onCompassMove 不应该触发重新初始化
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || width <= 0 || height <= 0) {
@@ -83,19 +121,21 @@ export function GameStage({
       return;
     }
 
-    // 如果已经初始化，跳过
     if (appRef.current) {
       console.log('[GameStage] Already initialized, skipping');
       return;
     }
 
     let mounted = true;
+    const triggeredSha = triggeredShaRef.current;
+    const shaSprites = shaSpritesRef.current;
+    const itemSprites = itemSpritesRef.current;
+    const cleanupFns: Array<() => void> = [];
 
     const initApp = async () => {
-      console.log('[GameStage] Starting init with size:', width, 'x', height);
+      console.log('[GameStage] Starting init with size:', width, 'x', height, 'isMobile:', isMobile);
       
       try {
-        // 创建 PixiJS 应用
         const app = new Application();
         
         await app.init({
@@ -108,22 +148,20 @@ export function GameStage({
         });
 
         if (!mounted) {
-          app.destroy(true);
+          app.destroy(false);
           return;
         }
 
         appRef.current = app;
         console.log('[GameStage] PixiJS app initialized');
 
-        // 创建房间容器
         const roomContainer = new Container();
         roomContainer.label = 'roomContainer';
         app.stage.addChild(roomContainer);
+        roomContainerRef.current = roomContainer;
 
-        // 加载图片 - 带超时处理和备用方案
         console.log('[GameStage] Loading images:', coldImage, warmImage);
         
-        // 备用加载方案：使用原生 Image + Texture.from
         const loadImageFallback = (url: string): Promise<Texture> => {
           return new Promise((resolve, reject) => {
             const img = new Image();
@@ -141,7 +179,6 @@ export function GameStage({
           });
         };
 
-        // 首先尝试初始化 Assets
         try {
           await Assets.init({ manifest: { bundles: [] } });
         } catch {
@@ -159,12 +196,10 @@ export function GameStage({
             return result as Texture;
           } catch (err) {
             console.warn('[GameStage] Assets.load failed, trying fallback for:', url, err);
-            // 如果 Assets.load 失败，使用备用方案
             return loadImageFallback(url);
           }
         };
 
-        // 加载罗盘图片
         let panTexture: Texture | null = null;
         let zhenTexture: Texture | null = null;
         try {
@@ -175,7 +210,6 @@ export function GameStage({
           console.log('[GameStage] Luopan images loaded successfully');
         } catch (loadErr) {
           console.warn('[GameStage] Luopan images load failed, will use fallback:', loadErr);
-          // 继续执行，后续会使用备用绘制
         }
 
         let coldTexture: Texture, warmTexture: Texture;
@@ -192,23 +226,46 @@ export function GameStage({
 
         if (!mounted) return;
 
-        // 创建房间精灵
+        // 创建房间精灵 - Mobile 端保持原始尺寸，Web 端适配屏幕
         const coldSprite = new Sprite(coldTexture);
         coldSprite.label = 'coldRoom';
-        coldSprite.width = width;
-        coldSprite.height = height;
-        roomContainer.addChild(coldSprite);
-
+        
         const warmSprite = new Sprite(warmTexture);
         warmSprite.label = 'warmRoom';
-        warmSprite.width = width;
-        warmSprite.height = height;
         warmSprite.alpha = 0;
+
+        if (isMobile) {
+          // Mobile 端：保持图片原始尺寸，居中显示
+          const imgWidth = coldTexture.width;
+          const imgHeight = coldTexture.height;
+          coldSprite.x = 0;
+          coldSprite.y = 0;
+          warmSprite.x = 0;
+          warmSprite.y = 0;
+          
+          // 保存图片原始尺寸（用于煞气点位置计算）
+          imageDimensionsRef.current = { width: imgWidth, height: imgHeight };
+          
+          // 初始位置：让图片居中（图片中心对准屏幕中心）
+          roomContainer.x = (width - imgWidth) / 2;
+          roomContainer.y = (height - imgHeight) / 2;
+          roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
+        } else {
+          // Web 端：图片适配屏幕尺寸
+          coldSprite.width = width;
+          coldSprite.height = height;
+          warmSprite.width = width;
+          warmSprite.height = height;
+          // Web 端不需要 imageDimensions，但设置一下以防万一
+          imageDimensionsRef.current = { width, height };
+        }
+
+        roomContainer.addChild(coldSprite);
         roomContainer.addChild(warmSprite);
 
         console.log('[GameStage] Images loaded and sprites created');
 
-        // 创建罗盘（使用图片或备用绘制）
+        // 创建罗盘
         const compassResult = createLuopanCompass(panTexture, zhenTexture);
         const compass = compassResult.container;
         compass.label = 'compass';
@@ -216,45 +273,97 @@ export function GameStage({
         app.stage.addChild(compass);
         compassRef.current = compass;
         needleRef.current = compassResult.needle;
-        compass.x = width / 2;
-        compass.y = height / 2;
+        
+        // 设置罗盘初始位置
+        if (isMobile) {
+          compass.x = width / 2;
+          compass.y = height / 2;
+        } else {
+          compass.x = compassPosition.x * width;
+          compass.y = compassPosition.y * height;
+        }
 
-        // 创建粒子系统
         particleSystemRef.current = createVictoryParticles(app.stage);
 
-        // 设置拖拽交互（仅 Web 端）
-        if (!isMobile && onCompassMove) {
+        app.stage.eventMode = 'static';
+
+        // 设置交互模式（根据 isMobile）
+        if (isMobile) {
+          // Mobile 端：拖拽房间容器 + 双指缩放
           let isDragging = false;
-          const dragOffset = { x: 0, y: 0 };
+          const dragStart = { x: 0, y: 0 };
+          const roomStart = { x: 0, y: 0 };
 
-          // 重要：必须在添加事件监听之前设置 eventMode
-          app.stage.eventMode = 'static';
+          roomContainer.eventMode = 'static';
 
-          compass.on('pointerdown', (e: { globalX: number; globalY: number }) => {
+          const handleRoomPointerDown = (e: { globalX: number; globalY: number }) => {
             isDragging = true;
-            dragOffset.x = e.globalX - compass.x;
-            dragOffset.y = e.globalY - compass.y;
-          });
+            dragStart.x = e.globalX;
+            dragStart.y = e.globalY;
+            roomStart.x = roomContainer.x;
+            roomStart.y = roomContainer.y;
+          };
 
-          app.stage.on('pointermove', (e: { globalX: number; globalY: number }) => {
+          const handleStagePointerMove = (e: { globalX: number; globalY: number }) => {
             if (!isDragging) return;
             
-            const newX = e.globalX - dragOffset.x;
-            const newY = e.globalY - dragOffset.y;
+            const dx = e.globalX - dragStart.x;
+            const dy = e.globalY - dragStart.y;
             
-            const newPos: Position = {
-              x: Math.max(0, Math.min(1, newX / width)),
-              y: Math.max(0, Math.min(1, newY / height)),
-            };
-            onCompassMove(newPos);
-          });
+            // 允许自由拖拽，没有范围限制（图片可以完全拖出屏幕）
+            roomContainer.x = roomStart.x + dx;
+            roomContainer.y = roomStart.y + dy;
+            
+            roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
+          };
 
           const stopDrag = () => {
             isDragging = false;
           };
 
+          roomContainer.on('pointerdown', handleRoomPointerDown);
+          app.stage.on('pointermove', handleStagePointerMove);
           app.stage.on('pointerup', stopDrag);
           app.stage.on('pointerupoutside', stopDrag);
+
+          // 双指缩放支持（通过 wheel 事件模拟）
+          const handleWheel = (e: WheelEvent) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            const newScale = Math.max(0.5, Math.min(2, roomScaleRef.current + delta));
+            roomScaleRef.current = newScale;
+            roomContainer.scale.set(newScale);
+          };
+
+          canvas.addEventListener('wheel', handleWheel, { passive: false });
+
+          cleanupFns.push(() => {
+            roomContainer.off('pointerdown', handleRoomPointerDown);
+            app.stage.off('pointermove', handleStagePointerMove);
+            app.stage.off('pointerup', stopDrag);
+            app.stage.off('pointerupoutside', stopDrag);
+            canvas.removeEventListener('wheel', handleWheel);
+          });
+
+        } else {
+          // Web 端：点击屏幕位置移动罗盘
+          // 使用 ref 存储最新的 onCompassMove 回调，避免依赖变化触发重新初始化
+          const handleStagePointerDown = (e: { globalX: number; globalY: number }) => {
+            const stageWidth = sizeRef.current.width;
+            const stageHeight = sizeRef.current.height;
+            if (stageWidth <= 0 || stageHeight <= 0) return;
+            const newPos: Position = {
+              x: Math.max(0, Math.min(1, e.globalX / stageWidth)),
+              y: Math.max(0, Math.min(1, e.globalY / stageHeight)),
+            };
+            onCompassMoveRef.current?.(newPos);
+          };
+
+          app.stage.on('pointerdown', handleStagePointerDown);
+
+          cleanupFns.push(() => {
+            app.stage.off('pointerdown', handleStagePointerDown);
+          });
         }
 
         if (mounted) {
@@ -273,103 +382,104 @@ export function GameStage({
     void initApp();
 
     return () => {
-      console.log('[GameStage] Cleanup');
+      console.log('[GameStage] Cleanup - key changed, unmounting');
       mounted = false;
-      if (appRef.current) {
+      cleanupFns.forEach((fn) => {
         try {
-          appRef.current.destroy(true, { children: true });
+          fn();
+        } catch {
+          // ignore
+        }
+      });
+      
+      const app = appRef.current;
+      if (app) {
+        // 先停止 ticker，确保没有动画在运行
+        app.ticker.stop();
+        
+        try {
+          // 不移除 React 管理的 canvas，仅销毁 Pixi 资源
+          app.destroy(undefined, true);
         } catch {
           // ignore
         }
         appRef.current = null;
       }
-      setIsReady(false);
       compassRef.current = null;
       needleRef.current = null;
+      roomContainerRef.current = null;
+      roomOffsetRef.current = { x: 0, y: 0 };
+      roomScaleRef.current = 1;
+      particleSystemRef.current = null;
+      shaSprites.clear();
+      itemSprites.clear();
+      triggeredSha.clear();
     };
-  }, [width, height]); // 只在尺寸变化时重新初始化
+  // 只在真正需要重新初始化时触发
+  // coldImage/warmImage: 图片资源变化
+  // isMobile: 交互模式变化
+  // 注意：尺寸变化走 renderer.resize，不触发整实例销毁重建
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile, coldImage, warmImage]);
 
-  // 加载图片（当 coldImage/warmImage 变化时）
+  // 尺寸变化时仅调整 renderer，避免频繁销毁重建 Pixi 实例
   useEffect(() => {
     const app = appRef.current;
-    if (!app || !isReady) return;
+    if (!app || !isReady || width <= 0 || height <= 0) return;
 
-    const roomContainer = app.stage.getChildByLabel('roomContainer') as Container;
+    app.renderer.resize(width, height);
+
+    const roomContainer = roomContainerRef.current;
     if (!roomContainer) return;
 
-    void (async () => {
-      try {
-        // 备用加载方案
-        const loadImageFallback = (url: string): Promise<Texture> => {
-          return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
-              try {
-                const texture = Texture.from(img);
-                resolve(texture);
-              } catch (err) {
-                reject(err);
-              }
-            };
-            img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
-            img.src = url;
-          });
-        };
+    const coldRoom = roomContainer.getChildByLabel('coldRoom') as Sprite | null;
+    const warmRoom = roomContainer.getChildByLabel('warmRoom') as Sprite | null;
 
-        const loadWithTimeout = async (url: string, timeoutMs = 10000): Promise<Texture> => {
-          try {
-            const result = await Promise.race([
-              Assets.load(url),
-              new Promise<never>((_, reject) => 
-                setTimeout(() => reject(new Error(`Loading ${url} timeout`)), timeoutMs)
-              )
-            ]);
-            return result as Texture;
-          } catch {
-            return loadImageFallback(url);
-          }
-        };
-
-        const [coldTexture, warmTexture] = await Promise.all([
-          loadWithTimeout(coldImage),
-          loadWithTimeout(warmImage),
-        ]);
-
-        roomContainer.removeChildren();
-
-        const coldSprite = new Sprite(coldTexture);
-        coldSprite.label = 'coldRoom';
-        coldSprite.width = width;
-        coldSprite.height = height;
-        roomContainer.addChild(coldSprite);
-
-        const warmSprite = new Sprite(warmTexture);
-        warmSprite.label = 'warmRoom';
-        warmSprite.width = width;
-        warmSprite.height = height;
-        warmSprite.alpha = 0;
-        roomContainer.addChild(warmSprite);
-      } catch (err) {
-        console.error('[GameStage] Failed to reload images:', err);
+    if (!isMobile) {
+      if (coldRoom && warmRoom) {
+        coldRoom.width = width;
+        coldRoom.height = height;
+        warmRoom.width = width;
+        warmRoom.height = height;
       }
-    })();
-  }, [coldImage, warmImage, width, height, isReady]);
+      roomContainer.x = 0;
+      roomContainer.y = 0;
+      roomContainer.scale.set(1);
+      roomOffsetRef.current = { x: 0, y: 0 };
+      roomScaleRef.current = 1;
+      imageDimensionsRef.current = { width, height };
+    }
 
-  // 动画循环
+    if (isMobile && compassRef.current) {
+      compassRef.current.x = width / 2;
+      compassRef.current.y = height / 2;
+    }
+  }, [width, height, isMobile, isReady]);
+
+  // 动画循环 + Mobile 端碰撞检测
   useEffect(() => {
     const app = appRef.current;
     if (!app || !isReady) return;
 
-    let rotation = 0;
     let animTime = 0;
 
     const animate = () => {
-      rotation += getRotationSpeed(compassSpeed);
-
-      // 只旋转指针，不旋转整个罗盘
+      // 罗盘指针动画
       if (needleRef.current) {
-        needleRef.current.rotation = rotation;
+        const currentCompassSpeed = compassSpeedRef.current;
+
+        if (currentCompassSpeed === 'normal') {
+          // 正常状态：左右缓慢摆动
+          swingTimeRef.current += 0.02;
+          // 使用 sin 函数实现 -45° 到 +45° 的摆动
+          needleRef.current.rotation = Math.sin(swingTimeRef.current) * (Math.PI / 4);
+          // 同步 rotation 值，保证从摆动切换到旋转时角度连续
+          rotationRef.current = needleRef.current.rotation;
+        } else {
+          // 靠近煞气点：快速旋转（从当前角度继续旋转）
+          rotationRef.current += getRotationSpeed(currentCompassSpeed);
+          needleRef.current.rotation = rotationRef.current;
+        }
       }
 
       shaSpritesRef.current.forEach((sprite) => {
@@ -380,14 +490,83 @@ export function GameStage({
       });
 
       particleSystemRef.current?.update();
+
+      // Mobile 端：检测罗盘与煞气点的碰撞 + 持续更新 compassSpeed
+      if (isMobile && compassRef.current && roomContainerRef.current) {
+        const compassX = compassRef.current.x;
+        const compassY = compassRef.current.y;
+        const roomOffset = roomOffsetRef.current;
+        const roomScale = roomScaleRef.current;
+        const imgDims = imageDimensionsRef.current;
+
+        const compassRadius = 35;
+
+        // 找出最近的煞气点和对应距离
+        let closestDistance = Infinity;
+        let newSpeed: CompassSpeed = 'normal';
+
+        shaPoints.forEach((sha) => {
+          if (sha.resolved) return;
+
+          // 计算煞气点在 canvas 上的实际位置
+          // 使用图片原始尺寸计算（sha.position 是相对于图片的比例值）
+          const shaCanvasX = sha.position.x * imgDims.width * roomScale + roomOffset.x;
+          const shaCanvasY = sha.position.y * imgDims.height * roomScale + roomOffset.y;
+
+          const dx = compassX - shaCanvasX;
+          const dy = compassY - shaCanvasY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          // 煞气点半径也需要基于图片尺寸计算
+          const shaRadius = sha.radius * Math.max(imgDims.width, imgDims.height) * roomScale;
+          const collisionThreshold = compassRadius + shaRadius;
+
+          if (dist < closestDistance) {
+            closestDistance = dist;
+
+            // 分层触发：先快转，更近才弹窗
+            // 核心区域 - 超快旋转 + 弹窗
+            if (dist < collisionThreshold * 0.4) {
+              newSpeed = 'super-fast';
+            }
+            // 边缘区域 - 快速旋转（不弹窗，缩小范围避免过于敏感）
+            else if (dist < collisionThreshold * 0.8) {
+              newSpeed = 'fast';
+            }
+          }
+
+          // 碰撞检测（触发弹窗）- 只在核心区域触发
+          if (dist < collisionThreshold * 0.4) {
+            if (!triggeredShaRef.current.has(sha.id)) {
+              triggeredShaRef.current.add(sha.id);
+              if (onMobileCollisionRef.current) {
+                console.log('[GameStage] Mobile collision detected:', sha.id);
+                onMobileCollisionRef.current(sha);
+              }
+            }
+          } else {
+            triggeredShaRef.current.delete(sha.id);
+          }
+        });
+
+        // 持续更新 compassSpeed
+        if (onCompassSpeedChangeRef.current && newSpeed !== compassSpeedRef.current) {
+          onCompassSpeedChangeRef.current(newSpeed);
+        }
+      }
     };
 
     app.ticker.add(animate);
 
     return () => {
-      app.ticker.remove(animate);
+      // 使用 appRef.current 而非局部 app 变量
+      // 因为 React cleanup 执行顺序不确定，主 useEffect 可能已将 appRef.current 设为 null
+      const currentApp = appRef.current;
+      if (currentApp) {
+        currentApp.ticker.remove(animate);
+      }
     };
-  }, [isReady, compassSpeed, getRotationSpeed]);
+  }, [isReady, getRotationSpeed, isMobile, shaPoints]);
 
   // 更新罗盘位置（Web 端）
   useEffect(() => {
@@ -398,11 +577,8 @@ export function GameStage({
 
   // 更新暖色图
   useEffect(() => {
-    const app = appRef.current;
-    if (!app || !isReady) return;
-
-    const roomContainer = app.stage.getChildByLabel('roomContainer') as Container;
-    if (!roomContainer) return;
+    const roomContainer = roomContainerRef.current;
+    if (!roomContainer || !isReady) return;
 
     const warmRoom = roomContainer.getChildByLabel('warmRoom') as Sprite;
     const coldRoom = roomContainer.getChildByLabel('coldRoom') as Sprite;
@@ -413,33 +589,41 @@ export function GameStage({
     }
   }, [showWarm, isReady]);
 
-  // 更新煞气精灵
+  // 更新煞气精灵（Mobile 端跟随房间移动）
   useEffect(() => {
     const app = appRef.current;
     if (!app || !isReady) return;
 
-    // 清除旧的煞气精灵
     shaSpritesRef.current.forEach((sprite) => {
-      app.stage.removeChild(sprite);
-    });
-    shaSpritesRef.current.clear();
-
-    // 添加新的煞气精灵
-    shaPoints.forEach((sha) => {
-      if (!sha.resolved) {
-        const sprite = createShaSprite(sha, width, height);
-        shaSpritesRef.current.set(sha.id, sprite);
-        app.stage.addChild(sprite);
+      // 从旧容器移除
+      if (sprite.parent) {
+        sprite.parent.removeChild(sprite);
       }
     });
-  }, [shaPoints, width, height, isReady]);
 
-  // 添加道具
+    // Mobile 端：煞气点添加到房间容器内
+    // Web 端：煞气点直接添加到 stage
+    const container = isMobile && roomContainerRef.current ? roomContainerRef.current : app.stage;
+
+    // Mobile 端使用图片原始尺寸，Web 端使用 canvas 尺寸
+    const imgDims = imageDimensionsRef.current;
+    const spriteWidth = isMobile && imgDims.width > 0 ? imgDims.width : width;
+    const spriteHeight = isMobile && imgDims.height > 0 ? imgDims.height : height;
+
+    shaPoints.forEach((sha) => {
+      if (!sha.resolved) {
+        const sprite = createShaSprite(sha, spriteWidth, spriteHeight);
+        shaSpritesRef.current.set(sha.id, sprite);
+        container.addChild(sprite);
+      }
+    });
+  }, [shaPoints, width, height, isReady, isMobile]);
+
+  // 添加道具（Mobile 端跟随房间移动）
   useEffect(() => {
     const app = appRef.current;
     if (!app || !isReady) return;
 
-    // 备用加载方案
     const loadImageFallback = (url: string): Promise<Texture> => {
       return new Promise((resolve, reject) => {
         const img = new Image();
@@ -465,8 +649,28 @@ export function GameStage({
       }
     };
 
+    const imgDims = imageDimensionsRef.current;
+    const itemBaseWidth = isMobile && imgDims.width > 0 ? imgDims.width : width;
+    const itemBaseHeight = isMobile && imgDims.height > 0 ? imgDims.height : height;
+    const activeShaIds = new Set(placedItems.map((item) => item.shaId));
+
+    itemSpritesRef.current.forEach((sprite, shaId) => {
+      if (!activeShaIds.has(shaId)) {
+        if (sprite.parent) {
+          sprite.parent.removeChild(sprite);
+        }
+        sprite.destroy();
+        itemSpritesRef.current.delete(shaId);
+      }
+    });
+
     placedItems.forEach((item) => {
-      if (itemSpritesRef.current.has(item.shaId)) return;
+      const existingSprite = itemSpritesRef.current.get(item.shaId);
+      if (existingSprite) {
+        existingSprite.x = item.position.x * itemBaseWidth;
+        existingSprite.y = item.position.y * itemBaseHeight;
+        return;
+      }
 
       const imagePath = itemImages[item.itemId];
       if (!imagePath) return;
@@ -474,18 +678,21 @@ export function GameStage({
       void loadTexture(imagePath).then((texture) => {
         if (!appRef.current) return;
         const sprite = new Sprite(texture);
-        sprite.x = item.position.x * width;
-        sprite.y = item.position.y * height;
+        sprite.x = item.position.x * itemBaseWidth;
+        sprite.y = item.position.y * itemBaseHeight;
         sprite.anchor.set(0.5);
         sprite.scale.set(0.5);
 
         itemSpritesRef.current.set(item.shaId, sprite);
-        appRef.current.stage.addChild(sprite);
+        
+        // Mobile 端：道具添加到房间容器内
+        const container = isMobile && roomContainerRef.current ? roomContainerRef.current : appRef.current.stage;
+        container.addChild(sprite);
       }).catch((err) => {
         console.error('[GameStage] Failed to load item image:', imagePath, err);
       });
     });
-  }, [placedItems, itemImages, width, height, isReady]);
+  }, [placedItems, itemImages, width, height, isReady, isMobile]);
 
   // 通关粒子效果
   useEffect(() => {
@@ -501,14 +708,12 @@ export function GameStage({
     }
   }, [isCompleted, width, height]);
 
-  // 阻止 PixiJS 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
   const handlePointerEvent = useCallback((e: React.PointerEvent) => {
     e.stopPropagation();
   }, []);
 
   return (
     <div className="relative h-full w-full">
-      {/* 始终渲染 canvas */}
       <canvas
         ref={canvasRef}
         className="block h-full w-full cursor-grab active:cursor-grabbing"
@@ -521,14 +726,12 @@ export function GameStage({
         onPointerCancel={handlePointerEvent}
       />
       
-      {/* 加载状态覆盖层 */}
       {!isReady && !error && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0e1116]">
           <p className="font-pixel text-xs text-feng-text-dim animate-pulse">加载中...</p>
         </div>
       )}
       
-      {/* 错误状态覆盖层 */}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#0e1116]">
           <div className="text-center p-4">
@@ -547,38 +750,28 @@ export function GameStage({
   );
 }
 
-/**
- * 创建像素风罗盘
- * - 底盘（pan.png）：保持静止
- * - 指针（zhen.png）：独立旋转
- */
 function createLuopanCompass(
   panTexture: Texture | null,
   zhenTexture: Texture | null
 ): { container: Container; needle: Sprite } {
   const container = new Container();
-  const compassRadius = 35; // 罗盘显示大小（调整后与场景物件协调）
+  const compassRadius = 35;
 
   let needle: Sprite;
 
   if (panTexture && zhenTexture) {
-    // 使用实际图片创建罗盘
-    // 底盘
     const panSprite = new Sprite(panTexture);
     panSprite.anchor.set(0.5);
     panSprite.width = compassRadius * 2;
     panSprite.height = compassRadius * 2;
     container.addChild(panSprite);
 
-    // 指针
     needle = new Sprite(zhenTexture);
     needle.anchor.set(0.5);
-    // 指针尺寸：宽度约为底盘的 40%，高度约为底盘的 75%
     needle.width = compassRadius * 0.4;
     needle.height = compassRadius * 1.5;
     container.addChild(needle);
   } else {
-    // 备用绘制方案（当图片加载失败时）
     const outer = new Graphics();
     outer.circle(0, 0, compassRadius);
     outer.fill(0x202736);
@@ -590,7 +783,6 @@ function createLuopanCompass(
     inner.stroke({ width: 1, color: 0xc4a06a });
     container.addChild(inner);
 
-    // 备用指针（使用 Graphics 绘制）
     const needleGraphics = new Graphics();
     needleGraphics.rect(-4, -compassRadius * 0.65, 8, compassRadius * 0.5);
     needleGraphics.fill(0xc4a06a);
@@ -612,7 +804,6 @@ function createLuopanCompass(
     label.y = compassRadius * 0.35;
     container.addChild(label);
 
-    // 备用方案下，needle 是一个空的 Sprite（用于兼容）
     needle = new Sprite();
     needle.label = 'needleFallback';
   }

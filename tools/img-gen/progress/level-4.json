@@ -1,0 +1,26 @@
+{
+  "level": "level-4",
+  "status": "in_progress",
+  "startTime": "2026-02-22T10:30:04.012Z",
+  "steps": {
+    "room_cold": {
+      "status": "pending"
+    },
+    "analysis": {
+      "status": "pending"
+    },
+    "items": {
+      "status": "pending",
+      "completed": [],
+      "pending": []
+    },
+    "room_warm": {
+      "status": "completed",
+      "timestamp": "2026-02-22T15:17:53.972Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level4/room-warm.png"
+    },
+    "docs_update": {
+      "status": "pending"
+    }
+  }
+}

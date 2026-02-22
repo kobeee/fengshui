@@ -1,0 +1,64 @@
+{
+  "levelId": "level-6",
+  "levelName": "创业工作室",
+  "shaPoints": [
+    {
+      "id": "sha-001",
+      "type": "back_door_sha",
+      "position": {
+        "x": 0.35,
+        "y": 0.68
+      },
+      "radius": 0.12,
+      "title": "背门煞",
+      "description": "前方工位的座椅背对大门，背后人来人往无靠山，容易导致心神不宁，招惹小人。",
+      "correctItem": "dragon-turtle",
+      "options": [
+        {
+          "id": "opt-001-a",
+          "label": "在桌上放置龙龟",
+          "correct": true
+        },
+        {
+          "id": "opt-001-b",
+          "label": "在门上挂风铃",
+          "correct": false
+        },
+        {
+          "id": "opt-001-c",
+          "label": "将椅子换成矮凳",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "sha-002",
+      "type": "pillar_sha",
+      "position": {
+        "x": 0.68,
+        "y": 0.55
+      },
+      "radius": 0.12,
+      "title": "柱角煞",
+      "description": "房间中央的承重柱尖角（标记B处）直冲办公桌区域，形成的尖角煞气会影响思维决策。",
+      "correctItem": "plant-broad",
+      "options": [
+        {
+          "id": "opt-002-a",
+          "label": "放置阔叶绿植挡煞",
+          "correct": true
+        },
+        {
+          "id": "opt-002-b",
+          "label": "在柱子上挂镜子",
+          "correct": false
+        },
+        {
+          "id": "opt-002-c",
+          "label": "把柱子涂成红色",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

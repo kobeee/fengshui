@@ -1,0 +1,114 @@
+{
+  "analysis": [
+    {
+      "id": "A",
+      "sha_qi_type": "路冲煞",
+      "description": "大门（A点）正对着外部的道路或长走廊，气流直冲入屋，容易导致居住者情绪不稳或发生意外。",
+      "solutions": [
+        {
+          "option": "放置石敢当",
+          "is_correct": true,
+          "reasoning": "根据知识库，泰山石敢当具有挡煞镇宅的作用，适合化解路冲。"
+        },
+        {
+          "option": "悬挂一串风铃",
+          "is_correct": false,
+          "reasoning": "风铃容易招惹阴气，且无法阻挡直冲的煞气。"
+        },
+        {
+          "option": "在大门安装透明玻璃",
+          "is_correct": false,
+          "reasoning": "透明玻璃会让煞气更无阻碍地进入室内，无法起到化解作用。"
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "sha_qi_type": "反弓煞",
+      "description": "落地窗（B点）外的高架道路呈弯曲状，且弯弓的凸面正对着房屋，形成'反弓无情'的格局。",
+      "solutions": [
+        {
+          "option": "在窗边放置高大绿植",
+          "is_correct": true,
+          "reasoning": "根据知识库，绿植可以起到缓冲视线和气场的作用，化解反弓煞的冲击。"
+        },
+        {
+          "option": "将窗帘全部拆除",
+          "is_correct": false,
+          "reasoning": "拆除窗帘会完全暴露煞气，加重影响。"
+        },
+        {
+          "option": "在窗户上挂一把剪刀",
+          "is_correct": false,
+          "reasoning": "挂剪刀属于凶器，不仅不能化解反弓煞，反而增加室内的戾气。"
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "sha_qi_type": "财位问题",
+      "description": "客厅角落的财位（C点）堆放了破碎的花瓶和杂乱的碎片，属于'财位受污'，严重影响财运。",
+      "solutions": [
+        {
+          "option": "清理杂物并放置招财摆件",
+          "is_correct": true,
+          "reasoning": "根据知识库，财位需要保持干净整洁，放置招财吉祥物可聚气生财。"
+        },
+        {
+          "option": "在此处放置重型健身器材",
+          "is_correct": false,
+          "reasoning": "重物压制财位会导致财运受阻，无法翻身。"
+        },
+        {
+          "option": "放置一个开口的垃圾桶",
+          "is_correct": false,
+          "reasoning": "垃圾桶放在财位是风水大忌，会将污秽之气带入财库。"
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "sha_qi_type": "门冲",
+      "description": "拱门与房间侧门（D点）形成直冲之势，或者门直冲沙发区域，气流直来直去，不利藏风聚气。",
+      "solutions": [
+        {
+          "option": "在中间设置屏风",
+          "is_correct": true,
+          "reasoning": "根据知识库，屏风可以改变气流方向，起到阻隔和缓冲的作用。"
+        },
+        {
+          "option": "在门上安装强光射灯",
+          "is_correct": false,
+          "reasoning": "强光不仅无法阻挡气流，反而会造成'光煞'，让人心神不宁。"
+        },
+        {
+          "option": "将门拆除做成空洞",
+          "is_correct": false,
+          "reasoning": "拆门会导致气场更加无法控制，失去家居的私密性和保护感。"
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "sha_qi_type": "壁炉煞",
+      "description": "壁炉（E点）位于客厅正中且火势看起来非常旺盛，若火气过重会破坏五行平衡，导致居住者脾气暴躁。",
+      "solutions": [
+        {
+          "option": "在周围放置盆栽绿植",
+          "is_correct": true,
+          "reasoning": "根据知识库，利用绿植的生气可以调节和平衡过旺的火气环境。"
+        },
+        {
+          "option": "向壁炉内添加更多木柴",
+          "is_correct": false,
+          "reasoning": "添加木柴只会助长火势，使煞气更重。"
+        },
+        {
+          "option": "在壁炉上方悬挂镜子",
+          "is_correct": false,
+          "reasoning": "镜子反射火光，会形成'火上加火'的视觉和心理暗示，加剧煞气。"
+        }
+      ]
+    }
+  ]
+}

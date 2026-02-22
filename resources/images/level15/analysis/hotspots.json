@@ -1,0 +1,103 @@
+{
+  "analysis_report": {
+    "location": "阁楼画室",
+    "total_issues": 5,
+    "sha_points": [
+      {
+        "id": "A",
+        "type": "横梁压顶",
+        "description": "粗大的木质横梁直接横跨在画架（主要工作区）上方，会给在此创作的人带来心理压力和运势压制。",
+        "solution_options": [
+          {
+            "text": "在横梁上悬挂铜葫芦化解煞气，或将画架移开横梁下方。",
+            "is_correct": true
+          },
+          {
+            "text": "在横梁上悬挂一串风铃。",
+            "is_correct": false
+          },
+          {
+            "text": "将横梁漆成鲜艳的红色以示吉利。",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "type": "尖角煞",
+        "description": "高大书柜的侧面棱角尖锐，直冲房间中央的休息区域（沙发位置），易造成意外伤害或口舌是非。",
+        "solution_options": [
+          {
+            "text": "在书柜尖角处摆放一盆高大的阔叶绿植进行遮挡缓冲。",
+            "is_correct": true
+          },
+          {
+            "text": "在尖角处悬挂一面镜子反射回去。",
+            "is_correct": false
+          },
+          {
+            "text": "在尖角处挂一把剪刀以毒攻毒。",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "type": "阴煞",
+        "description": "角落处光线昏暗，且堆放杂物，看起来阴冷潮湿，容易聚集负面能量，影响人的情绪和健康。",
+        "solution_options": [
+          {
+            "text": "清理杂物，并在该处放置一盏长亮的盐灯以提升阳气。",
+            "is_correct": true
+          },
+          {
+            "text": "在此处放置一个鱼缸养鱼。",
+            "is_correct": false
+          },
+          {
+            "text": "挂上一幅深色调的山水画。",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "type": "厕所门冲",
+        "description": "厕所门正对房间内部，且有肉眼可见的异味/秽气（绿色波浪线）散出，直冲工作区域，严重影响健康和财运。",
+        "solution_options": [
+          {
+            "text": "在厕所门上悬挂长门帘，平时保持关闭状态。",
+            "is_correct": true
+          },
+          {
+            "text": "将厕所门拆除，换成开放式拱门以通气。",
+            "is_correct": false
+          },
+          {
+            "text": "在厕所门口摆放一堆硬币。",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "E",
+        "type": "窗户煞",
+        "description": "巨大的工业窗户紧邻水池和工作台，虽然采光好，但会导致气流直来直去（气场不聚），且隐私性差，容易导致分心。",
+        "solution_options": [
+          {
+            "text": "安装厚实的窗帘或百叶窗，需要聚气时拉上。",
+            "is_correct": true
+          },
+          {
+            "text": "把窗户玻璃全部敲碎保持通风。",
+            "is_correct": false
+          },
+          {
+            "text": "在窗台上放置一面八卦镜对着屋内。",
+            "is_correct": false
+          }
+        ]
+      }
+    ]
+  }
+}

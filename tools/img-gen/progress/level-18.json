@@ -1,0 +1,40 @@
+{
+  "level": "level-18",
+  "status": "completed",
+  "startTime": "2026-02-22T11:47:43.381Z",
+  "steps": {
+    "room_cold": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:48:05.919Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level18/room-cold.png"
+    },
+    "analysis": {
+      "status": "completed",
+      "timestamp": "2026-02-22T11:48:45.871Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level18/analysis/hotspots.json"
+    },
+    "items": {
+      "status": "completed",
+      "completed": [
+        "shan-hai-zhen",
+        "stone-tablet",
+        "plant-broad",
+        "pi-xiu"
+      ],
+      "pending": [
+        "screen"
+      ]
+    },
+    "room_warm": {
+      "status": "completed",
+      "timestamp": "2026-02-22T15:20:08.629Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/resources/images/level18/room-warm.png"
+    },
+    "docs_update": {
+      "status": "completed",
+      "timestamp": "2026-02-22T12:47:44.397Z",
+      "file": "/Users/elvis/Documents/codes/challenges/2026/Jan/fengshui/docs/design/game/level18/level-design.md"
+    }
+  },
+  "endTime": "2026-02-22T15:20:08.630Z"
+}
