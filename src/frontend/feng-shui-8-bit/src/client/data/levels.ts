@@ -5,65 +5,20 @@ import type { Level } from '../types/game';
  * 图片路径相对于 public/ 目录
  */
 
-// Level 1 煞点数据
+// Level 1 煞点数据 - 根据 resources/images/level1/analysis/hotspots.json
 const level1ShaPoints: Level['shaPoints'] = [
   {
     id: 'sha-001',
-    type: 'mirror_sha',
-    position: { x: 0.36, y: 0.28 },
-    radius: 0.08,
-    title: '镜冲床',
-    description: '落地镜直接正对床铺，容易在夜间惊扰心神，影响睡眠质量。',
-    correctItem: null,
-    options: [
-      { id: 'opt-001-a', label: '用布盖住镜子', correct: false },
-      { id: 'opt-001-b', label: '旋转镜子方向', correct: true },
-      { id: 'opt-001-c', label: '移动床的位置', correct: false },
-    ],
-    resolved: false,
-  },
-  {
-    id: 'sha-002',
     type: 'beam_sha',
-    position: { x: 0.58, y: 0.16 },
-    radius: 0.09,
+    position: { x: 0.5, y: 0.25 },
+    radius: 0.12,
     title: '横梁压顶',
-    description: '粗大的木质横梁横跨在床铺正上方，会给人造成潜意识的压迫感。',
+    description: '卧床正上方有一根巨大的深色木质横梁，直接压在床头位置。这在风水中被称为"横梁压顶"，容易给人造成心理压力，导致睡眠质量下降或头痛。',
     correctItem: 'gourd',
     options: [
-      { id: 'opt-002-a', label: '挂葫芦化解', correct: true },
-      { id: 'opt-002-b', label: '把横梁漆成白色', correct: false },
-      { id: 'opt-002-c', label: '在床上放抱枕', correct: false },
-    ],
-    resolved: false,
-  },
-  {
-    id: 'sha-003',
-    type: 'door_clash',
-    position: { x: 0.5, y: 0.65 },
-    radius: 0.1,
-    title: '穿堂煞（门冲）',
-    description: '入户门与阳台落地窗成一条直线，气流直进直出，无法藏风聚气。',
-    correctItem: 'screen',
-    options: [
-      { id: 'opt-003-a', label: '放置屏风阻挡', correct: true },
-      { id: 'opt-003-b', label: '常年关闭窗帘', correct: false },
-      { id: 'opt-003-c', label: '门口放置地垫', correct: false },
-    ],
-    resolved: false,
-  },
-  {
-    id: 'sha-004',
-    type: 'sharp_corner_sha',
-    position: { x: 0.6, y: 0.52 },
-    radius: 0.08,
-    title: '尖角煞',
-    description: '三角形书架的锐利尖角直冲电脑椅座位，会造成精神紧张和注意力分散。',
-    correctItem: 'plant-broad',
-    options: [
-      { id: 'opt-004-a', label: '将书架锯平', correct: false },
-      { id: 'opt-004-b', label: '放置阔叶绿植', correct: true },
-      { id: 'opt-004-c', label: '贴上防撞贴纸', correct: false },
+      { id: 'opt-001-a', label: '在横梁两端挂葫芦', correct: true },
+      { id: 'opt-001-b', label: '在床边放置屏风', correct: false },
+      { id: 'opt-001-c', label: '在窗台上放置一面镜子', correct: false },
     ],
     resolved: false,
   },
@@ -90,19 +45,19 @@ export const levels: LevelWithAura[] = [
     nameEn: 'Dev Dungeon',
     mysteryName: '坎宫·暗室',
     mysteryHint: '水旺之地，阴气凝聚',
-    description: '雨夜单身公寓 · 4 煞气点',
-    shaCount: 4,
+    description: '雨夜单身公寓 · 1 煞气点',
+    shaCount: 1,
     locked: false,
     difficulty: 'easy',
-    estimatedTime: '5-8分钟',
+    estimatedTime: '2-3分钟',
     auraColor: {
       primary: '#4A6FA5',    // 冷蓝 - 水之气
       secondary: '#2D4A6F',
       glow: 'rgba(74, 111, 165, 0.15)',
     },
     images: {
-      cold: '/images/level1/room-cold-v1.0.png',
-      warm: '/images/level1/room-warm-v1.0.png',
+      cold: '/images/level1/room-cold.png',
+      warm: '/images/level1/room-warm.png',
     },
     items: {
       gourd: '/images/level1/items/gourd-v1.0.png',

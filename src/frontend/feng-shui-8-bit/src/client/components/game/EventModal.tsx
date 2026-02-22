@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ShaPoint, ShaOption } from '../../types/game';
 import { useResponsive } from '../../hooks/useResponsive';
 
@@ -9,6 +9,9 @@ type EventModalProps = {
   visible: boolean;
 };
 
+// 全局存储每个煞气点的上次选择（跨组件实例持久化）
+const lastSelections = new Map<string, string>();
+
 export function EventModal({
   shaPoint,
   onSelect,
@@ -18,32 +21,46 @@ export function EventModal({
   const { isMobile } = useResponsive();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
+  // 当弹窗打开时，恢复上次的选择
+  useEffect(() => {
+    if (visible && shaPoint) {
+      const lastSelection = lastSelections.get(shaPoint.id);
+      if (lastSelection) {
+        setSelectedOption(lastSelection);
+      } else {
+        setSelectedOption(null);
+      }
+    }
+  }, [visible, shaPoint]);
+
   if (!visible) return null;
+
+  const handleOptionClick = (optionId: string) => {
+    setSelectedOption(optionId);
+    // 记住选择
+    lastSelections.set(shaPoint.id, optionId);
+  };
 
   const handleConfirm = () => {
     if (selectedOption) {
       onSelect(selectedOption);
-      setSelectedOption(null);
+      // 不重置选择，保留记忆
     }
   };
 
   const handleClose = () => {
-    setSelectedOption(null);
     onClose();
   };
 
   const renderOption = (option: ShaOption) => {
-    const isSelected = selectedOption === option.id;
-    const baseClasses = 'w-full rounded-lg px-4 py-3 text-left font-pixel-cn text-sm transition-colors';
-    const selectedClasses = isSelected
-      ? ' bg-feng-accent/20 border-2 border-feng-accent text-feng-text-primary'
-      : ' bg-feng-bg-card text-feng-text-light hover:bg-feng-bg-muted';
+    // 移除选中状态的样式，保持一致的按钮外观
+    const baseClasses = 'w-full rounded-lg px-4 py-3 text-left font-pixel-cn text-sm transition-colors bg-feng-bg-card text-feng-text-light hover:bg-feng-bg-muted';
 
     return (
       <button
         key={option.id}
-        onClick={() => setSelectedOption(option.id)}
-        className={`${baseClasses}${selectedClasses}`}
+        onClick={() => handleOptionClick(option.id)}
+        className={baseClasses}
       >
         {option.label}
       </button>

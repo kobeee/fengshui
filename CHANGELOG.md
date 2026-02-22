@@ -1,3 +1,28 @@
+## [2026-02-22] Level 1 资源更新 + 游戏交互优化
+
+### 变更内容
+
+**Level 1 资源更新**：
+- 使用最新的 `resources/images/level1/` 图片资源
+- 更新煞点数据为 1 个煞气点（横梁压顶），与 `hotspots.json` 保持一致
+- 简化为入门教程关，预计时间 2-3 分钟
+
+**游戏交互优化**：
+1. **移除道具图片放置**：选择正确答案后不再将道具图片摆放到场景中
+2. **移除小黑球提示**：去掉关卡中的煞气精灵（小黑球）显示，玩家需通过罗盘自行探索
+3. **记住用户选择**：弹窗再次弹出时自动恢复上次选择的选项，方便重试
+4. **移除正确标记**：选项按钮不再显示选中状态样式，选择正确后无反馈提示
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/public/images/level1/room-cold.png` - 新图片
+- `src/frontend/feng-shui-8-bit/public/images/level1/room-warm.png` - 新图片
+- `src/frontend/feng-shui-8-bit/src/client/data/levels.ts` - 更新煞点数据
+- `src/frontend/feng-shui-8-bit/src/client/stores/GameContext.tsx` - 移除道具放置
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx` - 移除小黑球
+- `src/frontend/feng-shui-8-bit/src/client/components/game/EventModal.tsx` - 记住选择 + 移除标记
+
+---
+
 ## [2026-02-22] 关卡图片标记去除
 
 ### 变更内容

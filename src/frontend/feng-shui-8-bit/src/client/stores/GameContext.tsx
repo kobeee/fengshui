@@ -58,18 +58,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       const newCount = state.resolvedCount + 1;
       const isComplete = newCount === state.currentLevel.shaPoints.length;
 
-      const newPlacedItems =
-        action.itemId && state.activeShaPoint
-          ? [
-              ...state.placedItems,
-              {
-                shaId: action.shaId,
-                itemId: action.itemId,
-                position: state.activeShaPoint.position,
-              },
-            ]
-          : state.placedItems;
-
+      // 不再放置道具图片
       return {
         ...state,
         currentLevel: { ...state.currentLevel, shaPoints: updatedPoints },
@@ -78,7 +67,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         showEventModal: false,
         isCompleted: isComplete,
         showWarmImage: isComplete,
-        placedItems: newPlacedItems,
+        placedItems: [],
       };
     }
 

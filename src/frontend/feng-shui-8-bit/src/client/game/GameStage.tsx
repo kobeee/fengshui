@@ -461,8 +461,6 @@ export function GameStage({
     const app = appRef.current;
     if (!app || !isReady) return;
 
-    let animTime = 0;
-
     const animate = () => {
       // 罗盘指针动画
       if (needleRef.current) {
@@ -482,12 +480,7 @@ export function GameStage({
         }
       }
 
-      shaSpritesRef.current.forEach((sprite) => {
-        animTime += 0.02;
-        const baseY = (sprite as Container & { baseY?: number }).baseY ?? sprite.y;
-        (sprite as Container & { baseY?: number }).baseY = baseY;
-        sprite.y = baseY + Math.sin(animTime) * 3;
-      });
+      // 不再显示煞气精灵，移除动画逻辑
 
       particleSystemRef.current?.update();
 
@@ -589,35 +582,12 @@ export function GameStage({
     }
   }, [showWarm, isReady]);
 
-  // 更新煞气精灵（Mobile 端跟随房间移动）
-  useEffect(() => {
-    const app = appRef.current;
-    if (!app || !isReady) return;
-
-    shaSpritesRef.current.forEach((sprite) => {
-      // 从旧容器移除
-      if (sprite.parent) {
-        sprite.parent.removeChild(sprite);
-      }
-    });
-
-    // Mobile 端：煞气点添加到房间容器内
-    // Web 端：煞气点直接添加到 stage
-    const container = isMobile && roomContainerRef.current ? roomContainerRef.current : app.stage;
-
-    // Mobile 端使用图片原始尺寸，Web 端使用 canvas 尺寸
-    const imgDims = imageDimensionsRef.current;
-    const spriteWidth = isMobile && imgDims.width > 0 ? imgDims.width : width;
-    const spriteHeight = isMobile && imgDims.height > 0 ? imgDims.height : height;
-
-    shaPoints.forEach((sha) => {
-      if (!sha.resolved) {
-        const sprite = createShaSprite(sha, spriteWidth, spriteHeight);
-        shaSpritesRef.current.set(sha.id, sprite);
-        container.addChild(sprite);
-      }
-    });
-  }, [shaPoints, width, height, isReady, isMobile]);
+  // 不再显示煞气精灵（小黑球）
+  // useEffect(() => {
+  //   const app = appRef.current;
+  //   if (!app || !isReady) return;
+  //   ...
+  // }, [shaPoints, width, height, isReady, isMobile]);
 
   // 添加道具（Mobile 端跟随房间移动）
   useEffect(() => {
@@ -811,39 +781,4 @@ function createLuopanCompass(
   return { container, needle };
 }
 
-function createShaSprite(sha: ShaPoint, width: number, height: number): Container {
-  const container = new Container();
-  container.x = sha.position.x * width;
-  container.y = sha.position.y * height;
-  container.label = sha.id;
 
-  const size = 20;
-
-  const body = new Graphics();
-  body.circle(0, 0, size);
-  body.fill(0x1a1917);
-  body.stroke({ width: 2, color: 0x3a3a3a });
-  container.addChild(body);
-
-  const leftEye = new Graphics();
-  leftEye.circle(-6, -4, 4);
-  leftEye.fill(0xffffff);
-  container.addChild(leftEye);
-
-  const rightEye = new Graphics();
-  rightEye.circle(6, -4, 4);
-  rightEye.fill(0xffffff);
-  container.addChild(rightEye);
-
-  const leftPupil = new Graphics();
-  leftPupil.circle(-6, -4, 2);
-  leftPupil.fill(0x000000);
-  container.addChild(leftPupil);
-
-  const rightPupil = new Graphics();
-  rightPupil.circle(6, -4, 2);
-  rightPupil.fill(0x000000);
-  container.addChild(rightPupil);
-
-  return container;
-}
