@@ -66,12 +66,41 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         gameState: action.shaPoint !== null ? 'event_modal' : 'scanning',
       };
 
-    case 'CLOSE_MODAL':
+    case 'CLOSE_MODAL': {
+      // 关闭弹窗时，如果罗盘在煞气点核心区域，将其移到边缘区域
+      // 避免下次点击立即再次触发弹窗
+      let newCompassPosition = state.compassPosition;
+      
+      if (state.currentLevel) {
+        for (const sha of state.currentLevel.shaPoints) {
+          if (sha.resolved) continue;
+          
+          const dx = state.compassPosition.x - sha.position.x;
+          const dy = state.compassPosition.y - sha.position.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          // 如果在核心区域内（dist < radius * 0.4），移到边缘区域
+          if (dist < sha.radius * 0.4) {
+            // 计算从煞气点中心到罗盘的方向向量
+            const safeDist = sha.radius * 0.65; // 移到边缘区域（大于 fast 阈值 0.8）
+            const angle = Math.atan2(dy, dx);
+            newCompassPosition = {
+              x: sha.position.x + Math.cos(angle) * safeDist,
+              y: sha.position.y + Math.sin(angle) * safeDist,
+            };
+            break; // 只处理最近的那个煞气点
+          }
+        }
+      }
+      
       return {
         ...state,
         showEventModal: false,
         gameState: 'scanning',
+        compassPosition: newCompassPosition,
+        compassSpeed: 'normal',
       };
+    }
 
     case 'RESOLVE_SHA': {
       if (!state.currentLevel) return state;
