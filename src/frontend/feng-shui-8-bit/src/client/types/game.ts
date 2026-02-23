@@ -59,6 +59,15 @@ export type PageType = 'start' | 'select' | 'play';
 /** 罗盘速度 */
 export type CompassSpeed = 'normal' | 'fast' | 'super-fast';
 
+/** 游戏状态机状态 */
+export type GameStateMachine = 
+  | 'scanning'       // 罗盘探测中，寻找煞气点
+  | 'event_modal'    // 煞气事件弹窗显示中
+  | 'resolving'      // 煞气正在被化解（选择正确选项后）
+  | 'transitioning'  // 通关渐变转暖中（与弹窗同步）
+  | 'completed'      // 通关完成，暖图常驻
+  | 'comparing';     // 按住查看冷图中
+
 /** 游戏状态 */
 export type GameState = {
   // 导航状态
@@ -78,6 +87,18 @@ export type GameState = {
   isCompleted: boolean;
   showWarmImage: boolean;
 
+  // 新增：游戏状态机
+  gameState: GameStateMachine;
+  
+  // 新增：按住查看冷图
+  isComparingCold: boolean;
+  
+  // 新增：之前已通关（再次进入直接显示暖图）
+  isPreviouslyCompleted: boolean;
+  
+  // 新增：通关弹窗是否显示（关闭后可以继续查看冷暖对比）
+  showCompletionModal: boolean;
+
   // 已放置的道具
   placedItems: Array<{
     shaId: string;
@@ -89,13 +110,19 @@ export type GameState = {
 /** 游戏动作 */
 export type GameAction =
   | { type: 'NAVIGATE'; page: PageType }
-  | { type: 'LOAD_LEVEL'; level: Level }
+  | { type: 'LOAD_LEVEL'; level: Level; isPreviouslyCompleted?: boolean }
   | { type: 'UPDATE_COMPASS'; position: Position; speed: CompassSpeed }
   | { type: 'ACTIVATE_SHA'; shaPoint: ShaPoint | null }
   | { type: 'CLOSE_MODAL' }
   | { type: 'RESOLVE_SHA'; shaId: string; itemId: string | null }
   | { type: 'COMPLETE_LEVEL' }
-  | { type: 'RESET_LEVEL' };
+  | { type: 'RESET_LEVEL' }
+  | { type: 'SET_GAME_STATE'; gameState: GameStateMachine }
+  | { type: 'SET_COMPARING'; isComparing: boolean }
+  | { type: 'START_TRANSITION' }
+  | { type: 'FINISH_TRANSITION' }
+  | { type: 'LOAD_LEVEL_WITH_PREVIOUS'; level: Level; isPreviouslyCompleted: boolean }
+  | { type: 'DISMISS_COMPLETION_MODAL' };
 
 /** 玩家进度 */
 export type PlayerProgress = {

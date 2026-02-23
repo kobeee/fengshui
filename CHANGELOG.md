@@ -1,3 +1,335 @@
+## [2026-02-23] 全屏模式按住对比修复（按住冷图/松开回暖）
+
+### 变更内容
+- **问题修复**：修复全屏模式下通关后“按住显示冷图”不生效的问题。
+- **根因定位**：游戏画布在 Desktop 路径会 `stopPropagation`，导致外层容器在冒泡阶段接不到对比手势事件。
+- **修复方案**：
+  - 将对比手势监听改为 `onPointerDownCapture / onPointerUpCapture / onPointerCancelCapture`（捕获阶段）。
+  - `pointerleave` 保持在容器层兜底回暖，防止异常停留在冷图。
+  - 对比手势处理统一 `preventDefault + stopPropagation`，避免全屏下浏览器默认行为干扰。
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+
+---
+
+## [2026-02-23] Desktop 触控板双指捏合缩放支持（Mac Safari）
+
+### 变更内容
+- **新增手势支持**：Desktop 游戏画布增加 Mac Safari 原生 `gesturestart/gesturechange/gestureend` 监听，支持苹果触控板双指捏合缩放。
+- **兼容策略**：保留 `wheel` 缩放通道（Chrome/Edge 触控板与鼠标滚轮），并与 Safari `gesture*` 通道并行兼容。
+- **缩放锚点一致性**：Safari 双指捏合使用手势中心作为锚点计算位移，缩放时画面不漂移。
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+
+---
+
+## [2026-02-23] 游戏手势回归修复（Desktop 缩放 + 通关对比松开回暖）
+
+### 变更内容
+- **Desktop 缩放修复**：为游戏主画布新增 `wheel/pinch` 缩放输入，解决桌面端缩放手势无响应。
+- **坐标映射修复**：Desktop 点击移动罗盘时，按当前房间偏移/缩放反算归一化坐标，避免缩放后探测点位偏移。
+- **视觉同步修复**：罗盘在 Desktop 下跟随房间缩放/平移实时重定位，保证视觉与逻辑一致。
+- **通关对比修复**：修复“按住切冷图后松开不回暖”的状态卡死问题：
+  - 对比手势监听从仅 `completed` 改为 `completed/comparing` 全程生效。
+  - 释放逻辑统一执行 `setComparing(false)`，避免因状态切换时机导致漏回退。
+  - 对比期间禁用罗盘移动/碰撞回调，避免状态冲突。
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+
+---
+
+## [2026-02-23] 游戏页手势失效修复（拖动/缩放恢复 + 无冲突）
+
+### 变更内容
+- **问题修复**：修复游戏页移动端拖动与双指缩放失效问题，恢复可用性。
+- **输入通道重构**：将 Mobile 手势从 `touch*` 改为统一 `pointer` 多指状态机（`pan`/`pinch`），避免 touch 与 pointer 双通道竞争。
+- **冲突消除**：
+  - Mobile 下关闭 Pixi stage/compass 的 pointer 交互模式，避免与原生手势争抢事件。
+  - 冷暖对比手势仅在 `completed` 状态挂载，避免和游戏中拖拽/缩放冲突。
+- **丝滑优化**：新增目标位姿 + ticker 插值（lerp）更新，拖动/缩放更平滑且连续。
+- **缩放稳定性**：双指缩放以手势中心为锚点计算位移，缩放过程中画面不飘移；双指切单指可无缝回到拖动状态。
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+
+---
+
+## [2026-02-23] Mobile 端游戏手势 + Devvit 隔离窗口错误修复
+
+### 变更内容
+- **问题修复**：Mobile 端游戏进行中点击屏幕报错 "isolation 窗口不能发送消息给 parent"
+- **根本原因**：之前的修复错误地让 Mobile 端游戏进行中不阻止 pointer 事件冒泡
+- **正确方案**：
+  - 始终阻止 pointer 事件冒泡（避免触发 Devvit 错误）
+  - 只在通关后才执行冷暖对比逻辑
+  - touch 事件和 pointer 事件是独立的，阻止 pointer 冒泡不影响 touch 手势
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+
+---
+
+## [2026-02-23] GameStartPage 毛玻璃效果优化（高级感提升）
+
+### 变更内容
+- **问题修复**：GameStartPage 毛玻璃效果不高级，背景透得太多导致廉价感
+- **根本原因**：遮罩层叠加方式错误 + backdrop-filter 效果打折
+- **遮罩层简化**：
+  - 从三层叠加改为两层（与 SplashPage 一致）
+  - 径向渐变 + 顶部/底部渐变
+- **毛玻璃参数优化**：
+  - 背景模糊：`blur(16px)` → `blur(24px)`
+  - 饱和度：`saturate(1.15)` → `saturate(1.4)`
+  - 外发光范围：`48px` → `100px`
+  - 外发光强度：`0.04` → `0.08`
+  - 外层光晕：`0.12` → `0.18`
+- **边框优化**：
+  - 边框宽度：`1px` → `2px`
+  - 边框透明度：`0.42` → `0.45`
+- **内边距增加**：
+  - `py-3/py-4` → `py-10/py-12`（增强呼吸感）
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+
+---
+
+## [2026-02-23] GameStartPage Desktop 一屏布局优化
+
+### 变更内容
+- **问题修复**：Desktop 端页面需要上下滚动才能显示完整，现优化为一屏显示
+- **布局优化**：
+  - 减小整体容器尺寸：`max-w-[720px]` → `max-w-[600px]`
+  - 减小内边距：`py-4/py-6` → `py-3/py-4`
+  - 减小元素间距：各 `mb-*`, `mt-*` 值普遍减少 1-2 级
+  - 减小字体尺寸：标题 `22px/26px` → `20px/22px`，正文普遍减小 1px
+- **步骤卡片优化**：
+  - 卡片宽度：`92px/130px` → `80px/100px`
+  - 图标尺寸：`size-16/size-[78px]` → `size-12/size-14`
+  - 图标内容：`size={32}` → `size={24}`
+  - 字体和间距相应缩小
+- **连接器优化**：宽度 `w-5/w-8` → `w-4/w-6`，箭头 `size-1` → `size-0.5`
+- **测试验证**：frontend-tester 确认 1920x1080 viewport 下一屏显示完整
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+
+---
+
+## [2026-02-23] GameStartPage 滚动问题修复尝试（未完成）
+
+### 变更内容
+- **问题描述**：GameStartPage 页面在真机上仍然可以上下滚动，一屏无法显示完整内容
+- **尝试修复**：
+  - 外层容器：`min-h-dvh` → `h-dvh`，强制限制在视口高度内
+  - main 容器：`min-h-dvh` → `h-full`，继承父容器高度
+  - 减少垂直内边距：`py-4/py-5` → `py-2/py-3`
+  - 减少各元素间距：`mt-2` → `mt-1.5`, `mb-5` → `mb-4` 等
+- **状态**：问题仍未完全解决，需要后续进一步优化
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+
+---
+
+## [2026-02-23] GameStartPage 背景遮罩优化
+
+### 变更内容
+- **问题修复**：真机APP上背景底图因遮罩过暗而完全不可见
+- **遮罩透明度调整**：
+  - 径向渐变遮罩：`rgba(8, 12, 20, 0.62)` → `rgba(8, 12, 20, 0.35)`
+  - 线性渐变遮罩：`rgba(7, 10, 16, 0.82)` → `rgba(7, 10, 16, 0.55)`
+  - 边缘暗角：`rgba(10,14,22,0.45)` → `rgba(10,14,22,0.25)`
+  - 底部渐变：`#0E1116/70` → `#0E1116/50`
+- **玻璃卡片优化**：
+  - 背景不透明度：`0.58-0.66` → `0.42-0.48`
+  - 边框透明度：`0.38` → `0.42`（稍微提高以维持可读性）
+- **背景图片**：移除 `opacity-90`，使用完全不透明
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+
+---
+
+## [2026-02-23] GameStartPage 启动页审美重构（高端氛围版）
+
+### 变更内容
+- 重构启动页视觉结构为三层叙事：背景聚焦层、玻璃信息层、主行动层，去除过度堆叠装饰造成的“廉价感”。
+- 重写三步骤模块（寻煞气/化煞气/转暖色）为统一规格卡片，提升图标识别度、文案可读性与节奏感。
+- 调整标题区与分隔线比例，强化留白和纵向节奏，降低“元素密度过高”的压迫感。
+- 重新设计主按钮材质与阴影深度，保留像素风 3D 按压反馈，提升点击意图聚焦。
+- 新增更克制的入场与扫光动画，并补充 `prefers-reduced-motion` 降级，保证氛围感与可用性平衡。
+- 优化移动端尺寸与间距，避免小屏上卡片内容发灰、拥挤和底部信息存在感过低的问题。
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+
+---
+
+## [2026-02-23] GameStartPage 高级感优化 v2.0
+
+### 变更内容
+
+**核心问题修复**：解决玻璃质感"太平"、缺少层次、缺乏高级感的问题
+
+**设计升级**：
+
+1. **增强玻璃质感（参考 Apple Vision Pro）**：
+   - 背景不透明度：`0.08-0.12` → `0.52-0.58`（真正可感知的玻璃）
+   - 模糊半径：`blur(12px)` → `blur(24px)`
+   - 增加顶部高光线条、底部阴影
+
+2. **四层次深度架构**：
+   - 背景层：冷色调环境光粒子 + 煞气粒子
+   - 氛围层：600px 大型光脉冲 + 中层光晕
+   - 容器层：双层边框（外细内粗）+ 高级玻璃卡片
+   - 前景层：标题发光、流光分隔线、按钮倒影
+
+3. **微动画系统**：
+   - **入场动画**：卡片→标题→步骤→文字→按钮，依次淡入
+   - **流光分隔线**：左右双向流动的金色光线
+   - **光脉冲**：中心区域呼吸式光晕（4s周期）
+   - **按钮光晕**：呼吸效果（2s周期）
+   - **按钮倒影**：底部脉冲式倒影
+   - **悬停反馈**：图标放大+光晕+标签上浮
+
+4. **精致排版细节**：
+   - 标题装饰线：方块+渐变线组合
+   - 字间距优化：`tracking-[0.12em]`
+   - 底部装饰：像素点+渐变线
+   - 按钮内高光线条
+
+5. **色彩深度**：
+   - 添加冷色调环境光（蓝灰色）与暖金形成对比
+   - 背景色：`#0E1116` → `#0A0C10`（更深邃）
+   - 环境光粒子：10s 呼吸周期
+
+### 文件变更
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx` - 完全重构 v2.0
+- `src/frontend/feng-shui-8-bit/src/client/index.css` - 添加高级动画系统
+
+---
+
+## [2026-02-23] GameStartPage UI 设计升级（精致质感版）
+
+### 变更内容
+
+**设计理念升级**：
+- 从"极简但平庸"升级到"精致有质感"
+- 完全沿用 Splash 页面设计语言，保持全站视觉统一
+- 保留用户喜爱的三步骤图标（寻煞气、化煞气、转暖色）
+
+**视觉语言实现**：
+
+1. **三层边框体系**：
+   - 外层：`-inset-4` 径向渐变金色光晕
+   - 中层：`1px` 淡金边 + `2px` 浓金边
+   - 内层：`3px` 主边框 `rgba(196, 160, 106, 0.4)`
+
+2. **极致毛玻璃**：
+   - 透明度降至 `0.08-0.12`（几乎全透）
+   - `blur(12px) saturate(1.3)` 营造深邃质感
+   - 内发光 `inset 0 0 60px rgba(196, 160, 106, 0.04)`
+
+3. **文字立体层次**：
+   - 标题双层阴影：黑色投影 `2px 2px 0px rgba(0,0,0,0.8)` + 金色外发光 `0 0 30px rgba(240,217,156,0.5)`
+   - 英文副标题增加国际感 `8-BIT FENG SHUI MASTER`
+
+4. **像素分隔线**：
+   - 小-大-小方块排列，与 Splash 页统一
+   - 深绿线条 + 金色方块点缀
+
+5. **3D 金色按钮**：
+   - 渐变底色 `linear-gradient(180deg, #D4B07A 0%, #B8904F 100%)`
+   - 内外阴影 + 底部厚度模拟 `0 4px 0px #5C4020`
+   - 外发光 `0 0 24px rgba(196, 160, 106, 0.25)`
+
+6. **三步骤图标融合**：
+   - 透明底 + 金色边框 + 内发光
+   - 当前步骤高亮（50% 边框 + 发光）
+   - 未激活步骤弱化（20% 边框 + 40% 透明度）
+
+### 文件变更
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx` - 完全重构
+
+---
+
+## [2026-02-23] UI 视觉总方案 v2.0 实现（通关转暖仪式 + 冷暖对比交互）
+
+### 变更内容
+
+**核心功能实现**：
+
+1. **通关转暖仪式**：
+   - 最后一个煞气净化后触发 700ms 冷暖图交叉渐变动画
+   - 罗盘淡出隐藏（300ms 动画）
+   - 通关弹窗与渐变动画同步显示
+   - 弹窗可点击外部区域关闭
+
+2. **冷暖对比交互**：
+   - 通关后按住屏幕/鼠标显示冷图，松开恢复暖图
+   - Mobile: `pointerdown`/`pointerup` 触发
+   - Desktop: `mousedown`/`mouseup` + Space 键触发
+   - 失焦/切 tab 时自动恢复暖图（异常边界处理）
+
+3. **关卡通关记忆**：
+   - 使用 `localStorage` 存储已通关关卡 ID 列表
+   - 再次进入已通关关卡直接显示暖图、罗盘隐藏
+   - 新增 `useLevelCompletion` Hook
+
+4. **重玩功能**：
+   - 通关弹窗新增"重玩"按钮
+   - 点击重玩后清除通关记录，重置为冷图+罗盘探测模式
+
+5. **游戏状态机**：
+   - 新增 `GameStateMachine` 类型：`scanning` | `event_modal` | `resolving` | `transitioning` | `completed` | `comparing`
+   - 状态迁移逻辑完善，支持异常边界处理
+
+**视觉语言统一**：
+
+1. **色彩系统**：
+   - 新增完整的色彩变量：`--color-feng-bg-0/1/2/3`、`--color-feng-text-0/1/2/3`、`--color-feng-accent-0/1/2`
+   - 语义状态色：`--color-feng-success`（已净化）、`--color-feng-error`（错误反馈）
+   - 统一暖金强调色系，禁止多色主题漂移
+
+2. **玻璃材质工具类**：
+   - `.feng-glass` - 标准玻璃卡片
+   - `.feng-glass-light` - 轻量玻璃（背景层）
+   - `.feng-btn` - 像素风格按钮
+   - `.feng-border-pixel` - 像素边框装饰
+
+### 文件变更
+- `src/frontend/feng-shui-8-bit/src/client/types/game.ts` - 新增状态机类型
+- `src/frontend/feng-shui-8-bit/src/client/stores/GameContext.tsx` - 状态机逻辑
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx` - 通关交互
+- `src/frontend/feng-shui-8-bit/src/client/pages/LevelSelectPage.tsx` - 通关状态传递
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx` - 渐变动画 + 罗盘淡出
+- `src/frontend/feng-shui-8-bit/src/client/hooks/useLevelCompletion.ts` - 通关记忆 Hook
+- `src/frontend/feng-shui-8-bit/src/client/components/game/EventModal.tsx` - 修复 lint 警告
+- `src/frontend/feng-shui-8-bit/src/client/index.css` - 视觉语言统一
+
+---
+
+## [2026-02-22] UI 视觉总方案 v2.0 定稿（唯一执行标准）
+
+### 变更内容
+- 新增 `docs/design/ui/fengshui-ui-visual-masterplan-v2.0.md`，定义全局唯一 UI 视觉语言与交互标准，明确“简约但高级”的主设计方向。
+- 收敛色彩、字体、材质、圆角、边框、动效节奏为统一参数，禁止多色主题漂移，统一为低饱和底色 + 单一暖金强调体系。
+- 新增完整“通关转暖仪式”规范：三段式时序（聚气→净化→收束），明确在全部煞气净化后先执行简洁动效，再切换暖图并移除罗盘/煞气交互元素。
+- 新增“按住查看冷图、松开恢复暖图”的冷暖对比交互规范，覆盖 Mobile/Desktop 触发规则、状态机迁移、输入优先级与异常处理。
+- 提供与现有 React + Pixi 架构的一对一实现映射、质量门槛与验收清单，作为后续 UI 改造唯一依据。
+
+### 影响范围
+- `docs/design/ui/fengshui-ui-visual-masterplan-v2.0.md`
+- `CHANGELOG.md`
+
+---
+
 ## [2026-02-22] Level 1 资源更新 + 游戏交互优化
 
 ### 变更内容

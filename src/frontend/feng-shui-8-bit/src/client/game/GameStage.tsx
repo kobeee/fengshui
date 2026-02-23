@@ -10,7 +10,7 @@ import {
   TextStyle,
   Texture,
 } from 'pixi.js';
-import type { Position, ShaPoint, CompassSpeed } from '../types/game';
+import type { Position, ShaPoint, CompassSpeed, GameStateMachine } from '../types/game';
 import { ParticleSystem, createVictoryParticles } from './ParticleSystem';
 
 const LUOPAN_PAN_IMAGE = '/images/shared/luopan/pan.png';
@@ -33,9 +33,14 @@ type GameStageProps = {
   itemImages: Record<string, string>;
   isMobile: boolean;
   isCompleted: boolean;
+  // 新增 props
+  gameState: GameStateMachine;
+  isComparingCold: boolean;
+  isPreviouslyCompleted: boolean;
   onCompassMove?: ((position: Position) => void) | undefined;
   onMobileCollision?: ((shaPoint: ShaPoint) => void) | undefined;
   onCompassSpeedChange?: ((speed: CompassSpeed) => void) | undefined;
+  onTransitionComplete?: () => void;
 };
 
 export function GameStage({
@@ -51,9 +56,13 @@ export function GameStage({
   itemImages,
   isMobile,
   isCompleted,
+  gameState,
+  isComparingCold,
+  isPreviouslyCompleted,
   onCompassMove,
   onMobileCollision,
   onCompassSpeedChange,
+  onTransitionComplete,
 }: GameStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
@@ -68,6 +77,8 @@ export function GameStage({
   // Mobile 端：房间偏移量和缩放
   const roomOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const roomScaleRef = useRef<number>(1);
+  const targetRoomTransformRef = useRef<{ x: number; y: number; scale: number }>({ x: 0, y: 0, scale: 1 });
+  const isGestureActiveRef = useRef<boolean>(false);
   // 图片原始尺寸（用于 Mobile 端煞气点位置计算）
   const imageDimensionsRef = useRef<{ width: number; height: number }>({ width: 0, height: 0 });
   // 防止重复触发碰撞
@@ -76,10 +87,17 @@ export function GameStage({
   const swingTimeRef = useRef<number>(0);
   const rotationRef = useRef<number>(0);
   const sizeRef = useRef<{ width: number; height: number }>({ width, height });
+  const compassPositionRef = useRef<Position>(compassPosition);
   const compassSpeedRef = useRef<CompassSpeed>(compassSpeed);
   const onCompassMoveRef = useRef<typeof onCompassMove>(onCompassMove);
   const onMobileCollisionRef = useRef<typeof onMobileCollision>(onMobileCollision);
   const onCompassSpeedChangeRef = useRef<typeof onCompassSpeedChange>(onCompassSpeedChange);
+  const onTransitionCompleteRef = useRef<typeof onTransitionComplete>(onTransitionComplete);
+  // 新增：转场动画状态
+  const gameStateRef = useRef<GameStateMachine>(gameState);
+  const isComparingColdRef = useRef<boolean>(isComparingCold);
+  const transitionStartTimeRef = useRef<number | null>(null);
+  const isTransitioningRef = useRef<boolean>(false);
 
   useEffect(() => {
     sizeRef.current = { width, height };
@@ -88,6 +106,10 @@ export function GameStage({
   useEffect(() => {
     compassSpeedRef.current = compassSpeed;
   }, [compassSpeed]);
+
+  useEffect(() => {
+    compassPositionRef.current = compassPosition;
+  }, [compassPosition]);
 
   useEffect(() => {
     onCompassMoveRef.current = onCompassMove;
@@ -100,6 +122,18 @@ export function GameStage({
   useEffect(() => {
     onCompassSpeedChangeRef.current = onCompassSpeedChange;
   }, [onCompassSpeedChange]);
+
+  useEffect(() => {
+    gameStateRef.current = gameState;
+  }, [gameState]);
+
+  useEffect(() => {
+    isComparingColdRef.current = isComparingCold;
+  }, [isComparingCold]);
+
+  useEffect(() => {
+    onTransitionCompleteRef.current = onTransitionComplete;
+  }, [onTransitionComplete]);
 
   const getRotationSpeed = useCallback((speed: CompassSpeed) => {
     switch (speed) {
@@ -250,6 +284,7 @@ export function GameStage({
           roomContainer.x = (width - imgWidth) / 2;
           roomContainer.y = (height - imgHeight) / 2;
           roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
+          targetRoomTransformRef.current = { x: roomContainer.x, y: roomContainer.y, scale: 1 };
         } else {
           // Web 端：图片适配屏幕尺寸
           coldSprite.width = width;
@@ -258,6 +293,7 @@ export function GameStage({
           warmSprite.height = height;
           // Web 端不需要 imageDimensions，但设置一下以防万一
           imageDimensionsRef.current = { width, height };
+          targetRoomTransformRef.current = { x: 0, y: 0, scale: 1 };
         }
 
         roomContainer.addChild(coldSprite);
@@ -269,7 +305,7 @@ export function GameStage({
         const compassResult = createLuopanCompass(panTexture, zhenTexture);
         const compass = compassResult.container;
         compass.label = 'compass';
-        compass.eventMode = 'static';
+        compass.eventMode = isMobile ? 'none' : 'static';
         app.stage.addChild(compass);
         compassRef.current = compass;
         needleRef.current = compassResult.needle;
@@ -279,90 +315,276 @@ export function GameStage({
           compass.x = width / 2;
           compass.y = height / 2;
         } else {
-          compass.x = compassPosition.x * width;
-          compass.y = compassPosition.y * height;
+          const target = targetRoomTransformRef.current;
+          compass.x = target.x + compassPosition.x * imageDimensionsRef.current.width * target.scale;
+          compass.y = target.y + compassPosition.y * imageDimensionsRef.current.height * target.scale;
         }
 
         particleSystemRef.current = createVictoryParticles(app.stage);
 
-        app.stage.eventMode = 'static';
+        app.stage.eventMode = isMobile ? 'none' : 'static';
 
         // 设置交互模式（根据 isMobile）
         if (isMobile) {
-          // Mobile 端：拖拽房间容器 + 双指缩放
-          let isDragging = false;
-          const dragStart = { x: 0, y: 0 };
-          const roomStart = { x: 0, y: 0 };
-
-          roomContainer.eventMode = 'static';
-
-          const handleRoomPointerDown = (e: { globalX: number; globalY: number }) => {
-            isDragging = true;
-            dragStart.x = e.globalX;
-            dragStart.y = e.globalY;
-            roomStart.x = roomContainer.x;
-            roomStart.y = roomContainer.y;
+          // Mobile 端：统一使用 Pointer 事件，避免 touch/pointer 双通道冲突
+          type PointerPos = { x: number; y: number };
+          const activePointers = new Map<number, PointerPos>();
+          let gestureMode: 'idle' | 'pan' | 'pinch' = 'idle';
+          const panStartPointer = { x: 0, y: 0 };
+          const panStartRoom = { x: 0, y: 0 };
+          const pinchStart = {
+            distance: 1,
+            scale: 1,
+            anchorX: 0,
+            anchorY: 0,
           };
-
-          const handleStagePointerMove = (e: { globalX: number; globalY: number }) => {
-            if (!isDragging) return;
-            
-            const dx = e.globalX - dragStart.x;
-            const dy = e.globalY - dragStart.y;
-            
-            // 允许自由拖拽，没有范围限制（图片可以完全拖出屏幕）
-            roomContainer.x = roomStart.x + dx;
-            roomContainer.y = roomStart.y + dy;
-            
-            roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
-          };
-
-          const stopDrag = () => {
-            isDragging = false;
-          };
-
-          roomContainer.on('pointerdown', handleRoomPointerDown);
-          app.stage.on('pointermove', handleStagePointerMove);
-          app.stage.on('pointerup', stopDrag);
-          app.stage.on('pointerupoutside', stopDrag);
-
-          // 双指缩放支持（通过 wheel 事件模拟）
-          const handleWheel = (e: WheelEvent) => {
-            e.preventDefault();
-            const delta = e.deltaY > 0 ? -0.1 : 0.1;
-            const newScale = Math.max(0.5, Math.min(2, roomScaleRef.current + delta));
-            roomScaleRef.current = newScale;
-            roomContainer.scale.set(newScale);
-          };
-
-          canvas.addEventListener('wheel', handleWheel, { passive: false });
-
-          cleanupFns.push(() => {
-            roomContainer.off('pointerdown', handleRoomPointerDown);
-            app.stage.off('pointermove', handleStagePointerMove);
-            app.stage.off('pointerup', stopDrag);
-            app.stage.off('pointerupoutside', stopDrag);
-            canvas.removeEventListener('wheel', handleWheel);
-          });
-
-        } else {
-          // Web 端：点击屏幕位置移动罗盘
-          // 使用 ref 存储最新的 onCompassMove 回调，避免依赖变化触发重新初始化
-          const handleStagePointerDown = (e: { globalX: number; globalY: number }) => {
-            const stageWidth = sizeRef.current.width;
-            const stageHeight = sizeRef.current.height;
-            if (stageWidth <= 0 || stageHeight <= 0) return;
-            const newPos: Position = {
-              x: Math.max(0, Math.min(1, e.globalX / stageWidth)),
-              y: Math.max(0, Math.min(1, e.globalY / stageHeight)),
+          const toLocalPointer = (e: PointerEvent): PointerPos => {
+            const rect = canvas.getBoundingClientRect();
+            return {
+              x: e.clientX - rect.left,
+              y: e.clientY - rect.top,
             };
+          };
+
+          const getPointers = (): PointerPos[] => Array.from(activePointers.values());
+
+          const getPinchMetrics = (): { centerX: number; centerY: number; distance: number } | null => {
+            const pointers = getPointers();
+            if (pointers.length < 2) return null;
+            const p0 = pointers[0];
+            const p1 = pointers[1];
+            if (!p0 || !p1) return null;
+            const dx = p0.x - p1.x;
+            const dy = p0.y - p1.y;
+            return {
+              centerX: (p0.x + p1.x) / 2,
+              centerY: (p0.y + p1.y) / 2,
+              distance: Math.max(1, Math.hypot(dx, dy)),
+            };
+          };
+
+          const beginPan = (pointer: PointerPos) => {
+            const { x, y } = targetRoomTransformRef.current;
+            gestureMode = 'pan';
+            isGestureActiveRef.current = true;
+            panStartPointer.x = pointer.x;
+            panStartPointer.y = pointer.y;
+            panStartRoom.x = x;
+            panStartRoom.y = y;
+          };
+
+          const beginPinch = () => {
+            const metrics = getPinchMetrics();
+            if (!metrics) return;
+            const current = targetRoomTransformRef.current;
+            gestureMode = 'pinch';
+            isGestureActiveRef.current = true;
+            pinchStart.distance = metrics.distance;
+            pinchStart.scale = current.scale;
+            pinchStart.anchorX = (metrics.centerX - current.x) / current.scale;
+            pinchStart.anchorY = (metrics.centerY - current.y) / current.scale;
+          };
+
+          const handlePointerDown = (e: PointerEvent) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            activePointers.set(e.pointerId, toLocalPointer(e));
+            try {
+              canvas.setPointerCapture(e.pointerId);
+            } catch {
+              // ignore
+            }
+            if (activePointers.size >= 2) {
+              beginPinch();
+            } else {
+              const firstPointer = getPointers()[0];
+              if (firstPointer) {
+                beginPan(firstPointer);
+              }
+            }
+            e.preventDefault();
+          };
+
+          const handlePointerMove = (e: PointerEvent) => {
+            if (!activePointers.has(e.pointerId)) return;
+            activePointers.set(e.pointerId, toLocalPointer(e));
+
+            if (activePointers.size >= 2) {
+              if (gestureMode !== 'pinch') {
+                beginPinch();
+              }
+              const metrics = getPinchMetrics();
+              if (!metrics) return;
+              const rawScale = (metrics.distance / pinchStart.distance) * pinchStart.scale;
+              const nextScale = Math.max(0.5, Math.min(2, rawScale));
+              const nextX = metrics.centerX - pinchStart.anchorX * nextScale;
+              const nextY = metrics.centerY - pinchStart.anchorY * nextScale;
+              targetRoomTransformRef.current = { x: nextX, y: nextY, scale: nextScale };
+            } else if (activePointers.size === 1) {
+              const pointer = getPointers()[0];
+              if (!pointer) return;
+              if (gestureMode !== 'pan') {
+                beginPan(pointer);
+              }
+              const dx = pointer.x - panStartPointer.x;
+              const dy = pointer.y - panStartPointer.y;
+              targetRoomTransformRef.current = {
+                x: panStartRoom.x + dx,
+                y: panStartRoom.y + dy,
+                scale: targetRoomTransformRef.current.scale,
+              };
+            } else {
+              gestureMode = 'idle';
+              isGestureActiveRef.current = false;
+            }
+
+            e.preventDefault();
+          };
+
+          const handlePointerEnd = (e: PointerEvent) => {
+            activePointers.delete(e.pointerId);
+            try {
+              if (canvas.hasPointerCapture(e.pointerId)) {
+                canvas.releasePointerCapture(e.pointerId);
+              }
+            } catch {
+              // ignore
+            }
+
+            if (activePointers.size === 0) {
+              gestureMode = 'idle';
+              isGestureActiveRef.current = false;
+              return;
+            }
+
+            if (activePointers.size >= 2) {
+              beginPinch();
+              return;
+            }
+
+            const pointer = getPointers()[0];
+            if (pointer) {
+              beginPan(pointer);
+            }
+          };
+
+          canvas.addEventListener('pointerdown', handlePointerDown, { passive: false });
+          canvas.addEventListener('pointermove', handlePointerMove, { passive: false });
+          canvas.addEventListener('pointerup', handlePointerEnd);
+          canvas.addEventListener('pointercancel', handlePointerEnd);
+          cleanupFns.push(() => {
+            canvas.removeEventListener('pointerdown', handlePointerDown);
+            canvas.removeEventListener('pointermove', handlePointerMove);
+            canvas.removeEventListener('pointerup', handlePointerEnd);
+            canvas.removeEventListener('pointercancel', handlePointerEnd);
+            activePointers.clear();
+            isGestureActiveRef.current = false;
+          });
+        } else {
+          // Web 端：点击屏幕位置移动罗盘（支持缩放后的坐标映射）
+          type MacGestureEvent = Event & {
+            scale: number;
+            clientX: number;
+            clientY: number;
+          };
+          const gestureStart = {
+            scale: 1,
+            anchorX: 0,
+            anchorY: 0,
+            canvasX: 0,
+            canvasY: 0,
+          };
+          const toNormalizedRoomPosition = (canvasX: number, canvasY: number): Position => {
+            const roomOffset = roomOffsetRef.current;
+            const roomScale = roomScaleRef.current;
+            const imgDims = imageDimensionsRef.current;
+            const scaledWidth = imgDims.width * roomScale;
+            const scaledHeight = imgDims.height * roomScale;
+            if (scaledWidth <= 0 || scaledHeight <= 0) {
+              return { x: 0.5, y: 0.5 };
+            }
+            return {
+              x: Math.max(0, Math.min(1, (canvasX - roomOffset.x) / scaledWidth)),
+              y: Math.max(0, Math.min(1, (canvasY - roomOffset.y) / scaledHeight)),
+            };
+          };
+
+          const handleStagePointerDown = (e: { globalX: number; globalY: number }) => {
+            const newPos = toNormalizedRoomPosition(e.globalX, e.globalY);
             onCompassMoveRef.current?.(newPos);
           };
 
+          const toCanvasPoint = (clientX: number, clientY: number): { x: number; y: number } => {
+            const rect = canvas.getBoundingClientRect();
+            return {
+              x: clientX - rect.left,
+              y: clientY - rect.top,
+            };
+          };
+
+          const handleWheel = (e: WheelEvent) => {
+            const { x: canvasX, y: canvasY } = toCanvasPoint(e.clientX, e.clientY);
+
+            const current = targetRoomTransformRef.current;
+            const zoomStrength = e.ctrlKey ? 0.0035 : 0.0018;
+            const zoomFactor = Math.exp(-e.deltaY * zoomStrength);
+            const nextScale = Math.max(0.8, Math.min(2.5, current.scale * zoomFactor));
+            if (Math.abs(nextScale - current.scale) < 0.0001) return;
+
+            const worldX = (canvasX - current.x) / current.scale;
+            const worldY = (canvasY - current.y) / current.scale;
+            targetRoomTransformRef.current = {
+              x: canvasX - worldX * nextScale,
+              y: canvasY - worldY * nextScale,
+              scale: nextScale,
+            };
+            isGestureActiveRef.current = true;
+            e.preventDefault();
+          };
+
+          const handleGestureStart = (e: Event) => {
+            const ge = e as MacGestureEvent;
+            const { x: canvasX, y: canvasY } = toCanvasPoint(ge.clientX, ge.clientY);
+            const current = targetRoomTransformRef.current;
+            gestureStart.scale = current.scale;
+            gestureStart.canvasX = canvasX;
+            gestureStart.canvasY = canvasY;
+            gestureStart.anchorX = (canvasX - current.x) / current.scale;
+            gestureStart.anchorY = (canvasY - current.y) / current.scale;
+            isGestureActiveRef.current = true;
+            ge.preventDefault();
+          };
+
+          const handleGestureChange = (e: Event) => {
+            const ge = e as MacGestureEvent;
+            const nextScale = Math.max(0.8, Math.min(2.5, gestureStart.scale * ge.scale));
+            targetRoomTransformRef.current = {
+              x: gestureStart.canvasX - gestureStart.anchorX * nextScale,
+              y: gestureStart.canvasY - gestureStart.anchorY * nextScale,
+              scale: nextScale,
+            };
+            isGestureActiveRef.current = true;
+            ge.preventDefault();
+          };
+
+          const handleGestureEnd = (e: Event) => {
+            const ge = e as MacGestureEvent;
+            isGestureActiveRef.current = false;
+            ge.preventDefault();
+          };
+
           app.stage.on('pointerdown', handleStagePointerDown);
+          canvas.addEventListener('wheel', handleWheel, { passive: false });
+          canvas.addEventListener('gesturestart', handleGestureStart as EventListener, { passive: false });
+          canvas.addEventListener('gesturechange', handleGestureChange as EventListener, { passive: false });
+          canvas.addEventListener('gestureend', handleGestureEnd as EventListener, { passive: false });
 
           cleanupFns.push(() => {
             app.stage.off('pointerdown', handleStagePointerDown);
+            canvas.removeEventListener('wheel', handleWheel);
+            canvas.removeEventListener('gesturestart', handleGestureStart as EventListener);
+            canvas.removeEventListener('gesturechange', handleGestureChange as EventListener);
+            canvas.removeEventListener('gestureend', handleGestureEnd as EventListener);
+            isGestureActiveRef.current = false;
           });
         }
 
@@ -410,6 +632,8 @@ export function GameStage({
       roomContainerRef.current = null;
       roomOffsetRef.current = { x: 0, y: 0 };
       roomScaleRef.current = 1;
+      targetRoomTransformRef.current = { x: 0, y: 0, scale: 1 };
+      isGestureActiveRef.current = false;
       particleSystemRef.current = null;
       shaSprites.clear();
       itemSprites.clear();
@@ -447,7 +671,13 @@ export function GameStage({
       roomContainer.scale.set(1);
       roomOffsetRef.current = { x: 0, y: 0 };
       roomScaleRef.current = 1;
+      targetRoomTransformRef.current = { x: 0, y: 0, scale: 1 };
+      isGestureActiveRef.current = false;
       imageDimensionsRef.current = { width, height };
+      if (compassRef.current) {
+        compassRef.current.x = compassPositionRef.current.x * width;
+        compassRef.current.y = compassPositionRef.current.y * height;
+      }
     }
 
     if (isMobile && compassRef.current) {
@@ -462,6 +692,39 @@ export function GameStage({
     if (!app || !isReady) return;
 
     const animate = () => {
+      if (roomContainerRef.current) {
+        const roomContainer = roomContainerRef.current;
+        const target = targetRoomTransformRef.current;
+        const smoothing = isGestureActiveRef.current ? 0.36 : 0.24;
+
+        roomContainer.x += (target.x - roomContainer.x) * smoothing;
+        roomContainer.y += (target.y - roomContainer.y) * smoothing;
+        const nextScale = roomContainer.scale.x + (target.scale - roomContainer.scale.x) * smoothing;
+        roomContainer.scale.set(nextScale);
+
+        roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
+        roomScaleRef.current = nextScale;
+
+        if (!isMobile) {
+          const settled =
+            Math.abs(target.x - roomContainer.x) < 0.1 &&
+            Math.abs(target.y - roomContainer.y) < 0.1 &&
+            Math.abs(target.scale - nextScale) < 0.001;
+          if (settled) {
+            isGestureActiveRef.current = false;
+          }
+        }
+      }
+
+      if (!isMobile && compassRef.current) {
+        const roomOffset = roomOffsetRef.current;
+        const roomScale = roomScaleRef.current;
+        const imgDims = imageDimensionsRef.current;
+        const compassPos = compassPositionRef.current;
+        compassRef.current.x = roomOffset.x + compassPos.x * imgDims.width * roomScale;
+        compassRef.current.y = roomOffset.y + compassPos.y * imgDims.height * roomScale;
+      }
+
       // 罗盘指针动画
       if (needleRef.current) {
         const currentCompassSpeed = compassSpeedRef.current;
@@ -564,11 +827,14 @@ export function GameStage({
   // 更新罗盘位置（Web 端）
   useEffect(() => {
     if (isMobile || !compassRef.current) return;
-    compassRef.current.x = compassPosition.x * width;
-    compassRef.current.y = compassPosition.y * height;
+    const roomOffset = roomOffsetRef.current;
+    const roomScale = roomScaleRef.current;
+    const imgDims = imageDimensionsRef.current;
+    compassRef.current.x = roomOffset.x + compassPosition.x * imgDims.width * roomScale;
+    compassRef.current.y = roomOffset.y + compassPosition.y * imgDims.height * roomScale;
   }, [compassPosition, width, height, isMobile]);
 
-  // 更新暖色图
+  // 更新暖色图 - 支持渐变转暖和冷暖对比
   useEffect(() => {
     const roomContainer = roomContainerRef.current;
     if (!roomContainer || !isReady) return;
@@ -577,10 +843,91 @@ export function GameStage({
     const coldRoom = roomContainer.getChildByLabel('coldRoom') as Sprite;
 
     if (warmRoom && coldRoom) {
-      warmRoom.alpha = showWarm ? 1 : 0;
-      coldRoom.alpha = showWarm ? 0 : 1;
+      const currentGameState = gameStateRef.current;
+      const comparing = isComparingColdRef.current;
+
+      // 冷暖对比模式：按住时显示冷图
+      if (comparing) {
+        warmRoom.alpha = 0;
+        coldRoom.alpha = 1;
+      }
+      // 过渡动画状态：执行 700ms 渐变
+      else if (currentGameState === 'transitioning' && !isTransitioningRef.current) {
+        isTransitioningRef.current = true;
+        transitionStartTimeRef.current = Date.now();
+        
+        // 开始渐变动画
+        const transitionDuration = 700; // 700ms
+        const animateTransition = () => {
+          const elapsed = Date.now() - (transitionStartTimeRef.current ?? 0);
+          const progress = Math.min(elapsed / transitionDuration, 1);
+          
+          // ease-out 曲线
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+          
+          warmRoom.alpha = easeProgress;
+          coldRoom.alpha = 1 - easeProgress;
+
+          if (progress < 1) {
+            requestAnimationFrame(animateTransition);
+          } else {
+            // 转场完成
+            isTransitioningRef.current = false;
+            transitionStartTimeRef.current = null;
+            onTransitionCompleteRef.current?.();
+          }
+        };
+        
+        requestAnimationFrame(animateTransition);
+      }
+      // 已通关状态：显示暖图
+      else if (currentGameState === 'completed' || showWarm) {
+        warmRoom.alpha = 1;
+        coldRoom.alpha = 0;
+      }
+      // 扫描状态：显示冷图
+      else {
+        warmRoom.alpha = 0;
+        coldRoom.alpha = 1;
+      }
     }
-  }, [showWarm, isReady]);
+  }, [showWarm, isReady, gameState, isComparingCold]);
+
+  // 罗盘淡出 - 通关后隐藏
+  useEffect(() => {
+    const compass = compassRef.current;
+    if (!compass || !isReady) return;
+
+    const currentGameState = gameStateRef.current;
+    const shouldHide = currentGameState === 'completed' || 
+                       currentGameState === 'comparing' || 
+                       isPreviouslyCompleted;
+
+    if (shouldHide) {
+      // 执行淡出动画
+      const fadeOutDuration = 300; // 300ms
+      const startAlpha = compass.alpha;
+      const startTime = Date.now();
+
+      const animateFadeOut = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / fadeOutDuration, 1);
+        compass.alpha = startAlpha * (1 - progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animateFadeOut);
+        } else {
+          compass.visible = false;
+        }
+      };
+
+      requestAnimationFrame(animateFadeOut);
+    } else {
+      // 显示罗盘
+      compass.visible = true;
+      compass.alpha = 1;
+    }
+  }, [isReady, gameState, isPreviouslyCompleted]);
 
   // 不再显示煞气精灵（小黑球）
   // useEffect(() => {
@@ -678,9 +1025,12 @@ export function GameStage({
     }
   }, [isCompleted, width, height]);
 
+  // Desktop 端：阻止 pointer 事件冒泡到 Devvit
   const handlePointerEvent = useCallback((e: React.PointerEvent) => {
+    // Mobile 端：不阻止，让原生 touch 事件正常工作
+    if (isMobile) return;
     e.stopPropagation();
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="relative h-full w-full">
@@ -689,11 +1039,12 @@ export function GameStage({
         className="block h-full w-full cursor-grab active:cursor-grabbing"
         style={{
           backgroundColor: '#0e1116',
+          touchAction: 'none', // 禁用浏览器默认手势（缩放、滚动）
         }}
-        onPointerDown={handlePointerEvent}
-        onPointerUp={handlePointerEvent}
-        onPointerMove={handlePointerEvent}
-        onPointerCancel={handlePointerEvent}
+        onPointerDown={isMobile ? undefined : handlePointerEvent}
+        onPointerUp={isMobile ? undefined : handlePointerEvent}
+        onPointerMove={isMobile ? undefined : handlePointerEvent}
+        onPointerCancel={isMobile ? undefined : handlePointerEvent}
       />
       
       {!isReady && !error && (
@@ -780,5 +1131,3 @@ function createLuopanCompass(
 
   return { container, needle };
 }
-
-

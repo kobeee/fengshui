@@ -1,276 +1,256 @@
-import type { ReactNode } from 'react';
-import { useGame } from '../stores/GameContext';
+import type { CSSProperties, ReactNode } from 'react';
+import React from 'react';
 import { CompassIcon, GourdIcon, SunIcon } from '../components/game/StepIcons';
+import { useGame } from '../stores/GameContext';
 
-/** 浮动煞气粒子组件 */
-function ShaParticle({
-  delay,
-  size,
-  top,
-  left,
-  animationClass
-}: {
+type IntroStep = {
+  key: string;
+  label: string;
+  hint: string;
+  accent: string;
+  icon: ReactNode;
   delay: string;
-  size: number;
-  top: string;
-  left: string;
-  animationClass: string;
-}) {
+};
+
+function StepConnector() {
   return (
-    <div
-      className={`absolute rounded-full ${animationClass}`}
-      style={{
-        width: size,
-        height: size,
-        top,
-        left,
-        background: 'radial-gradient(circle, rgba(40, 40, 45, 0.7) 0%, rgba(30, 30, 35, 0.4) 100%)',
-        filter: 'blur(1px)',
-        animationDelay: delay,
-      }}
-    />
+    <div className="flex items-center justify-center px-0.5 pt-6 sm:px-1 sm:pt-7" aria-hidden="true">
+      <div className="relative h-[1px] w-4 bg-[#5F6A7D] sm:w-6">
+        <div className="absolute right-0 top-1/2 size-0.5 -translate-y-1/2 rotate-45 bg-[#8A95A6]" />
+      </div>
+    </div>
   );
 }
 
-/** 步骤项组件 */
-function StepItem({
-  icon,
-  label,
-  animClass,
-  labelColor,
-  bgOpacity,
-  borderOpacity,
-}: {
-  icon: ReactNode;
-  label: string;
-  animClass: string;
-  labelColor: string;
-  bgOpacity: number;
-  borderOpacity: number;
-}) {
+function IntroStepCard({ step }: { step: IntroStep }) {
+  const cardStyle: CSSProperties = {
+    animationDelay: step.delay,
+  };
+
+  const iconFrameStyle: CSSProperties = {
+    borderColor: `${step.accent}66`,
+    background: `linear-gradient(180deg, ${step.accent}24 0%, rgba(18, 24, 34, 0.48) 100%)`,
+    boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 16px ${step.accent}26`,
+  };
+
   return (
-    <div className={`flex flex-col items-center text-center ${animClass}`}>
+    <article className="intro-step w-[80px] text-center sm:w-[100px]" style={cardStyle}>
       <div
-        className="w-12 h-12 rounded flex items-center justify-center mb-3"
-        style={{
-          background: `rgba(196, 160, 106, ${bgOpacity})`,
-          border: `1px solid rgba(196, 160, 106, ${borderOpacity})`,
-        }}
+        className="mx-auto mb-2 flex size-12 items-center justify-center border-2 sm:size-14"
+        style={iconFrameStyle}
       >
-        {icon}
+        {step.icon}
       </div>
-      <span
-        className="font-pixel text-[8px] tracking-[0.12em]"
-        style={{ color: labelColor }}
-      >
-        {label}
-      </span>
-    </div>
+      <p className="font-pixel text-[7px] tracking-[0.06em] text-[#D8C08F] sm:text-[8px]">{step.label}</p>
+      <p className="mt-0.5 font-pixel text-[5px] leading-[1.7] text-[#7B8698] sm:text-[6px]">{step.hint}</p>
+    </article>
   );
 }
 
 export function GameStartPage() {
   const { navigate } = useGame();
 
-  // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
+  const steps: IntroStep[] = [
+    {
+      key: 'scan',
+      label: '寻煞气',
+      hint: '观察房间异常气场',
+      accent: '#8EA0C2',
+      icon: <CompassIcon size={24} color="#D8B47A" className="compass-animate" />,
+      delay: '160ms',
+    },
+    {
+      key: 'resolve',
+      label: '化煞气',
+      hint: '摆放对应风水道具',
+      accent: '#C4A06A',
+      icon: <GourdIcon size={24} color="#D7AF73" className="gourd-animate" />,
+      delay: '260ms',
+    },
+    {
+      key: 'warm',
+      label: '转暖色',
+      hint: '净化完成切换暖光',
+      accent: '#D7B772',
+      icon: <SunIcon size={24} color="#E7C98F" className="sun-animate" />,
+      delay: '360ms',
+    },
+  ];
+
   const handleStopPropagation = (e: React.PointerEvent | React.MouseEvent) => {
     e.stopPropagation();
   };
 
   return (
-    <div 
-      className="relative min-h-screen overflow-hidden bg-[#0E1116]" 
+    <div
+      className="relative h-dvh overflow-hidden bg-[#0E1116]"
       onClick={handleStopPropagation}
       onPointerDown={handleStopPropagation}
       onPointerUp={handleStopPropagation}
       onPointerMove={handleStopPropagation}
       onPointerCancel={handleStopPropagation}
     >
-      {/* Layer 0: 全屏背景图 */}
       <img
         src="/images/home-v1.0.png"
         alt=""
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover"
       />
 
-      {/* Layer 1: 渐变遮罩 - 四周暗化突出中间 */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0E1116_85%)]" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0E1116] via-transparent to-[#0E1116]/70" />
+      {/* 背景遮罩 - 单层径向渐变，与 SplashPage 风格一致 */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0E1116_90%)]" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0E1116] via-transparent to-[#0E1116]/60" />
 
-      {/* Layer 2: 浮动煞气粒子 */}
-      <ShaParticle delay="0s" size={10} top="15%" left="8%" animationClass="sha-particle-1" />
-      <ShaParticle delay="0.5s" size={8} top="20%" left="82%" animationClass="sha-particle-2" />
-      <ShaParticle delay="1s" size={12} top="75%" left="12%" animationClass="sha-particle-3" />
-      <ShaParticle delay="1.5s" size={6} top="70%" left="85%" animationClass="sha-particle-1" />
-
-      {/* Layer 3: 内容层 - 垂直居中 */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-6">
-        {/* 主卡片容器 */}
-        <div className="relative w-full max-w-[360px] card-animate-in">
-          {/* 外层光晕 */}
+      <main className="relative z-10 flex h-full items-center justify-center px-3 py-2 sm:px-5 sm:py-2">
+        <section className="intro-shell relative w-full max-w-[600px]">
+          {/* 外层光晕 - 增强玻璃质感 */}
           <div
-            className="absolute -inset-4 rounded-lg"
+            className="pointer-events-none absolute -inset-3 rounded-sm sm:-inset-4"
             style={{
-              background: 'radial-gradient(ellipse at center, rgba(196, 160, 106, 0.2) 0%, transparent 65%)',
+              background: 'radial-gradient(ellipse at center, rgba(196, 160, 106, 0.18) 0%, transparent 70%)',
             }}
           />
 
-          {/* 像素回字纹边框 - 外层 */}
-          <div className="absolute -inset-2 border border-[#C4A06A]/25 rounded-lg" />
-          {/* 像素回字纹边框 - 内层 */}
-          <div className="absolute -inset-1 border-2 border-[#C4A06A]/35 rounded-lg" />
+          {/* 8-bit风格双层边框 */}
+          <div className="pointer-events-none absolute -inset-1.5 border border-[#C4A06A]/30 rounded-sm sm:-inset-2" />
+          <div className="pointer-events-none absolute -inset-0.5 border-2 border-[#C4A06A]/45 rounded-sm sm:-inset-1" />
 
-          {/* 主卡片 - 强玻璃质感 */}
           <div
-            className="relative px-8 py-10 rounded-lg"
+            className="relative overflow-hidden px-8 py-10 sm:px-12 sm:py-12"
             style={{
-              background: 'linear-gradient(135deg, rgba(30, 35, 45, 0.25) 0%, rgba(21, 26, 34, 0.35) 100%)',
-              backdropFilter: 'blur(30px) saturate(1.2)',
-              WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
-              border: '2px solid rgba(196, 160, 106, 0.4)',
-              boxShadow: `
-                inset 0 1px 1px rgba(255, 255, 255, 0.08),
-                inset 0 0 60px rgba(196, 160, 106, 0.05),
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                0 0 80px rgba(196, 160, 106, 0.1)
-              `,
+              background: 'linear-gradient(135deg, rgba(30, 35, 45, 0.35) 0%, rgba(21, 26, 34, 0.4) 100%)',
+              backdropFilter: 'blur(24px) saturate(1.4)',
+              WebkitBackdropFilter: 'blur(24px) saturate(1.4)',
+              border: '2px solid rgba(196, 160, 106, 0.45)',
+              boxShadow:
+                'inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 0 50px rgba(196, 160, 106, 0.03), 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 100px rgba(196, 160, 106, 0.08)',
             }}
           >
-            {/* Layer 4: 罗盘网格纹理背景 */}
-            <div
-              className="absolute inset-0 rounded-lg pointer-events-none"
-              style={{
-                backgroundImage: `
-                  radial-gradient(circle at center, transparent 30%, rgba(196, 160, 106, 0.02) 31%, transparent 32%),
-                  radial-gradient(circle at center, transparent 50%, rgba(196, 160, 106, 0.015) 51%, transparent 52%),
-                  radial-gradient(circle at center, transparent 70%, rgba(196, 160, 106, 0.01) 71%, transparent 72%),
-                  linear-gradient(rgba(196, 160, 106, 0.02) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(196, 160, 106, 0.02) 1px, transparent 1px)
-                `,
-                backgroundSize: '100% 100%, 100% 100%, 100% 100%, 32px 32px, 32px 32px',
-              }}
-            />
+            <div className="intro-sheen absolute inset-y-0 -left-1/3 w-1/3" aria-hidden="true" />
 
-            {/* Layer 5: 内容层 */}
-            {/* 游戏标题 - 增大尺寸 */}
-            <div className="relative text-center mb-10">
+            <header className="text-center">
+              <p className="font-pixel text-[6px] tracking-[0.2em] text-[#8C98AB] sm:text-[6px]">观气 · 定局 · 转运</p>
               <h1
-                className="font-pixel text-[22px] tracking-[0.1em] mb-4"
+                className="mt-1 text-balance font-pixel text-[20px] leading-[1.3] tracking-[0.08em] sm:text-[22px]"
                 style={{
                   color: '#F5E4BB',
-                  textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8), 0 0 40px rgba(240, 217, 156, 0.5)',
+                  textShadow: '2px 2px 0 rgba(0, 0, 0, 0.82), 0 0 20px rgba(240, 217, 156, 0.32)',
                 }}
               >
                 八比特风水师
               </h1>
-              <p
-                className="font-pixel text-[9px] tracking-[0.15em]"
-                style={{ color: '#8D97A8' }}
-              >
-                点击煞气 · 摆放道具 · 重获温暖
+              <p className="mt-1 font-pixel text-[6px] tracking-[0.2em] text-[#7C889A] sm:text-[7px]">
+                8-BIT FENG SHUI MASTER
               </p>
+            </header>
+
+            <div className="mx-auto mb-3 mt-2 flex w-fit items-center gap-1.5 sm:mb-4 sm:mt-3 sm:gap-2" aria-hidden="true">
+              <div className="h-[1px] w-6 bg-[#455063] sm:w-8" />
+              <div className="size-1 bg-[#C4A06A]" />
+              <div className="size-1.5 bg-[#D9C291]" />
+              <div className="size-1 bg-[#C4A06A]" />
+              <div className="h-[1px] w-6 bg-[#455063] sm:w-8" />
             </div>
 
-            {/* 像素分隔线 - 祥云纹风格 */}
-            <div className="relative flex items-center justify-center gap-1 mb-10">
-              <div className="w-4 h-[2px] bg-[#3E4C43]" />
-              <div className="w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent border-b-[#C4A06A]" />
-              <div className="w-4 h-[2px] bg-[#3E4C43]" />
-              <div className="w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent border-b-[#E6D4B4]" />
-              <div className="w-4 h-[2px] bg-[#3E4C43]" />
+            <div className="mb-3 flex items-start justify-center gap-1 sm:mb-4 sm:gap-2">
+              {steps.map((step, index) => (
+                <React.Fragment key={step.key}>
+                  <IntroStepCard step={step} />
+                  {index < steps.length - 1 ? <StepConnector /> : null}
+                </React.Fragment>
+              ))}
             </div>
 
-            {/* 玩法说明 - 三步骤图标化横向排列 */}
-            <div className="relative flex justify-center items-start gap-4 mb-10">
-              <StepItem
-                icon={<CompassIcon size={28} className="compass-animate" />}
-                label="寻煞气"
-                animClass="step-animate-1"
-                labelColor="#AAB3C2"
-                bgOpacity={0.12}
-                borderOpacity={0.25}
-              />
-
-              {/* 连接线 */}
-              <svg width="20" height="48" viewBox="0 0 20 48" className="mt-4 step-animate-1">
-                <defs>
-                  <linearGradient id="line-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3E4C43" stopOpacity="0.3" />
-                    <stop offset="50%" stopColor="#C4A06A" stopOpacity="0.6" />
-                    <stop offset="100%" stopColor="#3E4C43" stopOpacity="0.3" />
-                  </linearGradient>
-                </defs>
-                <line x1="0" y1="24" x2="12" y2="24" stroke="url(#line-grad-1)" strokeWidth="1" />
-                <polygon points="12,21 18,24 12,27" fill="#C4A06A" opacity="0.5" />
-              </svg>
-
-              <StepItem
-                icon={<GourdIcon size={28} className="gourd-animate" />}
-                label="化煞气"
-                animClass="step-animate-2"
-                labelColor="#AAB3C2"
-                bgOpacity={0.15}
-                borderOpacity={0.3}
-              />
-
-              {/* 连接线 */}
-              <svg width="20" height="48" viewBox="0 0 20 48" className="mt-4 step-animate-2">
-                <line x1="0" y1="24" x2="12" y2="24" stroke="url(#line-grad-1)" strokeWidth="1" />
-                <polygon points="12,21 18,24 12,27" fill="#D4B07A" opacity="0.5" />
-              </svg>
-
-              <StepItem
-                icon={<SunIcon size={28} className="sun-animate" />}
-                label="转暖色"
-                animClass="step-animate-3"
-                labelColor="#E6D4B4"
-                bgOpacity={0.2}
-                borderOpacity={0.35}
-              />
-            </div>
-
-            {/* 引导语 */}
-            <p
-              className="relative text-center font-pixel text-[9px] tracking-[0.1em] mb-5"
-              style={{ color: '#6B7280' }}
-            >
-              准备好改变房间气场了吗？
+            <p className="text-pretty text-center font-pixel text-[7px] leading-[1.9] tracking-[0.1em] text-[#9CA6B6] sm:text-[8px]">
+              房间气场失衡，需要你的风水调整
+              <br />
+              点击煞气点，摆放正确道具，驱散阴郁
             </p>
 
-            {/* 主按钮 */}
-            <button
-              onClick={() => navigate('select')}
-              className="relative w-full py-4 active:translate-y-[2px] transition-all duration-150"
-              style={{
-                background: 'linear-gradient(180deg, #D4B07A 0%, #B8904F 100%)',
-                boxShadow: `
-                  inset -2px -2px 0px rgba(0, 0, 0, 0.25),
-                  inset 2px 2px 0px rgba(255, 255, 255, 0.25),
-                  0 4px 0px #5C4020,
-                  0 6px 12px rgba(0, 0, 0, 0.3),
-                  0 0 30px rgba(196, 160, 106, 0.3)
-                `,
-              }}
-            >
-              <div
-                className="absolute inset-1.5 pointer-events-none"
-                style={{ border: '1px solid rgba(255, 255, 255, 0.15)' }}
-              />
-              <span className="relative font-pixel text-[13px] text-[#0E1116] tracking-[0.12em]">
-                选择关卡
-              </span>
-            </button>
-          </div>
-        </div>
+            <div className="mt-3 flex flex-col items-center gap-1.5 sm:mt-4 sm:gap-2">
+              <button
+                onClick={() => navigate('select')}
+                className="group relative px-8 py-2.5 font-pixel text-[9px] tracking-[0.1em] text-[#1A1611] transition-transform duration-150 active:translate-y-[2px] sm:px-10 sm:py-3 sm:text-[10px]"
+                style={{
+                  background: 'linear-gradient(180deg, #D7B87F 0%, #C39C62 58%, #AA8650 100%)',
+                  boxShadow:
+                    'inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 -1px 0 rgba(0, 0, 0, 0.28), 0 4px 0 #5A3F22, 0 6px 12px rgba(0, 0, 0, 0.4)',
+                }}
+              >
+                <span className="absolute inset-1 border border-white/15" aria-hidden="true" />
+                <span className="relative">开始调整</span>
+              </button>
 
-        {/* 底部文案 */}
-        <p
-          className="mt-8 font-pixel text-[7px] tracking-[0.15em] opacity-0"
-          style={{ color: '#6B7280', animation: 'fade-in 0.5s ease-out 1.2s forwards' }}
-        >
-          Lo-Fi Chill · 8-Bit SFX · Cozy Puzzle
-        </p>
-      </div>
+              <p className="font-pixel text-[5px] tracking-[0.14em] text-[#667286] sm:text-[6px]">选择关卡，修复房间气场</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <style>{`
+        @keyframes intro-card-enter {
+          from {
+            opacity: 0;
+            transform: translateY(14px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes intro-step-enter {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes intro-sheen {
+          0% {
+            transform: translateX(0);
+            opacity: 0;
+          }
+          15% {
+            opacity: 0.35;
+          }
+          35% {
+            opacity: 0;
+          }
+          100% {
+            transform: translateX(360%);
+            opacity: 0;
+          }
+        }
+
+        .intro-shell {
+          animation: intro-card-enter 560ms ease-out both;
+        }
+
+        .intro-step {
+          opacity: 0;
+          animation: intro-step-enter 380ms ease-out forwards;
+        }
+
+        .intro-sheen {
+          background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.08) 52%, transparent 100%);
+          animation: intro-sheen 7s linear infinite;
+          pointer-events: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .intro-shell,
+          .intro-step,
+          .intro-sheen {
+            animation: none;
+            opacity: 1;
+            transform: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }

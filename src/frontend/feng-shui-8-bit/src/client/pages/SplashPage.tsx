@@ -1,4 +1,4 @@
-import type { MouseEvent, PointerEvent } from 'react';
+import React, { type MouseEvent, type PointerEvent } from 'react';
 import { requestExpandedMode } from '@devvit/web/client';
 
 export function SplashPage() {

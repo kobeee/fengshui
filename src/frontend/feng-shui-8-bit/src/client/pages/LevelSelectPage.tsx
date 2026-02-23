@@ -1,5 +1,7 @@
+import React from 'react';
 import { useGame } from '../stores/GameContext';
 import { levels, type LevelWithAura } from '../data/levels';
+import { useLevelCompletion } from '../hooks/useLevelCompletion';
 
 /** 像素边角装饰组件 */
 function CornerDecorations({ color }: { color: string }) {
@@ -567,10 +569,13 @@ function LevelCard({
 
 export function LevelSelectPage() {
   const { navigate, loadLevel } = useGame();
+  const { isLevelCompleted } = useLevelCompletion();
 
   const handleSelectLevel = (level: LevelWithAura) => {
     if (level.locked) return;
-    loadLevel(level);
+    // 检查关卡是否已通关
+    const completed = isLevelCompleted(level.id);
+    loadLevel(level, completed);
   };
 
   // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
