@@ -229,28 +229,28 @@ export function GameplayPage() {
 
   // 指针事件处理（用于冷暖对比）
   // 不阻止事件传播，让拖动功能同时生效
-  const handlePointerDown = useCallback((e: PointerEvent) => {
+  const handlePointerDown = useCallback((_e: PointerEvent) => {
     if (!isCompareInteractive) {
       return;
     }
     startComparing();
   }, [isCompareInteractive, startComparing]);
 
-  const handlePointerUp = useCallback((e: PointerEvent) => {
+  const handlePointerUp = useCallback((_e: PointerEvent) => {
     if (!isCompareInteractive) {
       return;
     }
     stopComparing();
   }, [isCompareInteractive, stopComparing]);
 
-  const handlePointerCancel = useCallback((e: PointerEvent) => {
+  const handlePointerCancel = useCallback((_e: PointerEvent) => {
     if (!isCompareInteractive) {
       return;
     }
     stopComparing();
   }, [isCompareInteractive, stopComparing]);
 
-  const handlePointerLeave = useCallback((e: PointerEvent) => {
+  const handlePointerLeave = useCallback((_e: PointerEvent) => {
     if (!isCompareInteractive) {
       return;
     }

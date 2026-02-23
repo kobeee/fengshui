@@ -1,3 +1,28 @@
+## [2026-02-23] Desktop 端图片比例 + 罗盘拖拽交互修复
+
+### 变更内容
+
+**问题 1: 图片比例变形**
+- 现象：Desktop/Fullscreen 模式下图片左右被挤压，失去原始宽高比
+- 根因：
+  - 初始化时图片被强制拉伸到屏幕尺寸 `coldSprite.width = width; coldSprite.height = height`
+  - resize 时同样使用拉伸逻辑
+- 修复：改为 contain 模式，计算缩放比例使图片完整显示，保持原始宽高比居中
+
+**问题 2: 罗盘交互方式**
+- 现象：点击屏幕任意位置罗盘就跳到那里
+- 根因：监听了 `app.stage.on('pointerdown')` 实现点击跳转
+- 修复：改为拖拽交互
+  - 监听罗盘 `compass.on('pointerdown')` 开始拖拽
+  - canvas 的 `pointermove`/`pointerup` 处理拖拽过程
+  - 光标状态 `grab` → `grabbing` 提供视觉反馈
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+
+---
+
 ## [2026-02-23] 通关后拖动功能修复 + 冷暖对比手势优化
 
 ### 变更内容

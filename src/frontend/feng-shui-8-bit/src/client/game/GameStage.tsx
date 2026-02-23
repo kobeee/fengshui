@@ -268,32 +268,42 @@ export function GameStage({
         warmSprite.label = 'warmRoom';
         warmSprite.alpha = 0;
 
+        // 获取图片原始尺寸
+        const imgWidth = coldTexture.width;
+        const imgHeight = coldTexture.height;
+        
+        // 保存图片原始尺寸（用于煞气点位置计算）
+        imageDimensionsRef.current = { width: imgWidth, height: imgHeight };
+        
+        coldSprite.x = 0;
+        coldSprite.y = 0;
+        warmSprite.x = 0;
+        warmSprite.y = 0;
+
         if (isMobile) {
           // Mobile 端：保持图片原始尺寸，居中显示
-          const imgWidth = coldTexture.width;
-          const imgHeight = coldTexture.height;
-          coldSprite.x = 0;
-          coldSprite.y = 0;
-          warmSprite.x = 0;
-          warmSprite.y = 0;
-          
-          // 保存图片原始尺寸（用于煞气点位置计算）
-          imageDimensionsRef.current = { width: imgWidth, height: imgHeight };
-          
           // 初始位置：让图片居中（图片中心对准屏幕中心）
           roomContainer.x = (width - imgWidth) / 2;
           roomContainer.y = (height - imgHeight) / 2;
           roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
           targetRoomTransformRef.current = { x: roomContainer.x, y: roomContainer.y, scale: 1 };
         } else {
-          // Web 端：图片适配屏幕尺寸
-          coldSprite.width = width;
-          coldSprite.height = height;
-          warmSprite.width = width;
-          warmSprite.height = height;
-          // Web 端不需要 imageDimensions，但设置一下以防万一
-          imageDimensionsRef.current = { width, height };
-          targetRoomTransformRef.current = { x: 0, y: 0, scale: 1 };
+          // Web 端：contain 模式，保持原始宽高比，居中显示
+          const scaleX = width / imgWidth;
+          const scaleY = height / imgHeight;
+          const scale = Math.min(scaleX, scaleY, 1); // 不放大，最多原始尺寸
+          
+          roomContainer.scale.set(scale);
+          
+          // 居中显示
+          const scaledWidth = imgWidth * scale;
+          const scaledHeight = imgHeight * scale;
+          roomContainer.x = (width - scaledWidth) / 2;
+          roomContainer.y = (height - scaledHeight) / 2;
+          
+          roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
+          roomScaleRef.current = scale;
+          targetRoomTransformRef.current = { x: roomContainer.x, y: roomContainer.y, scale };
         }
 
         roomContainer.addChild(coldSprite);
@@ -480,12 +490,15 @@ export function GameStage({
             isGestureActiveRef.current = false;
           });
         } else {
-          // Web 端：点击屏幕位置移动罗盘（支持缩放后的坐标映射）
+          // Web 端：拖拽罗盘移动（支持缩放后的坐标映射）
           type MacGestureEvent = Event & {
             scale: number;
             clientX: number;
             clientY: number;
           };
+          let isDraggingCompass = false;
+          const dragStartOffset = { x: 0, y: 0 };
+          
           const gestureStart = {
             scale: 1,
             anchorX: 0,
@@ -493,6 +506,7 @@ export function GameStage({
             canvasX: 0,
             canvasY: 0,
           };
+          
           const toNormalizedRoomPosition = (canvasX: number, canvasY: number): Position => {
             const roomOffset = roomOffsetRef.current;
             const roomScale = roomScaleRef.current;
@@ -508,17 +522,39 @@ export function GameStage({
             };
           };
 
-          const handleStagePointerDown = (e: { globalX: number; globalY: number }) => {
-            const newPos = toNormalizedRoomPosition(e.globalX, e.globalY);
-            onCompassMoveRef.current?.(newPos);
-          };
-
           const toCanvasPoint = (clientX: number, clientY: number): { x: number; y: number } => {
             const rect = canvas.getBoundingClientRect();
             return {
               x: clientX - rect.left,
               y: clientY - rect.top,
             };
+          };
+
+          // 罗盘拖拽开始
+          const handleCompassPointerDown = (e: { globalX: number; globalY: number }) => {
+            isDraggingCompass = true;
+            const compass = compassRef.current;
+            if (compass) {
+              // 记录点击位置相对于罗盘中心的偏移
+              dragStartOffset.x = e.globalX - compass.x;
+              dragStartOffset.y = e.globalY - compass.y;
+            }
+            canvas.style.cursor = 'grabbing';
+          };
+
+          // 罗盘拖拽移动
+          const handlePointerMove = (e: PointerEvent) => {
+            if (!isDraggingCompass) return;
+            const { x: canvasX, y: canvasY } = toCanvasPoint(e.clientX, e.clientY);
+            // 计算新的罗盘位置（减去偏移量）
+            const newPos = toNormalizedRoomPosition(canvasX - dragStartOffset.x, canvasY - dragStartOffset.y);
+            onCompassMoveRef.current?.(newPos);
+          };
+
+          // 罗盘拖拽结束
+          const handlePointerUp = () => {
+            isDraggingCompass = false;
+            canvas.style.cursor = 'grab';
           };
 
           const handleWheel = (e: WheelEvent) => {
@@ -572,14 +608,25 @@ export function GameStage({
             ge.preventDefault();
           };
 
-          app.stage.on('pointerdown', handleStagePointerDown);
+          // 罗盘监听 pointerdown 开始拖拽
+          compass.on('pointerdown', handleCompassPointerDown);
+          // canvas 监听 pointermove 和 pointerup 处理拖拽
+          canvas.addEventListener('pointermove', handlePointerMove);
+          canvas.addEventListener('pointerup', handlePointerUp);
+          canvas.addEventListener('pointercancel', handlePointerUp);
+          canvas.addEventListener('pointerleave', handlePointerUp);
+          
           canvas.addEventListener('wheel', handleWheel, { passive: false });
           canvas.addEventListener('gesturestart', handleGestureStart as EventListener, { passive: false });
           canvas.addEventListener('gesturechange', handleGestureChange as EventListener, { passive: false });
           canvas.addEventListener('gestureend', handleGestureEnd as EventListener, { passive: false });
 
           cleanupFns.push(() => {
-            app.stage.off('pointerdown', handleStagePointerDown);
+            compass.off('pointerdown', handleCompassPointerDown);
+            canvas.removeEventListener('pointermove', handlePointerMove);
+            canvas.removeEventListener('pointerup', handlePointerUp);
+            canvas.removeEventListener('pointercancel', handlePointerUp);
+            canvas.removeEventListener('pointerleave', handlePointerUp);
             canvas.removeEventListener('wheel', handleWheel);
             canvas.removeEventListener('gesturestart', handleGestureStart as EventListener);
             canvas.removeEventListener('gesturechange', handleGestureChange as EventListener);
@@ -656,28 +703,32 @@ export function GameStage({
     const roomContainer = roomContainerRef.current;
     if (!roomContainer) return;
 
-    const coldRoom = roomContainer.getChildByLabel('coldRoom') as Sprite | null;
-    const warmRoom = roomContainer.getChildByLabel('warmRoom') as Sprite | null;
-
     if (!isMobile) {
-      if (coldRoom && warmRoom) {
-        coldRoom.width = width;
-        coldRoom.height = height;
-        warmRoom.width = width;
-        warmRoom.height = height;
+      // Web 端：contain 模式，保持原始宽高比
+      const imgDims = imageDimensionsRef.current;
+      if (imgDims.width > 0 && imgDims.height > 0) {
+        const scaleX = width / imgDims.width;
+        const scaleY = height / imgDims.height;
+        const scale = Math.min(scaleX, scaleY, 1); // 不放大，最多原始尺寸
+
+        roomContainer.scale.set(scale);
+
+        // 居中显示
+        const scaledWidth = imgDims.width * scale;
+        const scaledHeight = imgDims.height * scale;
+        roomContainer.x = (width - scaledWidth) / 2;
+        roomContainer.y = (height - scaledHeight) / 2;
+
+        roomOffsetRef.current = { x: roomContainer.x, y: roomContainer.y };
+        roomScaleRef.current = scale;
+        targetRoomTransformRef.current = { x: roomContainer.x, y: roomContainer.y, scale };
+
+        if (compassRef.current) {
+          compassRef.current.x = roomContainer.x + compassPositionRef.current.x * imgDims.width * scale;
+          compassRef.current.y = roomContainer.y + compassPositionRef.current.y * imgDims.height * scale;
+        }
       }
-      roomContainer.x = 0;
-      roomContainer.y = 0;
-      roomContainer.scale.set(1);
-      roomOffsetRef.current = { x: 0, y: 0 };
-      roomScaleRef.current = 1;
-      targetRoomTransformRef.current = { x: 0, y: 0, scale: 1 };
       isGestureActiveRef.current = false;
-      imageDimensionsRef.current = { width, height };
-      if (compassRef.current) {
-        compassRef.current.x = compassPositionRef.current.x * width;
-        compassRef.current.y = compassPositionRef.current.y * height;
-      }
     }
 
     if (isMobile && compassRef.current) {
