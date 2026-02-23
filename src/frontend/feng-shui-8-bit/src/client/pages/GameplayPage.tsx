@@ -228,10 +228,8 @@ export function GameplayPage() {
   }, []);
 
   // 指针事件处理（用于冷暖对比）
-  // 使用 capture 阶段，确保即使 canvas 内部 stopPropagation 也能收到按住/松开事件
+  // 不阻止事件传播，让拖动功能同时生效
   const handlePointerDown = useCallback((e: PointerEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
     if (!isCompareInteractive) {
       return;
     }
@@ -239,8 +237,6 @@ export function GameplayPage() {
   }, [isCompareInteractive, startComparing]);
 
   const handlePointerUp = useCallback((e: PointerEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
     if (!isCompareInteractive) {
       return;
     }
@@ -248,8 +244,6 @@ export function GameplayPage() {
   }, [isCompareInteractive, stopComparing]);
 
   const handlePointerCancel = useCallback((e: PointerEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
     if (!isCompareInteractive) {
       return;
     }
@@ -257,8 +251,6 @@ export function GameplayPage() {
   }, [isCompareInteractive, stopComparing]);
 
   const handlePointerLeave = useCallback((e: PointerEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
     if (!isCompareInteractive) {
       return;
     }

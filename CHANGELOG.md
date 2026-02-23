@@ -1,3 +1,24 @@
+## [2026-02-23] 通关后拖动功能修复 + 冷暖对比手势优化
+
+### 变更内容
+
+**问题修复**：通关后按住鼠标拖动图片失效，图片位置固定无法移动。
+
+**根本原因**：
+- 冷暖对比手势处理器 `handlePointerDown/Up/Cancel/Leave` 调用了 `e.stopPropagation()`，阻止了事件传播到 canvas。
+- canvas 的拖动功能依赖原生 pointer 事件监听器，事件被阻止后拖动失效。
+
+**修复方案**：
+- 移除冷暖对比手势处理器中的 `e.preventDefault()` 和 `e.stopPropagation()`。
+- 让事件同时传递给容器（冷暖对比）和 canvas（拖动），实现两个功能并行：
+  - 按住显示冷图（原图对比）
+  - 同时可以拖动图片查看不同区域
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+
+---
+
 ## [2026-02-23] 全屏模式按住对比修复（按住冷图/松开回暖）
 
 ### 变更内容
