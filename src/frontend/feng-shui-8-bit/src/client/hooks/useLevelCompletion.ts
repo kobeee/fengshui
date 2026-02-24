@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
+import { levels } from '../data/levels';
 
 /** localStorage key 常量 */
 const FENGSHUI_COMPLETED_LEVELS_KEY = 'fengshui_completed_levels';
@@ -20,9 +21,9 @@ function loadCompletedLevelsFromStorage(): string[] {
 }
 
 /** 保存已通关关卡列表到 localStorage */
-function saveCompletedLevelsToStorage(levels: string[]): void {
+function saveCompletedLevelsToStorage(levelIds: string[]): void {
   try {
-    localStorage.setItem(FENGSHUI_COMPLETED_LEVELS_KEY, JSON.stringify(levels));
+    localStorage.setItem(FENGSHUI_COMPLETED_LEVELS_KEY, JSON.stringify(levelIds));
   } catch (error) {
     console.error('[useLevelCompletion] Failed to save to localStorage:', error);
   }
@@ -43,6 +44,18 @@ export function useLevelCompletion() {
     },
     [completedLevels]
   );
+
+  /** 获取已通关关卡数量 */
+  const getCompletedCount = useCallback((): number => {
+    return completedLevels.length;
+  }, [completedLevels]);
+
+  /** 获取当前进行中的关卡（第一个未通关的关卡） */
+  const getCurrentLevel = useMemo(() => {
+    // 找到第一个未通关且未锁定的关卡
+    const current = levels.find((level) => !level.locked && !completedLevels.includes(level.id));
+    return current;
+  }, [completedLevels]);
 
   /** 标记关卡为已通关 */
   const markLevelCompleted = useCallback((levelId: string) => {
@@ -78,6 +91,8 @@ export function useLevelCompletion() {
   return {
     completedLevels,
     isLevelCompleted,
+    getCompletedCount,
+    getCurrentLevel,
     markLevelCompleted,
     clearLevelCompletion,
     clearAllCompletions,

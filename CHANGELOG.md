@@ -1,3 +1,43 @@
+## [2026-02-24] 关卡列表页面 UI 优化 v3.0
+
+### 变更内容
+
+**核心改动**：按照 UI 优化方案 v3.0 重构关卡选择页面，支持完整 20 关关卡。
+
+**关卡数据更新**：
+- 更新 `levels.ts` 为完整 20 关数据
+- 包含所有煞气点配置（位置、类型、选项）
+- 新增所有煞气类型定义（路冲煞、天斩煞、反弓煞等）
+- 支持章节分组（初窥门径、渐入佳境、融会贯通、超凡入圣）
+
+**图片资源**：
+- 拷贝 Level 1-20 图片到 `public/images/levelX/` 目录
+- 包含 `room-cold.png` 和 `room-warm.png`
+
+**UI 组件实现**：
+1. **ProgressPath** - 进度路径组件（◆─◈─◇─◇ 格式）
+2. **ChapterSection** - 章节分组组件（当前关卡置顶）
+3. **LevelCard** - 统一关卡卡片组件
+   - 像素硬边风格（4px 4px 0 0 阴影）
+   - 当前关卡脉冲发光效果
+   - 已通关关卡显示"吉"标记
+   - 锁定关卡显示迷雾动画
+4. **MistOverlay** - 迷雾动画组件（漂浮粒子 + 问号）
+5. **ContinueButton** - 继续游戏悬浮按钮（刘海屏适配）
+
+**Hook 更新**：
+- `useLevelCompletion` 新增 `getCompletedCount()` 和 `getCurrentLevel`
+- 支持关卡通关状态记忆
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/LevelSelectPage.tsx` - 完全重构
+- `src/frontend/feng-shui-8-bit/src/client/data/levels.ts` - 更新为 20 关
+- `src/frontend/feng-shui-8-bit/src/client/types/game.ts` - 新增煞气类型
+- `src/frontend/feng-shui-8-bit/src/client/hooks/useLevelCompletion.ts` - 新增方法
+- `src/frontend/feng-shui-8-bit/public/images/level2-20/` - 新增关卡图片
+
+---
+
 ## [2026-02-23] Web 端罗盘在煞气点核心区域无法移动的问题修复
 
 ### 变更内容

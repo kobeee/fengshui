@@ -13,7 +13,22 @@ export type ShaType =
   | 'mirror_sha' // 镜冲床
   | 'beam_sha' // 横梁压顶
   | 'door_clash' // 门冲/穿堂煞
-  | 'sharp_corner_sha'; // 尖角煞
+  | 'sharp_corner_sha' // 尖角煞
+  | 'smell_sha' // 味煞
+  | 'back_door_sha' // 背门煞
+  | 'pillar_sha' // 柱角煞
+  | 'window_sha' // 窗户煞
+  | 'yin_sha' // 阴煞
+  | 'stair_clash' // 楼梯冲门
+  | 'kitchen_sha' // 灶台冲煞
+  | 'wealth_sha' // 财位问题
+  | 'electric_sha' // 电线煞
+  | 'slanted_ceiling' // 斜顶压床
+  | 'road_clash' // 路冲煞
+  | 'sky_split' // 天斩煞
+  | 'reverse_bow' // 反弓煞
+  | 'wall_blade' // 壁刀煞
+  | 'fireplace_sha'; // 壁炉煞
 
 /** 处置选项 */
 export type ShaOption = {
