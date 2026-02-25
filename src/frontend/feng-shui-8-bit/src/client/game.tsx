@@ -3,6 +3,7 @@ import './index.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GameProvider } from './stores/GameContext';
+import { LevelCompletionProvider } from './stores/LevelCompletionContext';
 import { useGame } from './stores/GameContext';
 
 // 页面组件
@@ -35,9 +36,11 @@ function AppRouter() {
 export function GameApp() {
   return (
     <StrictMode>
-      <GameProvider>
-        <AppRouter />
-      </GameProvider>
+      <LevelCompletionProvider>
+        <GameProvider>
+          <AppRouter />
+        </GameProvider>
+      </LevelCompletionProvider>
     </StrictMode>
   );
 }

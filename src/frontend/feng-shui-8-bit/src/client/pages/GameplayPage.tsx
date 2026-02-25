@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback, useEffect, type PointerEvent, type MouseEvent } from 'react';
 import { useGame } from '../stores/GameContext';
 import { useResponsive } from '../hooks/useResponsive';
-import { useLevelCompletion } from '../hooks/useLevelCompletion';
+import { useLevelCompletion } from '../stores/LevelCompletionContext';
 import { detectShaPoint, getCompassSpeed } from '../utils/distance';
 import type { Position, ShaPoint } from '../types/game';
 import { GameStage } from '../game/GameStage';

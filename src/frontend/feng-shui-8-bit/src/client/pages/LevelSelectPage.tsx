@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 import { useGame } from '../stores/GameContext';
 import { levels, type LevelWithAura, CHAPTERS } from '../data/levels';
-import { useLevelCompletion } from '../hooks/useLevelCompletion';
+import { useLevelCompletion } from '../stores/LevelCompletionContext';
 
 // ============ 像素进度路径组件 ============
 function ProgressPath({ completedCount }: { completedCount: number }) {
@@ -48,11 +48,9 @@ function ProgressPath({ completedCount }: { completedCount: number }) {
 function ProgressBar({
   total,
   completed,
-  isCurrent,
 }: {
   total: number;
   completed: number;
-  isCurrent: boolean;
 }) {
   const progress = completed / total;
 
@@ -70,7 +68,6 @@ function ProgressBar({
           style={{
             width: `${progress * 100}%`,
             background: '#C4A06A',
-            boxShadow: isCurrent ? '0 0 8px rgba(196, 160, 106, 0.5)' : 'none',
           }}
         />
       </div>
@@ -138,22 +135,26 @@ function LevelCard({
   level,
   index,
   isCurrent,
+  isLocked,
+  isCompleted,
   onClick,
 }: {
   level: LevelWithAura;
   index: number;
   isCurrent: boolean;
+  isLocked: boolean;
+  isCompleted: boolean;
   onClick: () => void;
 }) {
-  const isLocked = level.locked;
-  const isCompleted = !isLocked && (level.shaCompleted === level.shaCount);
-
   const handleClick = () => {
     if (isLocked) {
       return;
     }
     onClick();
   };
+
+  // 进度条动态计算：已通关显示全部，未通关显示 0
+  const shaCompleted = isCompleted ? level.shaCount : 0;
 
   // 像素硬边样式
   const cardStyle: React.CSSProperties = {
@@ -196,6 +197,26 @@ function LevelCard({
             <MistOverlay />
           )}
 
+          {/* 锁定标记 */}
+          {isLocked && (
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                background: 'rgba(14, 17, 22, 0.7)',
+              }}
+            >
+              <span
+                className="font-pixel text-[16px]"
+                style={{
+                  color: '#4A5059',
+                  textShadow: '0 0 8px rgba(74, 80, 89, 0.5)',
+                }}
+              >
+                🔒
+              </span>
+            </div>
+          )}
+
           {/* 状态标记 */}
           {isCompleted && (
             <div
@@ -209,7 +230,7 @@ function LevelCard({
             </div>
           )}
 
-          {isCurrent && (
+          {isCurrent && !isLocked && (
             <div
               className="absolute top-1 left-1 px-1.5 py-0.5"
               style={{
@@ -245,10 +266,16 @@ function LevelCard({
             <div className="mt-2">
               <ProgressBar
                 total={level.shaCount}
-                completed={level.shaCompleted ?? 0}
-                isCurrent={isCurrent}
+                completed={shaCompleted}
               />
             </div>
+          )}
+
+          {/* 解锁提示 */}
+          {isLocked && (
+            <p className="font-pixel text-[8px] mt-1" style={{ color: '#4A5059' }}>
+              通关前一关解锁
+            </p>
           )}
 
           {/* 描述 */}
@@ -300,22 +327,22 @@ function ChapterSection({
   chapter,
   levelsInSection,
   currentLevelId,
+  isLevelUnlocked,
+  isLevelCompleted,
   onEnterLevel,
 }: {
   chapter: (typeof CHAPTERS)[number];
   levelsInSection: LevelWithAura[];
   currentLevelId: string | undefined;
+  isLevelUnlocked: (levelId: string) => boolean;
+  isLevelCompleted: (levelId: string) => boolean;
   onEnterLevel: (level: LevelWithAura) => void;
 }) {
   const hasCurrentLevel = levelsInSection.some((l) => l.id === currentLevelId);
 
-  // 当前关卡置顶
-  const sortedLevels = useMemo(() => {
-    if (!hasCurrentLevel) return levelsInSection;
-    const current = levelsInSection.find((l) => l.id === currentLevelId);
-    const others = levelsInSection.filter((l) => l.id !== currentLevelId);
-    return current ? [current, ...others] : levelsInSection;
-  }, [levelsInSection, currentLevelId, hasCurrentLevel]);
+  // 保留原始顺序，不再置顶
+  // 章节内的关卡按原始顺序显示
+  const displayLevels = levelsInSection;
 
   return (
     <section className="mb-8" id={`chapter-${chapter.id}`}>
@@ -335,15 +362,23 @@ function ChapterSection({
 
       {/* 纵向列表 */}
       <div className="flex flex-col gap-3">
-        {sortedLevels.map((level) => (
-          <LevelCard
-            key={level.id}
-            level={level}
-            index={parseInt(level.id.split('-')[1] || '1') - 1}
-            isCurrent={level.id === currentLevelId}
-            onClick={() => onEnterLevel(level)}
-          />
-        ))}
+        {displayLevels.map((level) => {
+          const locked = !isLevelUnlocked(level.id);
+          const completed = isLevelCompleted(level.id);
+
+          return (
+            <div key={level.id} id={`level-${level.id}`}>
+              <LevelCard
+                level={level}
+                index={parseInt(level.id.split('-')[1] || '1') - 1}
+                isCurrent={level.id === currentLevelId}
+                isLocked={locked}
+                isCompleted={completed}
+                onClick={() => onEnterLevel(level)}
+              />
+            </div>
+          );
+        })}
       </div>
     </section>
   );
@@ -388,7 +423,8 @@ function ContinueButton({
 // ============ 主页面组件 ============
 export function LevelSelectPage() {
   const { navigate, loadLevel } = useGame();
-  const { isLevelCompleted, getCompletedCount, getCurrentLevel } = useLevelCompletion();
+  const { isLevelCompleted, isLevelUnlocked, getCompletedCount, getCurrentLevel } =
+    useLevelCompletion();
 
   // 获取完成状态
   const completedCount = getCompletedCount();
@@ -410,10 +446,9 @@ export function LevelSelectPage() {
   // 自动滚动到当前关卡
   useEffect(() => {
     if (currentLevel?.id) {
-      const levelNum = parseInt(currentLevel.id.split('-')[1] || '1');
-      const chapterId = Math.ceil(levelNum / 5);
-      const element = document.getElementById(`chapter-${chapterId}`);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 滚动到具体的关卡卡片
+      const element = document.getElementById(`level-${currentLevel.id}`);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [currentLevel?.id]);
 
@@ -476,6 +511,8 @@ export function LevelSelectPage() {
             chapter={chapter}
             levelsInSection={chapter.levels}
             currentLevelId={currentLevel?.id}
+            isLevelUnlocked={isLevelUnlocked}
+            isLevelCompleted={isLevelCompleted}
             onEnterLevel={handleEnterLevel}
           />
         ))}
@@ -492,7 +529,7 @@ export function LevelSelectPage() {
       </div>
 
       {/* 继续游戏悬浮按钮 */}
-      {currentLevel && !currentLevel.locked && (
+      {currentLevel && isLevelUnlocked(currentLevel.id) && (
         <ContinueButton
           currentLevel={currentLevel}
           onClick={() => handleEnterLevel(currentLevel)}
