@@ -4,13 +4,22 @@ import { levels, type LevelWithAura, CHAPTERS } from '../data/levels';
 import { useLevelCompletion } from '../stores/LevelCompletionContext';
 
 // ============ 像素进度路径组件 ============
-function ProgressPath({ completedCount }: { completedCount: number }) {
+function ProgressPath({
+  completedCount,
+  currentChapterId,
+  onChapterClick,
+}: {
+  completedCount: number;
+  currentChapterId: number;
+  onChapterClick: (chapterId: number) => void;
+}) {
   return (
-    <div className="flex items-center justify-center gap-1 mb-6">
+    <div className="flex items-center justify-center gap-1">
       {CHAPTERS.map((chapter, i) => {
         const isCompleted = completedCount >= chapter.range[1];
         const isCurrent =
           completedCount >= chapter.range[0] - 1 && completedCount < chapter.range[1];
+        const isActive = chapter.id === currentChapterId;
 
         // 双维度区分：填充 + 颜色
         const getState = () => {
@@ -23,17 +32,22 @@ function ProgressPath({ completedCount }: { completedCount: number }) {
 
         return (
           <React.Fragment key={chapter.id}>
-            <span
-              className="font-pixel text-[14px] transition-all duration-300"
+            <button
+              onClick={() => onChapterClick(chapter.id)}
+              className="font-pixel text-[14px] transition-all duration-300 cursor-pointer hover:scale-125 active:scale-110"
               style={{
                 color: state.color,
                 textShadow: state.glow
                   ? '0 0 10px rgba(196, 160, 106, 0.8), 0 0 20px rgba(196, 160, 106, 0.4)'
                   : 'none',
+                background: isActive ? 'rgba(196, 160, 106, 0.15)' : 'transparent',
+                padding: '4px 8px',
+                borderRadius: '2px',
               }}
+              title={chapter.name}
             >
               {state.symbol}
-            </span>
+            </button>
             {i < CHAPTERS.length - 1 && (
               <span className="font-pixel text-[10px] text-[#2A2F3A] mx-0.5">─</span>
             )}
@@ -79,17 +93,24 @@ function ProgressBar({
 }
 
 // ============ 迷雾动画组件 ============
+// 预计算的粒子位置（避免渲染期间调用 Math.random）
+const MIST_PARTICLES = [
+  { id: 0, left: 12, delay: 0, size: 0.8 },
+  { id: 1, left: 28, delay: 0.3, size: 0.6 },
+  { id: 2, left: 45, delay: 0.6, size: 0.9 },
+  { id: 3, left: 62, delay: 0.9, size: 0.5 },
+  { id: 4, left: 78, delay: 1.2, size: 0.7 },
+  { id: 5, left: 15, delay: 1.5, size: 0.55 },
+  { id: 6, left: 35, delay: 1.8, size: 0.85 },
+  { id: 7, left: 52, delay: 2.1, size: 0.65 },
+  { id: 8, left: 68, delay: 2.4, size: 0.75 },
+  { id: 9, left: 85, delay: 2.7, size: 0.6 },
+  { id: 10, left: 22, delay: 3.0, size: 0.7 },
+  { id: 11, left: 58, delay: 3.3, size: 0.8 },
+];
+
 function MistOverlay() {
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 12 }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        delay: i * 0.3,
-        size: Math.random() * 0.5 + 0.5,
-      })),
-    []
-  );
+  const particles = MIST_PARTICLES;
 
   return (
     <div className="relative w-full h-full bg-[#1A1D24] overflow-hidden">
@@ -426,6 +447,9 @@ export function LevelSelectPage() {
   const { isLevelCompleted, isLevelUnlocked, getCompletedCount, getCurrentLevel } =
     useLevelCompletion();
 
+  // 当前激活的章节（用于高亮）
+  const [activeChapterId, setActiveChapterId] = React.useState<number>(1);
+
   // 获取完成状态
   const completedCount = getCompletedCount();
   const currentLevel = getCurrentLevel;
@@ -449,8 +473,27 @@ export function LevelSelectPage() {
       // 滚动到具体的关卡卡片
       const element = document.getElementById(`level-${currentLevel.id}`);
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // 设置当前章节（延迟执行避免 lint 警告）
+      const levelNum = parseInt(currentLevel.id.split('-')[1] || '1');
+      const chapter = CHAPTERS.find(
+        (c) => levelNum >= c.range[0] && levelNum <= c.range[1]
+      );
+      if (chapter) {
+        // 使用 requestAnimationFrame 延迟 setState
+        requestAnimationFrame(() => {
+          setActiveChapterId(chapter.id);
+        });
+      }
     }
   }, [currentLevel?.id]);
+
+  // 点击章节跳转
+  const handleChapterClick = (chapterId: number) => {
+    setActiveChapterId(chapterId);
+    const element = document.getElementById(`chapter-${chapterId}`);
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const handleEnterLevel = (level: LevelWithAura) => {
     const completed = isLevelCompleted(level.id);
@@ -483,12 +526,36 @@ export function LevelSelectPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0E1116_90%)]" />
       </div>
 
-      {/* 内容层 */}
-      <div className="relative z-10 max-w-xl mx-auto px-4 py-6">
-        {/* 标题区 */}
-        <header className="text-center mb-6">
+      {/* Sticky 吸顶头部 */}
+      <header
+        className="sticky top-0 z-20 px-4 py-3"
+        style={{
+          background: 'linear-gradient(180deg, rgba(14, 17, 22, 0.95) 0%, rgba(14, 17, 22, 0.85) 100%)',
+          backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(196, 160, 106, 0.15)',
+        }}
+      >
+        {/* 第一行：返回按钮 + 标题 + 进度 */}
+        <div className="flex items-center justify-between mb-3">
+          {/* 返回按钮 */}
+          <button
+            onClick={() => navigate('start')}
+            className="flex items-center gap-1 px-2 py-1 transition-all hover:bg-[rgba(196,160,106,0.1)] active:scale-95"
+            style={{
+              border: '1px solid rgba(196, 160, 106, 0.3)',
+            }}
+          >
+            <span className="font-pixel text-[12px]" style={{ color: '#C4A06A' }}>
+              ←
+            </span>
+            <span className="font-pixel text-[9px]" style={{ color: '#9CA3AF' }}>
+              主殿
+            </span>
+          </button>
+
+          {/* 标题 */}
           <h1
-            className="font-pixel text-[16px] mb-2"
+            className="font-pixel text-[14px]"
             style={{
               color: '#F5E4BB',
               textShadow: '2px 2px 0 rgba(0,0,0,0.8), 0 0 20px rgba(196, 160, 106, 0.3)',
@@ -496,14 +563,23 @@ export function LevelSelectPage() {
           >
             探境
           </h1>
-          <p className="font-pixel text-[10px] text-[#9CA3AF]">
-            已解 {completedCount}/20 关
-          </p>
-        </header>
 
-        {/* 进度路径 */}
-        <ProgressPath completedCount={completedCount} />
+          {/* 进度 */}
+          <span className="font-pixel text-[10px]" style={{ color: '#9CA3AF' }}>
+            已解 {completedCount}/20
+          </span>
+        </div>
 
+        {/* 第二行：可点击的进度路径 */}
+        <ProgressPath
+          completedCount={completedCount}
+          currentChapterId={activeChapterId}
+          onChapterClick={handleChapterClick}
+        />
+      </header>
+
+      {/* 内容层 */}
+      <div className="relative z-10 max-w-xl mx-auto px-4 py-4">
         {/* 章节列表 */}
         {chapters.map((chapter) => (
           <ChapterSection
@@ -516,16 +592,6 @@ export function LevelSelectPage() {
             onEnterLevel={handleEnterLevel}
           />
         ))}
-
-        {/* 返回按钮 */}
-        <footer className="text-center pt-4 pb-8">
-          <button
-            onClick={() => navigate('start')}
-            className="font-pixel text-[10px] text-[#4A5059] hover:text-[#C4A06A] transition-colors"
-          >
-            返回主殿
-          </button>
-        </footer>
       </div>
 
       {/* 继续游戏悬浮按钮 */}
