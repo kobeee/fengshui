@@ -1,3 +1,14 @@
+## [2026-02-26] 关卡列表页章节跳转锚点优化
+
+### 变更内容
+- **问题修复**：点击进度条跳转章节时，章节标题被 sticky 吸顶头部遮挡
+- **解决方案**：给章节 section 元素添加 `scrollMarginTop: '100px'`，使跳转后章节标题完整显示在 sticky header 下方
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/LevelSelectPage.tsx`
+
+---
+
 ## [2026-02-25] 煞气点进度存档功能 + 返回按钮样式统一
 
 ### 变更内容

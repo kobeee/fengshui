@@ -370,7 +370,11 @@ function ChapterSection({
   const displayLevels = levelsInSection;
 
   return (
-    <section className="mb-8" id={`chapter-${chapter.id}`}>
+    <section
+      className="mb-8"
+      id={`chapter-${chapter.id}`}
+      style={{ scrollMarginTop: '100px' }}
+    >
       {/* 章节标题 */}
       <div className="flex items-center gap-3 mb-4">
         <span
