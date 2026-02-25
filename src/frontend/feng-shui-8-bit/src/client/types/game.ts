@@ -125,7 +125,7 @@ export type GameState = {
 /** 游戏动作 */
 export type GameAction =
   | { type: 'NAVIGATE'; page: PageType }
-  | { type: 'LOAD_LEVEL'; level: Level; isPreviouslyCompleted?: boolean }
+  | { type: 'LOAD_LEVEL'; level: Level; isPreviouslyCompleted?: boolean; resolvedShaIds?: string[] }
   | { type: 'UPDATE_COMPASS'; position: Position; speed: CompassSpeed }
   | { type: 'ACTIVATE_SHA'; shaPoint: ShaPoint | null }
   | { type: 'CLOSE_MODAL' }
@@ -137,7 +137,8 @@ export type GameAction =
   | { type: 'START_TRANSITION' }
   | { type: 'FINISH_TRANSITION' }
   | { type: 'LOAD_LEVEL_WITH_PREVIOUS'; level: Level; isPreviouslyCompleted: boolean }
-  | { type: 'DISMISS_COMPLETION_MODAL' };
+  | { type: 'DISMISS_COMPLETION_MODAL' }
+  | { type: 'SAVE_PROGRESS' };
 
 /** 玩家进度 */
 export type PlayerProgress = {

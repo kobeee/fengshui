@@ -26,6 +26,25 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
     case 'LOAD_LEVEL': {
       const level = resetShaPoints(action.level);
+      // 如果有保存的进度，恢复煞气点状态
+      if (action.resolvedShaIds && action.resolvedShaIds.length > 0) {
+        const updatedPoints = level.shaPoints.map((sha) =>
+          action.resolvedShaIds!.includes(sha.id) ? { ...sha, resolved: true } : sha
+        );
+        const resolvedCount = updatedPoints.filter((sha) => sha.resolved).length;
+        const allResolved = resolvedCount === updatedPoints.length;
+        return {
+          ...initialState,
+          currentLevel: { ...level, shaPoints: updatedPoints },
+          currentPage: 'play',
+          gameState: allResolved ? 'completed' : 'scanning',
+          resolvedCount,
+          showWarmImage: allResolved,
+          isCompleted: allResolved,
+          isPreviouslyCompleted: allResolved,
+          showCompletionModal: allResolved,
+        };
+      }
       return {
         ...initialState,
         currentLevel: level,
@@ -191,7 +210,7 @@ export type GameContextValue = {
   state: GameState;
   dispatch: Dispatch<GameAction>;
   navigate: (page: GameState['currentPage']) => void;
-  loadLevel: (level: Level, isPreviouslyCompleted?: boolean) => void;
+  loadLevel: (level: Level, isPreviouslyCompleted?: boolean, resolvedShaIds?: string[]) => void;
   updateCompass: (position: Position, speed: CompassSpeed) => void;
   activateSha: (shaPoint: ShaPoint | null) => void;
   closeModal: () => void;
@@ -202,6 +221,7 @@ export type GameContextValue = {
   startTransition: () => void;
   finishTransition: () => void;
   dismissCompletionModal: () => void;
+  getResolvedShaIds: () => string[];
 };
 
 export const GameContext = createContext<GameContextValue | null>(null);
@@ -213,9 +233,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     state,
     dispatch,
     navigate: (page) => dispatch({ type: 'NAVIGATE', page }),
-    loadLevel: (level, isPreviouslyCompleted) => {
+    loadLevel: (level, isPreviouslyCompleted, resolvedShaIds) => {
       if (isPreviouslyCompleted) {
         dispatch({ type: 'LOAD_LEVEL_WITH_PREVIOUS', level, isPreviouslyCompleted });
+      } else if (resolvedShaIds && resolvedShaIds.length > 0) {
+        dispatch({ type: 'LOAD_LEVEL', level, resolvedShaIds });
       } else {
         dispatch({ type: 'LOAD_LEVEL', level });
       }
@@ -232,6 +254,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
     startTransition: () => dispatch({ type: 'START_TRANSITION' }),
     finishTransition: () => dispatch({ type: 'FINISH_TRANSITION' }),
     dismissCompletionModal: () => dispatch({ type: 'DISMISS_COMPLETION_MODAL' }),
+    getResolvedShaIds: () => {
+      if (!state.currentLevel) return [];
+      return state.currentLevel.shaPoints
+        .filter((sha) => sha.resolved)
+        .map((sha) => sha.id);
+    },
   };
 
   return (

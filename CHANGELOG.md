@@ -1,3 +1,45 @@
+## [2026-02-25] 煞气点进度存档功能 + 返回按钮样式统一
+
+### 变更内容
+
+**功能实现**：关卡玩到一半退出后，煞气点进度正确保存和恢复。
+
+**实现方案**：
+
+1. **进度存储** (`LevelCompletionContext.tsx`)：
+   - 新增 `shaProgress` 状态：存储每个关卡已解决的煞气点 ID 列表
+   - 新增 `saveShaProgress(levelId, resolvedShaIds)` 方法
+   - 新增 `getShaProgress(levelId)` 方法
+   - 新增 `clearShaProgress(levelId)` 方法
+   - 数据持久化到 `localStorage`
+
+2. **进度恢复** (`GameContext.tsx`)：
+   - `LOAD_LEVEL` action 支持 `resolvedShaIds` 参数
+   - 加载关卡时恢复已解决的煞气点状态
+   - 新增 `getResolvedShaIds()` 方法获取当前进度
+
+3. **进度保存** (`GameplayPage.tsx`)：
+   - 退出关卡时自动保存煞气点进度
+   - 重玩时清除进度
+
+4. **进度显示** (`LevelSelectPage.tsx`)：
+   - 关卡卡片进度条显示正确的已解决数量
+   - 继续探索按钮显示正确的进度
+
+**UI 统一**：
+
+- 统一关卡页和游戏页的返回按钮样式
+- 采用无背景、金色边框、hover 效果的设计
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/stores/LevelCompletionContext.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/stores/GameContext.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/types/game.ts`
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameplayPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/LevelSelectPage.tsx`
+
+---
+
 ## [2026-02-25] 关卡列表页面 Sticky 吸顶 + 章节跳转功能
 
 ### 变更内容

@@ -3,6 +3,10 @@ import { levels } from '../data/levels';
 
 /** localStorage key 常量 */
 const FENGSHUI_COMPLETED_LEVELS_KEY = 'fengshui_completed_levels';
+const FENGSHUI_SHA_PROGRESS_KEY = 'fengshui_sha_progress';
+
+/** 煞气点进度：{ [levelId]: resolvedShaIds[] } */
+type ShaProgress = Record<string, string[]>;
 
 /** 从 localStorage 读取已通关关卡列表 */
 function loadCompletedLevelsFromStorage(): string[] {
@@ -29,8 +33,34 @@ function saveCompletedLevelsToStorage(levelIds: string[]): void {
   }
 }
 
+/** 从 localStorage 读取煞气点进度 */
+function loadShaProgressFromStorage(): ShaProgress {
+  try {
+    const stored = localStorage.getItem(FENGSHUI_SHA_PROGRESS_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed && typeof parsed === 'object') {
+        return parsed;
+      }
+    }
+  } catch (error) {
+    console.error('[LevelCompletionContext] Failed to load sha progress from localStorage:', error);
+  }
+  return {};
+}
+
+/** 保存煞气点进度到 localStorage */
+function saveShaProgressToStorage(progress: ShaProgress): void {
+  try {
+    localStorage.setItem(FENGSHUI_SHA_PROGRESS_KEY, JSON.stringify(progress));
+  } catch (error) {
+    console.error('[LevelCompletionContext] Failed to save sha progress to localStorage:', error);
+  }
+}
+
 export type LevelCompletionContextValue = {
   completedLevels: string[];
+  shaProgress: ShaProgress;
   isLevelCompleted: (levelId: string) => boolean;
   isLevelUnlocked: (levelId: string) => boolean;
   getCompletedCount: () => number;
@@ -38,12 +68,17 @@ export type LevelCompletionContextValue = {
   markLevelCompleted: (levelId: string) => void;
   clearLevelCompletion: (levelId: string) => void;
   clearAllCompletions: () => void;
+  // 煞气点进度相关
+  saveShaProgress: (levelId: string, resolvedShaIds: string[]) => void;
+  getShaProgress: (levelId: string) => string[];
+  clearShaProgress: (levelId: string) => void;
 };
 
 export const LevelCompletionContext = createContext<LevelCompletionContextValue | null>(null);
 
 export function LevelCompletionProvider({ children }: { children: ReactNode }) {
   const [completedLevels, setCompletedLevels] = useState<string[]>(loadCompletedLevelsFromStorage);
+  const [shaProgress, setShaProgress] = useState<ShaProgress>(loadShaProgressFromStorage);
 
   /** 检查关卡是否已通关 */
   const isLevelCompleted = useCallback(
@@ -116,8 +151,36 @@ export function LevelCompletionProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  /** 保存煞气点进度 */
+  const saveShaProgress = useCallback((levelId: string, resolvedShaIds: string[]) => {
+    setShaProgress((prev) => {
+      const newProgress = { ...prev, [levelId]: resolvedShaIds };
+      saveShaProgressToStorage(newProgress);
+      return newProgress;
+    });
+  }, []);
+
+  /** 获取煞气点进度 */
+  const getShaProgress = useCallback(
+    (levelId: string): string[] => {
+      return shaProgress[levelId] || [];
+    },
+    [shaProgress]
+  );
+
+  /** 清除煞气点进度 */
+  const clearShaProgress = useCallback((levelId: string) => {
+    setShaProgress((prev) => {
+      const newProgress = { ...prev };
+      delete newProgress[levelId];
+      saveShaProgressToStorage(newProgress);
+      return newProgress;
+    });
+  }, []);
+
   const value: LevelCompletionContextValue = {
     completedLevels,
+    shaProgress,
     isLevelCompleted,
     isLevelUnlocked,
     getCompletedCount,
@@ -125,6 +188,9 @@ export function LevelCompletionProvider({ children }: { children: ReactNode }) {
     markLevelCompleted,
     clearLevelCompletion,
     clearAllCompletions,
+    saveShaProgress,
+    getShaProgress,
+    clearShaProgress,
   };
 
   return (

@@ -158,6 +158,7 @@ function LevelCard({
   isCurrent,
   isLocked,
   isCompleted,
+  shaProgress,
   onClick,
 }: {
   level: LevelWithAura;
@@ -165,6 +166,7 @@ function LevelCard({
   isCurrent: boolean;
   isLocked: boolean;
   isCompleted: boolean;
+  shaProgress: string[];
   onClick: () => void;
 }) {
   const handleClick = () => {
@@ -174,8 +176,8 @@ function LevelCard({
     onClick();
   };
 
-  // 进度条动态计算：已通关显示全部，未通关显示 0
-  const shaCompleted = isCompleted ? level.shaCount : 0;
+  // 进度条动态计算：已通关显示全部，未通关显示保存的进度
+  const shaCompleted = isCompleted ? level.shaCount : shaProgress.length;
 
   // 像素硬边样式
   const cardStyle: React.CSSProperties = {
@@ -350,6 +352,7 @@ function ChapterSection({
   currentLevelId,
   isLevelUnlocked,
   isLevelCompleted,
+  getShaProgress,
   onEnterLevel,
 }: {
   chapter: (typeof CHAPTERS)[number];
@@ -357,6 +360,7 @@ function ChapterSection({
   currentLevelId: string | undefined;
   isLevelUnlocked: (levelId: string) => boolean;
   isLevelCompleted: (levelId: string) => boolean;
+  getShaProgress: (levelId: string) => string[];
   onEnterLevel: (level: LevelWithAura) => void;
 }) {
   const hasCurrentLevel = levelsInSection.some((l) => l.id === currentLevelId);
@@ -395,6 +399,7 @@ function ChapterSection({
                 isCurrent={level.id === currentLevelId}
                 isLocked={locked}
                 isCompleted={completed}
+                shaProgress={getShaProgress(level.id)}
                 onClick={() => onEnterLevel(level)}
               />
             </div>
@@ -408,14 +413,14 @@ function ChapterSection({
 // ============ 继续游戏悬浮按钮 ============
 function ContinueButton({
   currentLevel,
+  shaProgress,
   onClick,
 }: {
-  currentLevel: LevelWithAura | undefined;
+  currentLevel: LevelWithAura;
+  shaProgress: string[];
   onClick: () => void;
 }) {
-  if (!currentLevel) return null;
-
-  const progressText = `${currentLevel.shaCompleted ?? 0}/${currentLevel.shaCount}`;
+  const progressText = `${shaProgress.length}/${currentLevel.shaCount}`;
 
   return (
     <div
@@ -444,7 +449,7 @@ function ContinueButton({
 // ============ 主页面组件 ============
 export function LevelSelectPage() {
   const { navigate, loadLevel } = useGame();
-  const { isLevelCompleted, isLevelUnlocked, getCompletedCount, getCurrentLevel } =
+  const { isLevelCompleted, isLevelUnlocked, getCompletedCount, getCurrentLevel, getShaProgress } =
     useLevelCompletion();
 
   // 当前激活的章节（用于高亮）
@@ -497,7 +502,14 @@ export function LevelSelectPage() {
 
   const handleEnterLevel = (level: LevelWithAura) => {
     const completed = isLevelCompleted(level.id);
-    loadLevel(level, completed);
+    if (completed) {
+      // 已通关，直接显示暖图
+      loadLevel(level, true);
+    } else {
+      // 未通关，检查是否有保存的进度
+      const savedProgress = getShaProgress(level.id);
+      loadLevel(level, false, savedProgress);
+    }
   };
 
   // 阻止事件冒泡
@@ -589,15 +601,17 @@ export function LevelSelectPage() {
             currentLevelId={currentLevel?.id}
             isLevelUnlocked={isLevelUnlocked}
             isLevelCompleted={isLevelCompleted}
+            getShaProgress={getShaProgress}
             onEnterLevel={handleEnterLevel}
           />
         ))}
       </div>
 
       {/* 继续游戏悬浮按钮 */}
-      {currentLevel && isLevelUnlocked(currentLevel.id) && (
+      {currentLevel && isLevelUnlocked(currentLevel.id) && !isLevelCompleted(currentLevel.id) && (
         <ContinueButton
           currentLevel={currentLevel}
+          shaProgress={getShaProgress(currentLevel.id)}
           onClick={() => handleEnterLevel(currentLevel)}
         />
       )}

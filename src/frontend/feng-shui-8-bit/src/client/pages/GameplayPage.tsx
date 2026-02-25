@@ -18,10 +18,11 @@ export function GameplayPage() {
     loadLevel,
     setComparing,
     finishTransition,
-    dismissCompletionModal
+    dismissCompletionModal,
+    getResolvedShaIds
   } = useGame();
   const { isMobile } = useResponsive();
-  const { isLevelCompleted, markLevelCompleted, clearLevelCompletion } = useLevelCompletion();
+  const { isLevelCompleted, markLevelCompleted, clearLevelCompletion, saveShaProgress, getShaProgress, clearShaProgress } = useLevelCompletion();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
@@ -89,9 +90,16 @@ export function GameplayPage() {
       if (completed && gameState === 'scanning') {
         // 重新加载关卡并标记为已通关
         loadLevel(currentLevel, true);
+      } else if (!completed && gameState === 'scanning') {
+        // 未通关但可能有保存的进度
+        const savedProgress = getShaProgress(currentLevel.id);
+        if (savedProgress.length > 0) {
+          // 恢复进度
+          loadLevel(currentLevel, false, savedProgress);
+        }
       }
     }
-  }, [currentLevel, isLevelCompleted, isPreviouslyCompleted, gameState, loadLevel]);
+  }, [currentLevel, isLevelCompleted, isPreviouslyCompleted, gameState, loadLevel, getShaProgress]);
 
   // 通关后保存进度
   useEffect(() => {
@@ -212,15 +220,30 @@ export function GameplayPage() {
     };
   }, [isMobile, isCompareInteractive, startComparing, stopComparing]);
 
+  // ========== 退出时保存进度 ==========
+  
+  const handleExitLevel = useCallback(() => {
+    // 保存当前进度（如果有关卡且未通关）
+    if (currentLevel && !isCompleted && !isPreviouslyCompleted) {
+      const resolvedIds = getResolvedShaIds();
+      if (resolvedIds.length > 0) {
+        saveShaProgress(currentLevel.id, resolvedIds);
+      }
+    }
+    navigate('select');
+  }, [currentLevel, isCompleted, isPreviouslyCompleted, getResolvedShaIds, saveShaProgress, navigate]);
+
   // ========== 重玩功能 ==========
   
   const handleReplay = useCallback(() => {
     if (!currentLevel) return;
     // 清除通关记录
     clearLevelCompletion(currentLevel.id);
+    // 清除煞气点进度
+    clearShaProgress(currentLevel.id);
     // 重置关卡（不传递 isPreviouslyCompleted，默认为 false）
     loadLevel(currentLevel, false);
-  }, [currentLevel, clearLevelCompletion, loadLevel]);
+  }, [currentLevel, clearLevelCompletion, clearShaProgress, loadLevel]);
 
   // 阻止事件冒泡 - 始终阻止，避免触发 Devvit 隔离窗口错误
   const handleContainerPointerEvent = useCallback((e: PointerEvent | MouseEvent) => {
@@ -290,14 +313,18 @@ export function GameplayPage() {
         }}
       >
         <button
-          onClick={() => navigate('select')}
-          className="rounded px-3 py-1.5 font-pixel text-[10px] text-feng-text-muted transition-colors hover:text-feng-text-light"
+          onClick={handleExitLevel}
+          className="flex items-center gap-1 px-2 py-1 transition-all hover:bg-[rgba(196,160,106,0.1)] active:scale-95"
           style={{
-            background: 'rgba(32, 39, 54, 0.6)',
-            border: '1px solid rgba(196, 160, 106, 0.2)',
+            border: '1px solid rgba(196, 160, 106, 0.3)',
           }}
         >
-          ← 返回
+          <span className="font-pixel text-[12px]" style={{ color: '#C4A06A' }}>
+            ←
+          </span>
+          <span className="font-pixel text-[9px]" style={{ color: '#9CA3AF' }}>
+            返回
+          </span>
         </button>
         <div className="text-center">
           <h2 className="font-pixel text-[11px] text-feng-text-primary">
