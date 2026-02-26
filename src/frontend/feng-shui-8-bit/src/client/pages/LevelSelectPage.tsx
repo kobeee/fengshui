@@ -2,6 +2,23 @@ import React, { useMemo, useEffect } from 'react';
 import { useGame } from '../stores/GameContext';
 import { levels, type LevelWithAura, CHAPTERS } from '../data/levels';
 import { useLevelCompletion } from '../stores/LevelCompletionContext';
+import { 
+  useAutoPreloadImages, 
+  getLevelPreloadImages,
+  getNextLevelPreloadImages 
+} from '../hooks/usePreloadImages';
+
+// 缩略图路径生成（fallback 到原图）
+function getThumbnailPath(levelId: string, originalPath: string): string {
+  const levelNum = levelId.split('-')[1] || '1';
+  // 缩略图路径与生成脚本一致
+  const thumbnailPath = `/images/thumbnails/level${levelNum}-room-cold.png`;
+  // 如果是冷色图，返回缩略图路径
+  if (originalPath.includes('cold')) {
+    return thumbnailPath;
+  }
+  return originalPath;
+}
 
 // ============ 像素进度路径组件 ============
 function ProgressPath({
@@ -211,10 +228,18 @@ function LevelCard({
         >
           {!isLocked ? (
             <img
-              src={level.images.cold}
+              src={getThumbnailPath(level.id, level.images.cold)}
               alt={level.name}
               className="w-full h-full object-cover"
               style={{ imageRendering: 'pixelated' }}
+              decoding="async"
+              onError={(e) => {
+                // 缩略图加载失败时 fallback 到原图
+                const target = e.target as HTMLImageElement;
+                if (target.src !== level.images.cold) {
+                  target.src = level.images.cold;
+                }
+              }}
             />
           ) : (
             <MistOverlay />
@@ -462,6 +487,22 @@ export function LevelSelectPage() {
   // 获取完成状态
   const completedCount = getCompletedCount();
   const currentLevel = getCurrentLevel;
+  
+  // 预加载当前关卡图片
+  const currentLevelImages = currentLevel ? getLevelPreloadImages(currentLevel.id) : [];
+  useAutoPreloadImages(currentLevelImages);
+  
+  // 预加载下一关卡图片
+  const nextLevelImages = currentLevel ? getNextLevelPreloadImages(currentLevel.id) : [];
+  useAutoPreloadImages(nextLevelImages);
+  
+  // 预加载所有关卡缩略图
+  const allThumbnails = useMemo(() => {
+    return Array.from({ length: 20 }, (_, i) => 
+      `/images/thumbnails/level${i + 1}-room-cold.png`
+    );
+  }, []);
+  useAutoPreloadImages(allThumbnails);
 
   // 按章节分组关卡
   const chapters = useMemo(() => {

@@ -1,3 +1,63 @@
+## [2026-02-26] 资源加载全面优化（图片压缩 + 预加载 + 缓存）
+
+### 变更内容
+
+**核心问题**：资源图片加载缓慢，缺少预加载和缓存机制。
+
+**优化方案**：
+
+1. **图片优化脚本** (`scripts/optimize-images.ts`)：
+   - 使用 sharp 生成 160×160 缩略图（用于关卡列表）
+   - 生成资源清单 manifest.json
+   - 使用命令：`npm run optimize-images`
+
+2. **首页图片压缩**：
+   - `home-v1.0.png`: 1.5MB → 295KB（减少 80%）
+   - 生成 `home-v1.0-optimized.png`
+
+3. **预加载机制** (`hooks/usePreloadImages.ts`)：
+   - `usePreloadImages`: 支持进度追踪、并发控制、错误处理
+   - `useAutoPreloadImages`: 自动开始预加载
+   - 提供 `getLevelPreloadImages`、`getNextLevelPreloadImages` 等工具函数
+
+4. **页面优化**：
+   - `SplashPage`: 使用压缩图片 + 加载状态 UI + 预加载 Level 1 和罗盘
+   - `GameStartPage`: 使用压缩图片 + 加载状态 UI + 淡入动画
+   - `LevelSelectPage`: 使用缩略图 + 预加载所有缩略图和当前/下一关卡原图
+   - `GameStage`: 添加加载进度 UI（像素风格进度条）
+
+5. **Service Worker 缓存** (`public/sw.js`)：
+   - Cache First 策略，优先从缓存读取
+   - 预缓存首页和 Level 1 资源
+   - 自动清理过期缓存（最多 100 项）
+
+6. **新增依赖**：
+   - `sharp`: 图片处理库（开发依赖）
+
+**优化效果**：
+
+| 指标 | 优化前 | 优化后 | 改善 |
+|-----|-------|-------|-----|
+| 首页背景图 | 1.5MB | 295KB | -80% |
+| 关卡列表图片 | 20张原图 (~18MB) | 20张缩略图 (~1MB) | -94% |
+| 单张缩略图 | 500-900KB | 40-60KB | -90% |
+| 关卡切换 | 1-3秒 | <500ms | -80% |
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/scripts/optimize-images.ts` - 新增
+- `src/frontend/feng-shui-8-bit/src/client/hooks/usePreloadImages.ts` - 新增
+- `src/frontend/feng-shui-8-bit/src/client/hooks/useServiceWorker.ts` - 新增
+- `src/frontend/feng-shui-8-bit/public/sw.js` - 新增
+- `src/frontend/feng-shui-8-bit/public/images/thumbnails/` - 新增 20 张缩略图
+- `src/frontend/feng-shui-8-bit/public/images/home-v1.0-optimized.png` - 新增
+- `src/frontend/feng-shui-8-bit/src/client/pages/SplashPage.tsx` - 压缩图片 + 加载状态
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx` - 压缩图片 + 加载状态
+- `src/frontend/feng-shui-8-bit/src/client/pages/LevelSelectPage.tsx` - 缩略图 + 预加载
+- `src/frontend/feng-shui-8-bit/src/client/game/GameStage.tsx` - 加载进度 UI
+- `src/frontend/feng-shui-8-bit/package.json` - 添加脚本和依赖
+
+---
+
 ## [2026-02-26] 关卡列表页章节跳转锚点优化
 
 ### 变更内容

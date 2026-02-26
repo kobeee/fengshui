@@ -1,0 +1,172 @@
+{
+  "levels": [
+    {
+      "id": "level-1",
+      "images": {
+        "cold": "/images/level1/room-cold.png",
+        "warm": "/images/level1/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level1-room-cold.png"
+    },
+    {
+      "id": "level-2",
+      "images": {
+        "cold": "/images/level2/room-cold.png",
+        "warm": "/images/level2/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level2-room-cold.png"
+    },
+    {
+      "id": "level-3",
+      "images": {
+        "cold": "/images/level3/room-cold.png",
+        "warm": "/images/level3/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level3-room-cold.png"
+    },
+    {
+      "id": "level-4",
+      "images": {
+        "cold": "/images/level4/room-cold.png",
+        "warm": "/images/level4/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level4-room-cold.png"
+    },
+    {
+      "id": "level-5",
+      "images": {
+        "cold": "/images/level5/room-cold.png",
+        "warm": "/images/level5/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level5-room-cold.png"
+    },
+    {
+      "id": "level-6",
+      "images": {
+        "cold": "/images/level6/room-cold.png",
+        "warm": "/images/level6/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level6-room-cold.png"
+    },
+    {
+      "id": "level-7",
+      "images": {
+        "cold": "/images/level7/room-cold.png",
+        "warm": "/images/level7/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level7-room-cold.png"
+    },
+    {
+      "id": "level-8",
+      "images": {
+        "cold": "/images/level8/room-cold.png",
+        "warm": "/images/level8/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level8-room-cold.png"
+    },
+    {
+      "id": "level-9",
+      "images": {
+        "cold": "/images/level9/room-cold.png",
+        "warm": "/images/level9/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level9-room-cold.png"
+    },
+    {
+      "id": "level-10",
+      "images": {
+        "cold": "/images/level10/room-cold.png",
+        "warm": "/images/level10/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level10-room-cold.png"
+    },
+    {
+      "id": "level-11",
+      "images": {
+        "cold": "/images/level11/room-cold.png",
+        "warm": "/images/level11/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level11-room-cold.png"
+    },
+    {
+      "id": "level-12",
+      "images": {
+        "cold": "/images/level12/room-cold.png",
+        "warm": "/images/level12/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level12-room-cold.png"
+    },
+    {
+      "id": "level-13",
+      "images": {
+        "cold": "/images/level13/room-cold.png",
+        "warm": "/images/level13/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level13-room-cold.png"
+    },
+    {
+      "id": "level-14",
+      "images": {
+        "cold": "/images/level14/room-cold.png",
+        "warm": "/images/level14/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level14-room-cold.png"
+    },
+    {
+      "id": "level-15",
+      "images": {
+        "cold": "/images/level15/room-cold.png",
+        "warm": "/images/level15/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level15-room-cold.png"
+    },
+    {
+      "id": "level-16",
+      "images": {
+        "cold": "/images/level16/room-cold.png",
+        "warm": "/images/level16/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level16-room-cold.png"
+    },
+    {
+      "id": "level-17",
+      "images": {
+        "cold": "/images/level17/room-cold.png",
+        "warm": "/images/level17/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level17-room-cold.png"
+    },
+    {
+      "id": "level-18",
+      "images": {
+        "cold": "/images/level18/room-cold.png",
+        "warm": "/images/level18/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level18-room-cold.png"
+    },
+    {
+      "id": "level-19",
+      "images": {
+        "cold": "/images/level19/room-cold.png",
+        "warm": "/images/level19/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level19-room-cold.png"
+    },
+    {
+      "id": "level-20",
+      "images": {
+        "cold": "/images/level20/room-cold.png",
+        "warm": "/images/level20/room-warm.png"
+      },
+      "thumbnail": "/images/thumbnails/level20-room-cold.png"
+    }
+  ],
+  "home": [
+    "/images/home-v1.0.png",
+    "/images/home-v1.1.png"
+  ],
+  "luopan": {
+    "pan": "/images/shared/luopan/pan.png",
+    "zhen": "/images/shared/luopan/zhen.png"
+  }
+}

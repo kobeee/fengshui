@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CompassIcon, GourdIcon, SunIcon } from '../components/game/StepIcons';
 import { useGame } from '../stores/GameContext';
 
@@ -49,6 +49,18 @@ function IntroStepCard({ step }: { step: IntroStep }) {
 
 export function GameStartPage() {
   const { navigate } = useGame();
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  // 预加载背景图
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setBgLoaded(true);
+    img.src = '/images/home-v1.0-optimized.png';
+    
+    if (img.complete) {
+      setBgLoaded(true);
+    }
+  }, []);
 
   const steps: IntroStep[] = [
     {
@@ -90,11 +102,34 @@ export function GameStartPage() {
       onPointerMove={handleStopPropagation}
       onPointerCancel={handleStopPropagation}
     >
-      <img
-        src="/images/home-v1.0.png"
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover"
+      {/* 背景 - 加载占位符 */}
+      <div 
+        className="absolute inset-0 bg-[#0E1116]"
+        style={{
+          background: bgLoaded ? undefined : 'linear-gradient(135deg, #0E1116 0%, #1A1D24 50%, #0E1116 100%)',
+        }}
       />
+      
+      {/* 背景图 - 加载完成后显示 */}
+      <img
+        src="/images/home-v1.0-optimized.png"
+        alt=""
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
+      />
+      
+      {/* 加载指示器 - 图片未加载时显示 */}
+      {!bgLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex gap-1">
+              <span className="w-2 h-2 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '0ms' }} />
+              <span className="w-2 h-2 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '150ms' }} />
+              <span className="w-2 h-2 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '300ms' }} />
+            </div>
+            <span className="font-pixel text-[8px] text-[#6B7280]">LOADING</span>
+          </div>
+        </div>
+      )}
 
       {/* 背景遮罩 - 单层径向渐变，与 SplashPage 风格一致 */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0E1116_90%)]" />

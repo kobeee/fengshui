@@ -1099,8 +1099,67 @@ export function GameStage({
       />
       
       {!isReady && !error && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0e1116]">
-          <p className="font-pixel text-xs text-feng-text-dim animate-pulse">Loading...</p>
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center bg-[#0e1116]">
+          {/* 加载进度 UI */}
+          <div className="relative">
+            {/* 外层光晕 */}
+            <div
+              className="absolute -inset-3 rounded-sm"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(196, 160, 106, 0.1) 0%, transparent 70%)',
+              }}
+            />
+            
+            {/* 内容卡片 */}
+            <div
+              className="relative px-8 py-6 rounded-sm"
+              style={{
+                background: 'linear-gradient(135deg, rgba(30, 35, 45, 0.35) 0%, rgba(21, 26, 34, 0.4) 100%)',
+                backdropFilter: 'blur(16px)',
+                border: '2px solid rgba(196, 160, 106, 0.35)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 60px rgba(196, 160, 106, 0.05)',
+              }}
+            >
+              {/* 标题 */}
+              <p 
+                className="font-pixel text-[11px] text-center mb-4"
+                style={{ color: '#F5E4BB' }}
+              >
+                LOADING
+              </p>
+              
+              {/* 进度条 */}
+              <div 
+                className="w-40 h-2 overflow-hidden rounded-sm"
+                style={{ background: '#1A1D24' }}
+              >
+                <div 
+                  className="h-full animate-pulse"
+                  style={{ 
+                    width: '60%',
+                    background: 'linear-gradient(90deg, #B8904F 0%, #D4B07A 50%, #B8904F 100%)',
+                    backgroundSize: '200% 100%',
+                    animation: 'shimmer 1.5s ease-in-out infinite',
+                  }}
+                />
+              </div>
+              
+              {/* 动画装饰 */}
+              <div className="flex justify-center gap-1 mt-4">
+                <span className="w-1.5 h-1.5 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          </div>
+          
+          {/* 进度条动画样式 */}
+          <style>{`
+            @keyframes shimmer {
+              0% { background-position: 200% 0; }
+              100% { background-position: -200% 0; }
+            }
+          `}</style>
         </div>
       )}
       

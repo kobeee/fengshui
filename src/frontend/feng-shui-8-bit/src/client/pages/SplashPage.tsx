@@ -1,10 +1,36 @@
-import React, { type MouseEvent, type PointerEvent } from 'react';
+import React, { type MouseEvent, type PointerEvent, useState, useEffect } from 'react';
 import { requestExpandedMode } from '@devvit/web/client';
+import { 
+  useAutoPreloadImages, 
+  getLevelPreloadImages,
+  getLuopanPreloadImages 
+} from '../hooks/usePreloadImages';
 
 export function SplashPage() {
+  const [bgLoaded, setBgLoaded] = useState(false);
+  
   const handlePlay = (e: MouseEvent) => {
     requestExpandedMode(e.nativeEvent, 'game');
   };
+  
+  // 预加载 Level 1 和罗盘图片
+  const preloadImages = [
+    ...getLevelPreloadImages('level-1'),
+    ...getLuopanPreloadImages(),
+  ];
+  useAutoPreloadImages(preloadImages);
+  
+  // 预加载背景图
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setBgLoaded(true);
+    img.src = '/images/home-v1.0-optimized.png';
+    
+    // 如果图片已经缓存，立即显示
+    if (img.complete) {
+      setBgLoaded(true);
+    }
+  }, []);
 
   // 阻止所有 pointer 事件冒泡到父窗口，避免触发 Devvit 隔离窗口通信错误
   const handleStopPropagation = (e: PointerEvent | React.MouseEvent) => {
@@ -20,16 +46,39 @@ export function SplashPage() {
       onPointerMove={handleStopPropagation}
       onPointerCancel={handleStopPropagation}
     >
-      {/* 背景图 */}
+      {/* 背景 - 加载占位符 */}
+      <div 
+        className="absolute inset-0 bg-[#0E1116]"
+        style={{
+          // 使用简单的渐变作为占位背景
+          background: bgLoaded ? undefined : 'linear-gradient(135deg, #0E1116 0%, #1A1D24 50%, #0E1116 100%)',
+        }}
+      />
+      
+      {/* 背景图 - 加载完成后显示 */}
       <img
-        src="/images/home-v1.0.png"
+        src="/images/home-v1.0-optimized.png"
         alt=""
-        className="absolute inset-0 w-full h-full object-cover"
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
       />
 
       {/* 渐变遮罩 - 从四周向中心渐变，突出中间内容 */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0E1116_90%)]" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#0E1116] via-transparent to-[#0E1116]/60" />
+
+      {/* 加载指示器 - 图片未加载时显示 */}
+      {!bgLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex gap-1">
+              <span className="w-2 h-2 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '0ms' }} />
+              <span className="w-2 h-2 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '150ms' }} />
+              <span className="w-2 h-2 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '300ms' }} />
+            </div>
+            <span className="font-pixel text-[8px] text-[#6B7280]">LOADING</span>
+          </div>
+        </div>
+      )}
 
       {/* 内容层 - 居中布局，增加呼吸感 */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full p-8">
