@@ -72,13 +72,13 @@ export function SplashPage() {
                   textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8), 0 0 30px rgba(240, 217, 156, 0.5)',
                 }}
               >
-                八比特风水师
+                FENG SHUI MASTER
               </h1>
               <p
                 className="mt-6 font-pixel text-[8px] tracking-[0.25em]"
                 style={{ color: '#AAB3C2' }}
               >
-                8-BIT FENG SHUI MASTER
+                8-BIT HARMONY
               </p>
             </div>
 
@@ -96,9 +96,9 @@ export function SplashPage() {
               className="font-pixel text-[11px] text-center leading-[2.6] mb-16"
               style={{ color: '#E2E8F0' }}
             >
-              点击煞气点，摆放风水道具
+              Find negative energy spots
               <br />
-              让阴郁的房间重获温暖
+              Bring warmth to gloomy rooms
             </p>
 
             {/* 按钮区 - 像素字体 + 增加间距 */}
@@ -125,7 +125,7 @@ export function SplashPage() {
                 />
 
                 <span className="relative font-pixel text-[12px] text-[#0E1116] tracking-[0.1em]">
-                  进入游戏
+                  START GAME
                 </span>
               </button>
 
@@ -133,7 +133,7 @@ export function SplashPage() {
                 className="font-pixel text-[7px] tracking-[0.15em]"
                 style={{ color: '#6B7280' }}
               >
-                点击展开完整体验
+                TAP TO EXPAND
               </p>
             </div>
           </div>

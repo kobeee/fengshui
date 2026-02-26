@@ -159,7 +159,7 @@ function EventModalContent({
                   color: '#AAB3C2',
                 }}
               >
-                取消
+                Cancel
               </button>
               <button
                 onClick={handleConfirm}
@@ -176,7 +176,7 @@ function EventModalContent({
                   `,
                 }}
               >
-                确认处置
+                Confirm
               </button>
             </div>
           </div>
@@ -250,7 +250,7 @@ function EventModalContent({
             }}
           >
             <p className="font-pixel text-[9px] tracking-[0.1em] text-[#C4A06A] text-center">
-              选择正确的处置方式化解煞气
+              Choose the correct remedy
             </p>
           </div>
 
@@ -274,7 +274,7 @@ function EventModalContent({
                 `,
               }}
             >
-              确认处置
+              Confirm
             </button>
             <button
               onClick={handleClose}
@@ -285,7 +285,7 @@ function EventModalContent({
                 color: '#AAB3C2',
               }}
             >
-              取消
+              Cancel
             </button>
           </div>
         </div>

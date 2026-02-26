@@ -283,12 +283,12 @@ export function GameplayPage() {
   if (!currentLevel) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-feng-bg-panel">
-        <p className="font-pixel text-sm text-feng-text-dim">加载中...</p>
+        <p className="font-pixel text-sm text-feng-text-dim">Loading...</p>
         <button
           onClick={() => navigate('select')}
-          className="mt-4 rounded bg-feng-bg-card px-4 py-2 font-pixel-cn text-xs text-feng-text-light"
+          className="mt-4 rounded bg-feng-bg-card px-4 py-2 font-pixel text-xs text-feng-text-light"
         >
-          返回选择
+          Back
         </button>
       </div>
     );
@@ -323,7 +323,7 @@ export function GameplayPage() {
             ←
           </span>
           <span className="font-pixel text-[9px]" style={{ color: '#9CA3AF' }}>
-            返回
+            Back
           </span>
         </button>
         <div className="text-center">
@@ -331,7 +331,7 @@ export function GameplayPage() {
             {currentLevel.name}
           </h2>
           <p className="font-pixel text-[9px] text-feng-text-dim mt-0.5">
-            {isCompareInteractive ? '已净化' : `${resolvedCount} / ${currentLevel.shaCount} 净化中`}
+            {isCompareInteractive ? 'Purified' : `${resolvedCount} / ${currentLevel.shaCount} Purifying`}
           </p>
         </div>
         <div className="w-12" />
@@ -371,7 +371,7 @@ export function GameplayPage() {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <p className="font-pixel text-xs text-feng-text-dim animate-pulse">初始化游戏...</p>
+            <p className="font-pixel text-xs text-feng-text-dim animate-pulse">Initializing...</p>
           </div>
         )}
 
@@ -388,7 +388,7 @@ export function GameplayPage() {
                 }}
               >
                 <p className="font-pixel text-[10px] text-feng-text-light text-center">
-                  {isComparingCold ? '松开返回净化后' : '按住查看净化前'}
+                  {isComparingCold ? 'Release for After' : 'Hold for Before'}
                 </p>
               </div>
             ) : gameState !== 'transitioning' && (
@@ -467,7 +467,7 @@ export function GameplayPage() {
                   textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8), 0 0 20px rgba(240, 217, 156, 0.4)',
                 }}
               >
-                通关成功
+                HARMONY ACHIEVED
               </h2>
 
               {/* 像素分隔线 */}
@@ -480,7 +480,7 @@ export function GameplayPage() {
               </div>
 
               <p className="font-pixel text-[10px] tracking-[0.1em] text-[#AAB3C2] mb-6">
-                房间气场已净化，暖阳入屋
+                Room purified with warm energy
               </p>
 
               {/* 按钮区 */}
@@ -495,7 +495,7 @@ export function GameplayPage() {
                     boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.06), 0 4px 12px rgba(0, 0, 0, 0.25)',
                   }}
                 >
-                  重玩
+                  Replay
                 </button>
                 <button
                   onClick={() => navigate('select')}
@@ -512,7 +512,7 @@ export function GameplayPage() {
                     `,
                   }}
                 >
-                  继续探索
+                  Continue
                 </button>
               </div>
             </div>

@@ -53,24 +53,24 @@ export function GameStartPage() {
   const steps: IntroStep[] = [
     {
       key: 'scan',
-      label: '寻煞气',
-      hint: '观察房间异常气场',
+      label: 'Find Sha',
+      hint: 'Detect negative energy',
       accent: '#8EA0C2',
       icon: <CompassIcon size={24} color="#D8B47A" className="compass-animate" />,
       delay: '160ms',
     },
     {
       key: 'resolve',
-      label: '化煞气',
-      hint: '摆放对应风水道具',
+      label: 'Neutralize',
+      hint: 'Place Feng Shui items',
       accent: '#C4A06A',
       icon: <GourdIcon size={24} color="#D7AF73" className="gourd-animate" />,
       delay: '260ms',
     },
     {
       key: 'warm',
-      label: '转暖色',
-      hint: '净化完成切换暖光',
+      label: 'Transform',
+      hint: 'Room becomes warm',
       accent: '#D7B772',
       icon: <SunIcon size={24} color="#E7C98F" className="sun-animate" />,
       delay: '360ms',
@@ -128,7 +128,7 @@ export function GameStartPage() {
             <div className="intro-sheen absolute inset-y-0 -left-1/3 w-1/3" aria-hidden="true" />
 
             <header className="text-center">
-              <p className="font-pixel text-[6px] tracking-[0.2em] text-[#8C98AB] sm:text-[6px]">观气 · 定局 · 转运</p>
+              <p className="font-pixel text-[6px] tracking-[0.2em] text-[#8C98AB] sm:text-[6px]">Sense · Balance · Harmony</p>
               <h1
                 className="mt-1 text-balance font-pixel text-[20px] leading-[1.3] tracking-[0.08em] sm:text-[22px]"
                 style={{
@@ -136,10 +136,10 @@ export function GameStartPage() {
                   textShadow: '2px 2px 0 rgba(0, 0, 0, 0.82), 0 0 20px rgba(240, 217, 156, 0.32)',
                 }}
               >
-                八比特风水师
+                FENG SHUI MASTER
               </h1>
               <p className="mt-1 font-pixel text-[6px] tracking-[0.2em] text-[#7C889A] sm:text-[7px]">
-                8-BIT FENG SHUI MASTER
+                8-BIT HARMONY
               </p>
             </header>
 
@@ -161,9 +161,9 @@ export function GameStartPage() {
             </div>
 
             <p className="text-pretty text-center font-pixel text-[7px] leading-[1.9] tracking-[0.1em] text-[#9CA6B6] sm:text-[8px]">
-              房间气场失衡，需要你的风水调整
+              Room energy is unbalanced
               <br />
-              点击煞气点，摆放正确道具，驱散阴郁
+              Fix it with Feng Shui items
             </p>
 
             <div className="mt-3 flex flex-col items-center gap-1.5 sm:mt-4 sm:gap-2">
@@ -177,10 +177,10 @@ export function GameStartPage() {
                 }}
               >
                 <span className="absolute inset-1 border border-white/15" aria-hidden="true" />
-                <span className="relative">开始调整</span>
+                <span className="relative">START</span>
               </button>
 
-              <p className="font-pixel text-[5px] tracking-[0.14em] text-[#667286] sm:text-[6px]">选择关卡，修复房间气场</p>
+              <p className="font-pixel text-[5px] tracking-[0.14em] text-[#667286] sm:text-[6px]">Select a level to begin</p>
             </div>
           </div>
         </section>

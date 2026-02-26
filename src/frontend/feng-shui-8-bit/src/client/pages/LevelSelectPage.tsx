@@ -249,7 +249,7 @@ function LevelCard({
                 boxShadow: '2px 2px 0 0 rgba(0,0,0,0.5)',
               }}
             >
-              <span className="font-pixel text-[8px] text-[#0E1116]">吉</span>
+              <span className="font-pixel text-[8px] text-[#0E1116]">OK</span>
             </div>
           )}
 
@@ -261,7 +261,7 @@ function LevelCard({
                 boxShadow: '2px 2px 0 0 rgba(0,0,0,0.5)',
               }}
             >
-              <span className="font-pixel text-[8px] text-[#0E1116]">当前</span>
+              <span className="font-pixel text-[8px] text-[#0E1116]">NOW</span>
             </div>
           )}
         </div>
@@ -281,7 +281,7 @@ function LevelCard({
               color: isLocked ? '#4A5059' : isCurrent ? '#F5E4BB' : '#E2E8F0',
             }}
           >
-            {isLocked ? '迷雾笼罩' : level.name}
+            {isLocked ? 'Locked' : level.name}
           </h3>
 
           {/* 进度条 */}
@@ -297,7 +297,7 @@ function LevelCard({
           {/* 解锁提示 */}
           {isLocked && (
             <p className="font-pixel text-[8px] mt-1" style={{ color: '#4A5059' }}>
-              通关前一关解锁
+              Complete previous level
             </p>
           )}
 
@@ -384,7 +384,7 @@ function ChapterSection({
           {hasCurrentLevel ? '◆' : '◇'}
         </span>
         <h2 className="font-pixel text-[12px] text-[#9CA3AF]">
-          {chapter.name} · 第{chapter.symbol}章
+          {chapter.name}
         </h2>
         <div className="flex-1 h-px bg-[#2A2F3A]" />
       </div>
@@ -442,8 +442,8 @@ function ContinueButton({
           boxShadow: '0 4px 0 0 #5C4020, 4px 4px 0 0 #3A2810',
         }}
       >
-        <span className="font-pixel text-[12px] text-[#0E1116]">继续探境</span>
-        <span className="font-pixel text-[10px] text-[#5C4020]">· 第 {progressText} 煞</span>
+        <span className="font-pixel text-[12px] text-[#0E1116]">Continue</span>
+        <span className="font-pixel text-[10px] text-[#5C4020]">· {progressText} Sha</span>
         <span className="font-pixel text-[12px] text-[#0E1116] ml-1">▶</span>
       </button>
     </div>
@@ -565,7 +565,7 @@ export function LevelSelectPage() {
               ←
             </span>
             <span className="font-pixel text-[9px]" style={{ color: '#9CA3AF' }}>
-              主殿
+              Home
             </span>
           </button>
 
@@ -577,12 +577,12 @@ export function LevelSelectPage() {
               textShadow: '2px 2px 0 rgba(0,0,0,0.8), 0 0 20px rgba(196, 160, 106, 0.3)',
             }}
           >
-            探境
+            Explore
           </h1>
 
           {/* 进度 */}
           <span className="font-pixel text-[10px]" style={{ color: '#9CA3AF' }}>
-            已解 {completedCount}/20
+            Solved {completedCount}/20
           </span>
         </div>
 

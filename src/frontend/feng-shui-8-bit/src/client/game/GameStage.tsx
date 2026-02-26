@@ -1100,20 +1100,20 @@ export function GameStage({
       
       {!isReady && !error && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0e1116]">
-          <p className="font-pixel text-xs text-feng-text-dim animate-pulse">加载中...</p>
+          <p className="font-pixel text-xs text-feng-text-dim animate-pulse">Loading...</p>
         </div>
       )}
       
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#0e1116]">
           <div className="text-center p-4">
-            <p className="font-pixel text-xs text-red-400 mb-2">游戏加载失败</p>
+            <p className="font-pixel text-xs text-red-400 mb-2">Failed to load game</p>
             <p className="font-pixel text-[10px] text-gray-400">{error}</p>
             <button 
               onClick={() => window.location.reload()}
               className="mt-4 rounded bg-feng-bg-card px-3 py-1.5 font-pixel-cn text-xs text-feng-text-light"
             >
-              重试
+              Retry
             </button>
           </div>
         </div>
