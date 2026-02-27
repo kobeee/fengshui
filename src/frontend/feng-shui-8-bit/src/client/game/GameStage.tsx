@@ -1102,62 +1102,100 @@ export function GameStage({
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center bg-[#0e1116]">
           {/* 加载进度 UI */}
           <div className="relative">
-            {/* 外层光晕 */}
+            {/* 外层光晕 - 呼吸效果 */}
             <div
-              className="absolute -inset-3 rounded-sm"
+              className="absolute -inset-4 rounded-sm animate-pulse"
               style={{
-                background: 'radial-gradient(ellipse at center, rgba(196, 160, 106, 0.1) 0%, transparent 70%)',
+                background: 'radial-gradient(ellipse at center, rgba(196, 160, 106, 0.15) 0%, transparent 70%)',
               }}
             />
             
             {/* 内容卡片 */}
             <div
-              className="relative px-8 py-6 rounded-sm"
+              className="relative px-10 py-8 rounded-sm"
               style={{
-                background: 'linear-gradient(135deg, rgba(30, 35, 45, 0.35) 0%, rgba(21, 26, 34, 0.4) 100%)',
-                backdropFilter: 'blur(16px)',
-                border: '2px solid rgba(196, 160, 106, 0.35)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 60px rgba(196, 160, 106, 0.05)',
+                background: 'linear-gradient(135deg, rgba(30, 35, 45, 0.4) 0%, rgba(21, 26, 34, 0.45) 100%)',
+                backdropFilter: 'blur(20px)',
+                border: '2px solid rgba(196, 160, 106, 0.4)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 80px rgba(196, 160, 106, 0.08)',
               }}
             >
-              {/* 标题 */}
+              {/* 标题 - 带发光效果 */}
               <p 
-                className="font-pixel text-[11px] text-center mb-4"
-                style={{ color: '#F5E4BB' }}
+                className="font-pixel text-[12px] text-center mb-5 tracking-wider"
+                style={{ 
+                  color: '#F5E4BB',
+                  textShadow: '0 0 20px rgba(196, 160, 106, 0.5)',
+                }}
               >
                 LOADING
               </p>
               
-              {/* 进度条 */}
+              {/* 进度条容器 */}
               <div 
-                className="w-40 h-2 overflow-hidden rounded-sm"
-                style={{ background: '#1A1D24' }}
+                className="w-48 h-3 overflow-hidden rounded-sm relative"
+                style={{ 
+                  background: 'linear-gradient(180deg, #15181E 0%, #1A1D24 100%)',
+                  border: '1px solid rgba(196, 160, 106, 0.25)',
+                }}
               >
+                {/* 进度条背景网格 */}
                 <div 
-                  className="h-full animate-pulse"
-                  style={{ 
-                    width: '60%',
-                    background: 'linear-gradient(90deg, #B8904F 0%, #D4B07A 50%, #B8904F 100%)',
-                    backgroundSize: '200% 100%',
-                    animation: 'shimmer 1.5s ease-in-out infinite',
+                  className="absolute inset-0 opacity-30"
+                  style={{
+                    background: 'repeating-linear-gradient(90deg, transparent 0px, transparent 11px, rgba(196, 160, 106, 0.1) 11px, rgba(196, 160, 106, 0.1) 12px)',
+                  }}
+                />
+                
+                {/* 扫描光条 - 来回移动 */}
+                <div 
+                  className="absolute top-0 bottom-0 w-16"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 0%, #D4B07A 40%, #F5E4BB 50%, #D4B07A 60%, transparent 100%)',
+                    animation: 'scanBar 1.2s ease-in-out infinite alternate',
+                    boxShadow: '0 0 12px rgba(196, 160, 106, 0.6), 0 0 24px rgba(196, 160, 106, 0.3)',
+                  }}
+                />
+                
+                {/* 底部光晕 */}
+                <div 
+                  className="absolute bottom-0 left-0 right-0 h-1"
+                  style={{
+                    background: 'linear-gradient(180deg, transparent 0%, rgba(196, 160, 106, 0.2) 100%)',
                   }}
                 />
               </div>
               
-              {/* 动画装饰 */}
-              <div className="flex justify-center gap-1 mt-4">
-                <span className="w-1.5 h-1.5 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 bg-[#C4A06A] animate-pulse" style={{ animationDelay: '300ms' }} />
+              {/* 动态装饰点 - 波浪效果 */}
+              <div className="flex justify-center gap-2 mt-5">
+                <span className="w-2 h-2 rounded-sm bg-[#C4A06A]" style={{ animation: 'dotWave 1.2s ease-in-out infinite', animationDelay: '0ms' }} />
+                <span className="w-2 h-2 rounded-sm bg-[#C4A06A]" style={{ animation: 'dotWave 1.2s ease-in-out infinite', animationDelay: '150ms' }} />
+                <span className="w-2 h-2 rounded-sm bg-[#C4A06A]" style={{ animation: 'dotWave 1.2s ease-in-out infinite', animationDelay: '300ms' }} />
               </div>
             </div>
           </div>
           
-          {/* 进度条动画样式 */}
+          {/* 动画样式 */}
           <style>{`
-            @keyframes shimmer {
-              0% { background-position: 200% 0; }
-              100% { background-position: -200% 0; }
+            @keyframes scanBar {
+              0% { 
+                left: -64px; 
+                opacity: 0.7;
+              }
+              100% { 
+                left: calc(100% + 0px); 
+                opacity: 1;
+              }
+            }
+            @keyframes dotWave {
+              0%, 100% { 
+                transform: translateY(0) scale(1); 
+                opacity: 0.5;
+              }
+              50% { 
+                transform: translateY(-4px) scale(1.2); 
+                opacity: 1;
+              }
             }
           `}</style>
         </div>
