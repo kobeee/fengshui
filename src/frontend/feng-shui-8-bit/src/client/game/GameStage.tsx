@@ -16,6 +16,80 @@ import { ParticleSystem, createVictoryParticles } from './ParticleSystem';
 const LUOPAN_PAN_IMAGE = '/images/shared/luopan/pan.png';
 const LUOPAN_ZHEN_IMAGE = '/images/shared/luopan/zhen.png';
 
+/** 计算安全的初始罗盘位置（避免与煞气点重叠） */
+function calculateSafeInitialPosition(
+  shaPoints: ShaPoint[],
+  defaultPosition: Position = { x: 0.5, y: 0.5 },
+  compassRadius: number = 0.05 // 归一化后的罗盘半径
+): Position {
+  // 检查默认位置是否安全
+  const isPositionSafe = (pos: Position): boolean => {
+    for (const sha of shaPoints) {
+      if (sha.resolved) continue;
+      const dx = pos.x - sha.position.x;
+      const dy = pos.y - sha.position.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      // 安全距离 = 煞气点半径 + 罗盘半径 + 缓冲区
+      const safeDistance = sha.radius + compassRadius + 0.05;
+      if (dist < safeDistance) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  // 如果默认位置安全，直接返回
+  if (isPositionSafe(defaultPosition)) {
+    return defaultPosition;
+  }
+
+  // 否则，尝试找一个安全的位置
+  // 策略：从中心向外螺旋搜索
+  const candidates: Position[] = [
+    { x: 0.3, y: 0.3 }, // 左上
+    { x: 0.7, y: 0.3 }, // 右上
+    { x: 0.3, y: 0.7 }, // 左下
+    { x: 0.7, y: 0.7 }, // 右下
+    { x: 0.2, y: 0.5 }, // 左中
+    { x: 0.8, y: 0.5 }, // 右中
+    { x: 0.5, y: 0.2 }, // 上中
+    { x: 0.5, y: 0.8 }, // 下中
+    { x: 0.15, y: 0.15 }, // 角落
+    { x: 0.85, y: 0.15 },
+    { x: 0.15, y: 0.85 },
+    { x: 0.85, y: 0.85 },
+  ];
+
+  for (const candidate of candidates) {
+    if (isPositionSafe(candidate)) {
+      console.log('[GameStage] Found safe initial position:', candidate);
+      return candidate;
+    }
+  }
+
+  // 如果所有候选位置都不安全，返回距离所有煞气点最远的位置
+  let bestPosition = defaultPosition;
+  let maxMinDistance = 0;
+
+  for (const candidate of candidates) {
+    let minDistance = Infinity;
+    for (const sha of shaPoints) {
+      if (sha.resolved) continue;
+      const dx = candidate.x - sha.position.x;
+      const dy = candidate.y - sha.position.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      minDistance = Math.min(minDistance, dist - sha.radius);
+    }
+    if (minDistance > maxMinDistance) {
+      maxMinDistance = minDistance;
+      bestPosition = candidate;
+    }
+  }
+
+  console.log('[GameStage] No safe position found, using best available:', bestPosition);
+  return bestPosition;
+}
+
 type GameStageProps = {
   width: number;
   height: number;
@@ -41,6 +115,8 @@ type GameStageProps = {
   onMobileCollision?: ((shaPoint: ShaPoint) => void) | undefined;
   onCompassSpeedChange?: ((speed: CompassSpeed) => void) | undefined;
   onTransitionComplete?: () => void;
+  // 新增：初始化时计算的安全罗盘位置回调（Web 端使用）
+  onInitialPositionCalculated?: (position: Position) => void;
 };
 
 export function GameStage({
@@ -63,6 +139,7 @@ export function GameStage({
   onMobileCollision,
   onCompassSpeedChange,
   onTransitionComplete,
+  onInitialPositionCalculated,
 }: GameStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
@@ -134,6 +211,12 @@ export function GameStage({
   useEffect(() => {
     onTransitionCompleteRef.current = onTransitionComplete;
   }, [onTransitionComplete]);
+
+  const onInitialPositionCalculatedRef = useRef<typeof onInitialPositionCalculated>(onInitialPositionCalculated);
+
+  useEffect(() => {
+    onInitialPositionCalculatedRef.current = onInitialPositionCalculated;
+  }, [onInitialPositionCalculated]);
 
   const getRotationSpeed = useCallback((speed: CompassSpeed) => {
     switch (speed) {
@@ -636,6 +719,42 @@ export function GameStage({
         }
 
         if (mounted) {
+          // 计算安全的初始位置，避免罗盘与煞气点重叠
+          const compassRadiusNormalized = 35 / Math.max(imgWidth, imgHeight);
+          const safePosition = calculateSafeInitialPosition(
+            shaPoints.filter(sha => !sha.resolved),
+            { x: 0.5, y: 0.5 },
+            compassRadiusNormalized
+          );
+
+          if (isMobile) {
+            // Mobile 端：罗盘固定在屏幕中心，需要调整房间偏移
+            // 使得煞气点远离屏幕中心
+            const offsetX = (0.5 - safePosition.x) * imgWidth;
+            const offsetY = (0.5 - safePosition.y) * imgHeight;
+            
+            // 更新房间容器的初始偏移
+            const newRoomX = (width - imgWidth) / 2 + offsetX;
+            const newRoomY = (height - imgHeight) / 2 + offsetY;
+            
+            roomContainer.x = newRoomX;
+            roomContainer.y = newRoomY;
+            roomOffsetRef.current = { x: newRoomX, y: newRoomY };
+            targetRoomTransformRef.current = { x: newRoomX, y: newRoomY, scale: 1 };
+            
+            console.log('[GameStage] Mobile: adjusted room offset to avoid sha collision', {
+              safePosition,
+              offset: { x: offsetX, y: offsetY },
+              newRoomPos: { x: newRoomX, y: newRoomY }
+            });
+          } else {
+            // Web 端：通过回调通知父组件调整罗盘位置
+            if (safePosition.x !== 0.5 || safePosition.y !== 0.5) {
+              console.log('[GameStage] Web: notifying parent of safe compass position', safePosition);
+              onInitialPositionCalculatedRef.current?.(safePosition);
+            }
+          }
+
           setIsReady(true);
           setError(null);
           console.log('[GameStage] Init complete, isReady=true');

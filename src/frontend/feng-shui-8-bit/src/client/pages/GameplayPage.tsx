@@ -148,6 +148,17 @@ export function GameplayPage() {
     finishTransition();
   }, [finishTransition]);
 
+  // Web 端：初始位置计算回调（避免罗盘与煞气点重叠）
+  const handleInitialPositionCalculated = useCallback(
+    (position: Position) => {
+      if (!isMobile && currentLevel) {
+        console.log('[GameplayPage] Setting safe initial compass position:', position);
+        updateCompass(position, 'normal');
+      }
+    },
+    [isMobile, currentLevel, updateCompass]
+  );
+
   // 选项选择处理
   const handleOptionSelect = useCallback(
     (optionId: string) => {
@@ -368,6 +379,7 @@ export function GameplayPage() {
             onMobileCollision={isMobile && !isCompareInteractive ? handleMobileCollision : undefined}
             onCompassSpeedChange={isMobile && !isCompareInteractive ? handleCompassSpeedChange : undefined}
             onTransitionComplete={handleTransitionComplete}
+            onInitialPositionCalculated={handleInitialPositionCalculated}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
