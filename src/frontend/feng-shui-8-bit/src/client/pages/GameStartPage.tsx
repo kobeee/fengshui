@@ -57,8 +57,9 @@ export function GameStartPage() {
     img.onload = () => setBgLoaded(true);
     img.src = '/images/home-v1.0-optimized.png';
     
+    // 如果图片已经缓存，使用 queueMicrotask 避免同步 setState
     if (img.complete) {
-      setBgLoaded(true);
+      queueMicrotask(() => setBgLoaded(true));
     }
   }, []);
 

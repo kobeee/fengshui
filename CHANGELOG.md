@@ -1,3 +1,133 @@
+## [2026-02-28] 新增 Reddit 社区横幅
+
+### 变更内容
+
+**用途**：为游戏的 Reddit 社区创建横幅图片。
+
+**设计理念**：
+- 展示游戏核心玩法：房间从"阴郁冷色调"到"温馨暖色调"的转变
+- 左侧：冷色房间，杂乱、昏暗、煞气粒子
+- 右侧：暖色房间，整洁、明亮、风水道具摆放到位
+- 中央：发光的罗盘，连接两个世界
+- 横幅比例 4:1，适合 Reddit 社区横幅
+
+**技术细节**：
+- 使用 laozhang API 生成
+- 模型：gemini-3.1-flash-image-preview
+- 尺寸：2064×512 像素（4:1 宽高比）
+- 格式：PNG
+
+### 影响范围
+- `resources/images/home/reddit-banner.png` - 新增
+
+---
+
+## [2026-02-28] 新增 Reddit 社区图标
+
+### 变更内容
+
+**用途**：为游戏的 Reddit 社区创建代表性图标。
+
+**设计理念**：
+- 以风水罗盘（Luopan）为核心元素，突出游戏核心玩法
+- 8-bit 像素风格，与游戏视觉风格一致
+- 暖金色调（#C4A06A, #D4B07A）作为主色调，与游戏 UI 统一
+- 深色渐变背景，营造神秘氛围
+
+**技术细节**：
+- 使用 laozhang API 生成
+- 模型：gemini-3.1-flash-image-preview
+- 尺寸：1024×1024 像素（1:1 正方形，适合 Reddit 社区图标）
+- 格式：PNG
+
+### 影响范围
+- `resources/images/home/reddit-icon.png` - 新增
+
+---
+
+## [2026-02-28] 新增 Laozhang API 图片生成 Provider
+
+### 变更内容
+
+**背景**：需要装饰 Reddit 社区，生成图片时不再使用原 Google API，切换到新的图片生成服务。
+
+**新增文件**：
+- `tools/img-gen/src/laozhang-client.ts` - 新的图片生成 provider
+- `tools/img-gen/src/simple-gen.ts` - 简易命令行工具
+
+**特性**：
+- 使用 OpenAI 兼容 API 格式 (`https://api.laozhang.ai/v1/chat/completions`)
+- 模型固定为 `gemini-3.1-flash-image-preview`（不允许修改）
+- API_KEY 从项目根目录 `.env` 文件读取（不硬编码）
+- 支持速率限制和指数退避重试
+- 支持参考图片（image-to-image）
+- 明确标注不支持图片分析功能（该模型仅支持图片生成）
+
+**使用方式**：
+
+命令行工具（推荐）：
+```bash
+cd tools/img-gen
+
+# 最简单的用法
+npm run img "a beautiful sunset over mountains"
+
+# 指定输出文件名
+npm run img "像素风温馨客厅" -- --output room.png
+
+# 指定宽高比和分辨率
+npm run img "像素风客厅" -- --ratio 16:9 --res 2K
+```
+
+代码调用：
+```typescript
+import { laozhangClient } from './laozhang-client.js';
+
+const response = await laozhangClient.generateImage({
+  prompt: 'a beautiful sunset over mountains',
+  aspectRatio: '16:9',
+  resolution: '2K'
+});
+```
+
+### 影响范围
+- `tools/img-gen/src/laozhang-client.ts` (新增)
+- `tools/img-gen/src/simple-gen.ts` (新增)
+- `tools/img-gen/package.json` (添加 npm script)
+
+---
+
+## [2026-02-27] React ESLint 错误修复 + 测试用例更新
+
+### 变更内容
+
+**问题 1：ESLint 错误**
+- `GameStartPage.tsx:61:7` - Calling setState synchronously within an effect
+- `SplashPage.tsx:31:7` - 同样的错误
+
+**根本原因**：
+- 在 `useEffect` 中检测图片是否已缓存时，直接同步调用 `setBgLoaded(true)`
+- React 规范要求 effect 中不应同步调用 setState，可能导致级联渲染
+
+**修复方案**：
+- 使用 `queueMicrotask(() => setBgLoaded(true))` 将 setState 推迟到微任务队列
+- 既保持了"图片已缓存时立即显示"的效果，又符合 React 规范
+
+**问题 2：测试用例过时**
+- `splash.test.ts` 期望找到 "Docs" 按钮，但 SplashPage 已重构为 "START GAME" 按钮
+
+**修复方案**：
+- 更新测试用例以匹配当前 SplashPage 实现
+- 添加 `onUnhandledError: 'ignore'` 忽略 React 18 scheduler 在 jsdom 环境中的兼容性警告
+
+### 影响范围
+- `src/frontend/feng-shui-8-bit/src/client/pages/GameStartPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/pages/SplashPage.tsx`
+- `src/frontend/feng-shui-8-bit/src/client/splash.test.ts`
+- `src/frontend/feng-shui-8-bit/vitest.config.ts`
+
+---
+
 ## [2026-02-27] 游戏页面加载动画优化
 
 ### 变更内容

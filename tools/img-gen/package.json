@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "gen": "tsx src/index.ts",
+    "img": "tsx src/simple-gen.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

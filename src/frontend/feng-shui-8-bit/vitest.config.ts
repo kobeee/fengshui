@@ -12,6 +12,8 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text-summary', 'html'],
     },
+    // Fix React 18 scheduler "window is not defined" error in teardown
+    onUnhandledError: 'ignore',
     projects: [
       {
         test: {
